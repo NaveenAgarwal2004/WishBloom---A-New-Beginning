@@ -41,6 +41,13 @@ export default function ImageUploader({ onUpload, existingImage }) {
         body: formData,
       })
 
+      // Check if response is OK before parsing JSON
+      if (!response.ok) {
+        const errorText = await response.text()
+        console.error('Upload failed:', response.status, errorText)
+        throw new Error(`Upload failed: ${response.statusText}`)
+      }
+
       const data = await response.json()
 
       if (data.success) {
@@ -50,7 +57,7 @@ export default function ImageUploader({ onUpload, existingImage }) {
         setError(data.error || 'Upload failed')
       }
     } catch (err) {
-      setError('Upload failed. Please try again.')
+      setError(err.message || 'Upload failed. Please try again.')
       console.error('Upload error:', err)
     } finally {
       setUploading(false)

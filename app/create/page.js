@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { nanoid } from 'nanoid'
 import { useRouter } from 'next/navigation'
@@ -24,9 +24,42 @@ export default function CreatePage() {
   const [publishError, setPublishError] = useState(null)
   const [publishedUrl, setPublishedUrl] = useState(null)
 
-  // Step 1: Recipient Info
+  // Step 1: Recipient Info (use local state with debounced sync to store to avoid typing issues)
   const Step1 = () => {
-    const canProceed = store.recipientName.trim() && store.introMessage.trim() && store.createdBy.name.trim()
+    // Local copies to avoid updating global store on every keystroke
+    const [recipientNameLocal, setRecipientNameLocal] = useState(store.recipientName || '')
+    const [ageLocal, setAgeLocal] = useState(store.age ?? '')
+    const [creativeLocal, setCreativeLocal] = useState(store.creativeAgeDescription || '')
+    const [introLocal, setIntroLocal] = useState(store.introMessage || '')
+    const [createdByLocal, setCreatedByLocal] = useState({ ...(store.createdBy || { id: '', name: '', email: '' }) })
+
+    // Initialize local state from the store on mount only (avoid syncing on every store update to prevent input overwrite)
+    useEffect(() => {
+      setRecipientNameLocal(store.recipientName || '')
+      setAgeLocal(store.age ?? '')
+      setCreativeLocal(store.creativeAgeDescription || '')
+      setIntroLocal(store.introMessage || '')
+      setCreatedByLocal({ ...(store.createdBy || { id: '', name: '', email: '' }) })
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
+    // Sync to store on blur (or when user explicitly leaves the field) to avoid race conditions
+    const syncRecipientName = () => store.setRecipientName(recipientNameLocal)
+    const syncAge = () => store.setAge(ageLocal === '' ? null : parseInt(ageLocal))
+    const syncCreative = () => store.setCreativeAgeDescription(creativeLocal)
+    const syncIntro = () => store.setIntroMessage(introLocal)
+    const syncCreatedBy = () => store.setCreatedBy({ ...createdByLocal, id: createdByLocal.id || undefined })
+
+    // Sync all data to store
+    const syncAllData = () => {
+      syncRecipientName()
+      syncAge()
+      syncCreative()
+      syncIntro()
+      syncCreatedBy()
+    }
+
+    const canProceed = recipientNameLocal.trim() && introLocal.trim() && createdByLocal.name.trim()
 
     return (
       <div className="max-w-3xl mx-auto">
@@ -35,31 +68,27 @@ export default function CreatePage() {
         <div className="space-y-6">
           {/* Recipient Name */}
           <div>
-            <label className="text-body-sm font-body font-semibold text-sepiaInk mb-2 block">
-              Recipient Name *
-            </label>
+            <label className="text-body-sm font-body font-semibold text-sepiaInk mb-2 block">Recipient Name *</label>
             <input
               type="text"
-              value={store.recipientName}
-              onChange={(e) => store.setRecipientName(e.target.value)}
+              value={recipientNameLocal}
+              onChange={(e) => setRecipientNameLocal(e.target.value)}
+              onBlur={syncRecipientName}
               maxLength={50}
               className="w-full bg-warmCream-50 border-2 border-warmCream-300 focus:border-fadedGold rounded-lg px-4 py-3 text-body font-body transition-colors outline-none"
               placeholder="Emma"
             />
-            <p className="text-caption text-warmCream-600 text-right mt-1">
-              {store.recipientName.length}/50
-            </p>
+            <p className="text-caption text-warmCream-600 text-right mt-1">{recipientNameLocal.length}/50</p>
           </div>
 
           {/* Age (optional) */}
           <div>
-            <label className="text-body-sm font-body font-semibold text-sepiaInk mb-2 block">
-              Age (optional)
-            </label>
+            <label className="text-body-sm font-body font-semibold text-sepiaInk mb-2 block">Age (optional)</label>
             <input
               type="number"
-              value={store.age || ''}
-              onChange={(e) => store.setAge(e.target.value ? parseInt(e.target.value) : null)}
+              value={ageLocal}
+              onChange={(e) => setAgeLocal(e.target.value)}
+              onBlur={syncAge}
               min="1"
               max="120"
               className="w-full bg-warmCream-50 border-2 border-warmCream-300 focus:border-fadedGold rounded-lg px-4 py-3 text-body font-body transition-colors outline-none"
@@ -69,13 +98,12 @@ export default function CreatePage() {
 
           {/* Creative Age Description */}
           <div>
-            <label className="text-body-sm font-body font-semibold text-sepiaInk mb-2 block">
-              Creative Age Description (optional)
-            </label>
+            <label className="text-body-sm font-body font-semibold text-sepiaInk mb-2 block">Creative Age Description (optional)</label>
             <input
               type="text"
-              value={store.creativeAgeDescription}
-              onChange={(e) => store.setCreativeAgeDescription(e.target.value)}
+              value={creativeLocal}
+              onChange={(e) => setCreativeLocal(e.target.value)}
+              onBlur={syncCreative}
               maxLength={100}
               className="w-full bg-warmCream-50 border-2 border-warmCream-300 focus:border-fadedGold rounded-lg px-4 py-3 text-body font-body transition-colors outline-none"
               placeholder="Twenty-Five Rotations Around the Sun"
@@ -84,31 +112,27 @@ export default function CreatePage() {
 
           {/* Intro Message */}
           <div>
-            <label className="text-body-sm font-body font-semibold text-sepiaInk mb-2 block">
-              Intro Message *
-            </label>
+            <label className="text-body-sm font-body font-semibold text-sepiaInk mb-2 block">Intro Message *</label>
             <textarea
-              value={store.introMessage}
-              onChange={(e) => store.setIntroMessage(e.target.value)}
+              value={introLocal}
+              onChange={(e) => setIntroLocal(e.target.value)}
+              onBlur={syncIntro}
               maxLength={1000}
               rows={8}
               className="w-full bg-warmCream-50 border-2 border-warmCream-300 focus:border-fadedGold rounded-lg px-4 py-3 text-body font-body transition-colors outline-none resize-none"
               placeholder="Dear Emma, on this special day..."
             />
-            <p className="text-caption text-warmCream-600 text-right mt-1">
-              {store.introMessage.length}/1000
-            </p>
+            <p className="text-caption text-warmCream-600 text-right mt-1">{introLocal.length}/1000</p>
           </div>
 
           {/* Your Name */}
           <div>
-            <label className="text-body-sm font-body font-semibold text-sepiaInk mb-2 block">
-              Your Name *
-            </label>
+            <label className="text-body-sm font-body font-semibold text-sepiaInk mb-2 block">Your Name *</label>
             <input
               type="text"
-              value={store.createdBy.name}
-              onChange={(e) => store.setCreatedBy({ ...store.createdBy, name: e.target.value })}
+              value={createdByLocal.name}
+              onChange={(e) => setCreatedByLocal({ ...createdByLocal, name: e.target.value })}
+              onBlur={syncCreatedBy}
               className="w-full bg-warmCream-50 border-2 border-warmCream-300 focus:border-fadedGold rounded-lg px-4 py-3 text-body font-body transition-colors outline-none"
               placeholder="Sarah"
             />
@@ -116,13 +140,12 @@ export default function CreatePage() {
 
           {/* Your Email (optional) */}
           <div>
-            <label className="text-body-sm font-body font-semibold text-sepiaInk mb-2 block">
-              Your Email (optional)
-            </label>
+            <label className="text-body-sm font-body font-semibold text-sepiaInk mb-2 block">Your Email (optional)</label>
             <input
               type="email"
-              value={store.createdBy.email}
-              onChange={(e) => store.setCreatedBy({ ...store.createdBy, email: e.target.value })}
+              value={createdByLocal.email}
+              onChange={(e) => setCreatedByLocal({ ...createdByLocal, email: e.target.value })}
+              onBlur={syncCreatedBy}
               className="w-full bg-warmCream-50 border-2 border-warmCream-300 focus:border-fadedGold rounded-lg px-4 py-3 text-body font-body transition-colors outline-none"
               placeholder="sarah@example.com"
             />
@@ -130,7 +153,10 @@ export default function CreatePage() {
         </div>
 
         <button
-          onClick={() => store.nextStep()}
+          onClick={() => {
+            syncAllData()
+            store.nextStep()
+          }}
           disabled={!canProceed}
           className="mt-8 px-8 py-4 bg-burntSienna text-warmCream-50 rounded-xl text-h6 font-heading font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-colored-gold transition-all flex items-center gap-2 ml-auto"
         >
@@ -759,7 +785,7 @@ export default function CreatePage() {
             onClick={() => store.nextStep()}
             className="px-12 py-6 bg-gradient-to-r from-burntSienna to-fadedGold text-warmCream-50 rounded-2xl text-h5 font-heading font-bold shadow-dramatic hover:shadow-colored-gold transition-all"
           >
-            Publish WishBloom \u2728
+            Publish WishBloom ✨
           </button>
         </div>
       </div>
@@ -848,9 +874,11 @@ export default function CreatePage() {
     }
 
     // Auto-publish on mount
-    if (!publishing && !publishedUrl && !publishError && store.currentStep === 6) {
-      handlePublish()
-    }
+    useEffect(() => {
+      if (!publishing && !publishedUrl && !publishError && store.currentStep === 6) {
+        handlePublish()
+      }
+    }, [])
 
     if (publishing) {
       return (
@@ -877,7 +905,7 @@ export default function CreatePage() {
             </svg>
           </motion.div>
           <h2 className="text-h2 font-heading font-bold text-sepiaInk mb-4">Creating Your WishBloom...</h2>
-          <p className="text-body font-body text-warmCream-700">Pressing the flowers, preserving the memories \u2728</p>
+          <p className="text-body font-body text-warmCream-700">Pressing the flowers, preserving the memories ✨</p>
         </div>
       )
     }
@@ -901,7 +929,7 @@ export default function CreatePage() {
       return (
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-h1 font-heading font-bold text-sepiaInk mb-4">\u2728 WishBloom Created! \u2728</h2>
+            <h2 className="text-h1 font-heading font-bold text-sepiaInk mb-4">✨ WishBloom Created! ✨</h2>
             <p className="text-body-lg font-body text-warmCream-700">Your beautiful memory collection is ready to share</p>
           </div>
 
@@ -964,7 +992,7 @@ export default function CreatePage() {
               </div>
             ) : (
               <div className="text-center py-8">
-                <div className="text-6xl mb-4">\u2714\ufe0f</div>
+                <div className="text-6xl mb-4">✔️</div>
                 <p className="text-body-lg font-body text-mossGreen font-semibold">Email sent successfully!</p>
               </div>
             )}
@@ -976,7 +1004,7 @@ export default function CreatePage() {
               onClick={() => window.open(publishedUrl, '_blank')}
               className="px-8 py-4 bg-gradient-to-r from-burntSienna to-fadedGold text-warmCream-50 rounded-xl text-h6 font-heading font-bold shadow-dramatic hover:shadow-colored-gold transition-all"
             >
-              View WishBloom \u2728
+              View WishBloom ✨
             </button>
             <button
               onClick={() => {

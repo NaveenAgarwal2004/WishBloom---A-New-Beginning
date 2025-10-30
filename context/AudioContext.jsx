@@ -14,10 +14,10 @@ export function AudioProvider({ children }) {
   const audioRef = useRef(null)
 
   useEffect(() => {
-    // Create audio element (placeholder - you'll need actual audio files)
-    // audioRef.current = new Audio('/audio/background-music.mp3')
-    // audioRef.current.loop = true
-    // audioRef.current.volume = volume
+    // Create audio element for background music
+    audioRef.current = new Audio('/audio/background-music.mp3')
+    audioRef.current.loop = true
+    audioRef.current.volume = volume
 
     // Load music preference from localStorage
     if (typeof window !== 'undefined') {
@@ -55,11 +55,9 @@ export function AudioProvider({ children }) {
 
   const playSound = (soundName) => {
     try {
-      // Placeholder for sound effects
-      // const sound = new Audio(`/audio/${soundName}.mp3`)
-      // sound.volume = 0.3
-      // sound.play().catch(e => console.log('Sound play failed:', e))
-      console.log('Playing sound:', soundName)
+      const sound = new Audio(`/audio/${soundName}.mp3`)
+      sound.volume = 0.7
+      sound.play().catch(e => console.log('Sound play failed:', e))
     } catch (error) {
       console.error('Error playing sound:', error)
     }

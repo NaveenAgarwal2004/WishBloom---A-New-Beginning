@@ -6,6 +6,7 @@ import MemoryGallery from '@/components/MemoryGallery'
 import MessagesSection from '@/components/MessagesSection'
 import CelebrationSection from '@/components/CelebrationSection'
 import Footer from '@/components/Footer'
+import MusicControl from '@/components/MusicControl'
 import { sampleWishBloom } from '@/lib/sampleData'
 
 /**
@@ -15,6 +16,9 @@ import { sampleWishBloom } from '@/lib/sampleData'
 export default function App() {
   return (
     <main className="min-h-screen bg-warmCream-100">
+      {/* Music Control */}
+      <MusicControl />
+      
       {/* Hero Section */}
       <Hero 
         recipientName={sampleWishBloom.recipientName}

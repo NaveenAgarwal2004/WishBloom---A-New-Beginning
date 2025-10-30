@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import CakeComponent from './CakeComponent'
 import Confetti from './Confetti'
 import WishesFloat from './WishesFloat'
+import { useAudio } from '@/context/AudioContext'
 
 /**
  * CelebrationSection - The grand finale with cake, confetti, and wishes
@@ -13,16 +14,23 @@ export default function CelebrationSection({ age, celebrationWishPhrases, contri
   const [showConfetti, setShowConfetti] = useState(false)
   const [showWishes, setShowWishes] = useState(false)
   const [showThankYou, setShowThankYou] = useState(false)
+  const { playSound } = useAudio()
 
   const handleCandlesBlow = () => {
+    // Play confetti sound
+    playSound('confetti-pop')
+    
     // Show confetti immediately
     setShowConfetti(true)
     
     // Show wishes after 0.5s
     setTimeout(() => setShowWishes(true), 500)
     
-    // Show thank you card after 2s
-    setTimeout(() => setShowThankYou(true), 2000)
+    // Show thank you card after 2s and play success chime
+    setTimeout(() => {
+      setShowThankYou(true)
+      playSound('success-chime')
+    }, 2000)
     
     // Hide confetti after 5s
     setTimeout(() => setShowConfetti(false), 5000)

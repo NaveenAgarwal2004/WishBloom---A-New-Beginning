@@ -1,10 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useBreathDetection } from '@/hooks/useBreathDetection'
+import { useAudio } from '@/context/AudioContext'
 
 /**
  * CakeComponent with animated candles and flames
+ * Supports both breath detection and manual blowing
  * @param {number} candleCount - Number of candles (default 25)
  * @param {function} onCandlesBlow - Callback when candles are blown out
  */
@@ -12,6 +15,17 @@ export default function CakeComponent({ candleCount = 25, onCandlesBlow }) {
   const [flamesLit, setFlamesLit] = useState(true)
   const [blowCount, setBlowCount] = useState(0)
   const [isShaking, setIsShaking] = useState(false)
+  const [showPermissionPrompt, setShowPermissionPrompt] = useState(false)
+  
+  const { isBlowing, error, requestPermission, hasPermission } = useBreathDetection()
+  const { playSound } = useAudio()
+
+  // Handle breath detection
+  useEffect(() => {
+    if (isBlowing && flamesLit) {
+      handleBlow()
+    }
+  }, [isBlowing, flamesLit])
 
   // Limit candles to 10 for visual clarity
   const displayCandles = Math.min(candleCount, 10)
@@ -30,10 +44,18 @@ export default function CakeComponent({ candleCount = 25, onCandlesBlow }) {
     setFlamesLit(false)
     setBlowCount(prev => prev + 1)
     
+    // Play sound effect
+    playSound('candle-blow')
+    
     // Call parent callback
     setTimeout(() => {
       if (onCandlesBlow) onCandlesBlow()
     }, 500)
+  }
+
+  const handleEnableBreathDetection = async () => {
+    setShowPermissionPrompt(false)
+    await requestPermission()
   }
 
   return (
@@ -195,6 +217,43 @@ export default function CakeComponent({ candleCount = 25, onCandlesBlow }) {
       >
         {flamesLit ? '💨 Blow the Candles' : '🕯️ Relight & Wish Again'}
       </motion.button>
+
+      {/* Breath Detection Toggle */}
+      {!hasPermission && !error && (
+        <motion.button
+          className="mt-4 mx-auto block px-8 py-3 rounded-xl text-body font-body bg-warmCream-200 text-warmCream-700 hover:bg-warmCream-300 transition-colors"
+          whileHover={{ y: -2 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={handleEnableBreathDetection}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+        >
+          🎤 Enable Breath Detection (Blow Into Mic!)
+        </motion.button>
+      )}
+
+      {/* Breath Detection Status */}
+      {hasPermission && (
+        <motion.p
+          className="text-caption font-body text-fadedGold text-center mt-3 italic"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+        >
+          ✨ Microphone active - Blow to extinguish candles!
+        </motion.p>
+      )}
+
+      {/* Error Message */}
+      {error && (
+        <motion.p
+          className="text-caption font-body text-burntSienna text-center mt-3 max-w-md mx-auto"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+        >
+          {error}
+        </motion.p>
+      )}
 
       {/* Success Message */}
       {!flamesLit && (

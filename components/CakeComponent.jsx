@@ -20,13 +20,6 @@ export default function CakeComponent({ candleCount = 25, onCandlesBlow }) {
   const { isBlowing, error, requestPermission, hasPermission } = useBreathDetection()
   const { playSound } = useAudio()
 
-  // Handle breath detection
-  useEffect(() => {
-    if (isBlowing && flamesLit) {
-      handleBlow()
-    }
-  }, [isBlowing, flamesLit])
-
   // Limit candles to 10 for visual clarity
   const displayCandles = Math.min(candleCount, 10)
   const spacing = 140 / (displayCandles - 1)
@@ -43,15 +36,22 @@ export default function CakeComponent({ candleCount = 25, onCandlesBlow }) {
     setTimeout(() => setIsShaking(false), 300)
     setFlamesLit(false)
     setBlowCount(prev => prev + 1)
-    
+
     // Play sound effect
     playSound('candle-blow')
-    
+
     // Call parent callback
     setTimeout(() => {
       if (onCandlesBlow) onCandlesBlow()
     }, 500)
   }
+
+  // Handle breath detection
+  useEffect(() => {
+    if (isBlowing && flamesLit) {
+      setTimeout(() => handleBlow(), 0)
+    }
+  }, [isBlowing, flamesLit])
 
   const handleEnableBreathDetection = async () => {
     setShowPermissionPrompt(false)
@@ -119,7 +119,7 @@ export default function CakeComponent({ candleCount = 25, onCandlesBlow }) {
           {/* Candles */}
           {Array.from({ length: displayCandles }).map((_, i) => {
             const xPos = 230 + i * spacing
-            const randomFlicker = Math.random() * 0.4
+            const randomFlicker = 0.2 + (i * 0.1) % 0.4
 
             return (
               <g key={i} transform={`translate(${xPos}, 90)`}>
@@ -139,10 +139,10 @@ export default function CakeComponent({ candleCount = 25, onCandlesBlow }) {
                     >
                       {/* Main flame */}
                       <motion.ellipse
-                        cx="0"
-                        cy="-12"
-                        rx="6"
-                        ry="14"
+                        cx={0}
+                        cy={-12}
+                        rx={6}
+                        ry={14}
                         fill="url(#flameGradient)"
                         animate={{
                           ry: [14, 16, 12, 15, 14],
@@ -157,12 +157,12 @@ export default function CakeComponent({ candleCount = 25, onCandlesBlow }) {
                       />
                       {/* Inner glow */}
                       <motion.ellipse
-                        cx="0"
-                        cy="-10"
-                        rx="3"
-                        ry="6"
+                        cx={0}
+                        cy={-10}
+                        rx={3}
+                        ry={6}
                         fill="#FFFACD"
-                        opacity="0.8"
+                        opacity={0.8}
                         animate={{
                           ry: [6, 7, 5, 6.5, 6],
                           opacity: [0.8, 1, 0.7, 0.9, 0.8]

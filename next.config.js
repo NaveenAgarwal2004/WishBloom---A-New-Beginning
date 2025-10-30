@@ -1,5 +1,6 @@
 const nextConfig = {
   output: 'standalone',
+  reactStrictMode: false, // Temporarily disable for debugging
   images: {
     unoptimized: true,
   },

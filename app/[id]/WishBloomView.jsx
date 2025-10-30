@@ -11,6 +11,22 @@ import Footer from '@/components/Footer'
  * Client component for viewing a WishBloom
  */
 export default function WishBloomView({ wishbloom }) {
+  // Validate wishbloom data
+  if (!wishbloom) {
+    return (
+      <main className="min-h-screen bg-warmCream-100 flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-h2 font-heading font-bold text-sepiaInk mb-4">
+            WishBloom Not Found
+          </h1>
+          <p className="text-body text-warmCream-700">
+            This WishBloom may have been removed or doesn't exist.
+          </p>
+        </div>
+      </main>
+    )
+  }
+
   // Calculate contributors from memories and messages
   const contributorMap = new Map()
   
@@ -35,26 +51,32 @@ export default function WishBloomView({ wishbloom }) {
   return (
     <main className="min-h-screen bg-warmCream-100">
       <Hero 
-        recipientName={wishbloom.recipientName}
+        recipientName={wishbloom.recipientName || 'Friend'}
         age={wishbloom.age}
         creativeAgeDescription={wishbloom.creativeAgeDescription}
       />
 
-      <IntroMessage message={wishbloom.introMessage} />
+      {wishbloom.introMessage && (
+        <IntroMessage message={wishbloom.introMessage} />
+      )}
 
-      <MemoryGallery memories={wishbloom.memories || []} />
+      {wishbloom.memories && wishbloom.memories.length > 0 && (
+        <MemoryGallery memories={wishbloom.memories} />
+      )}
 
-      <MessagesSection messages={wishbloom.messages || []} />
+      {wishbloom.messages && wishbloom.messages.length > 0 && (
+        <MessagesSection messages={wishbloom.messages} />
+      )}
 
       <CelebrationSection 
-        age={wishbloom.age}
+        age={wishbloom.age || 25}
         celebrationWishPhrases={wishbloom.celebrationWishPhrases || []}
         contributors={contributors}
       />
 
       <Footer 
         contributors={contributors}
-        createdDate={wishbloom.createdDate}
+        createdDate={wishbloom.createdDate || new Date().toISOString()}
       />
     </main>
   )

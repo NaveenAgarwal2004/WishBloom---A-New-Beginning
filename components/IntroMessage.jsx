@@ -1,18 +1,27 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 
 /**
  * Intro message card with washi tape and pressed flower decorations
  */
 export default function IntroMessage({ message }) {
+  const [isClient, setIsClient] = useState(false)
+  
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
+  if (!message) return null
+
   // Split message into paragraphs
   const paragraphs = message.split('\n\n').filter(p => p.trim())
   
-  // Get first letter for drop cap
+  // Get first letter for drop cap - only on client
   const firstParagraph = paragraphs[0] || ''
-  const firstLetter = firstParagraph.charAt(0)
-  const restOfFirst = firstParagraph.slice(1)
+  const firstLetter = isClient ? firstParagraph.charAt(0) : ''
+  const restOfFirst = isClient ? firstParagraph.slice(1) : firstParagraph
 
   return (
     <section id="intro-message" className="py-16 md:py-24 px-4 md:px-8">
@@ -31,9 +40,11 @@ export default function IntroMessage({ message }) {
         <div className="relative z-10">
           {/* First paragraph with drop cap */}
           <p className="text-body-xl md:text-body-lg font-body text-warmCream-700 leading-loose mb-6">
-            <span className="float-left text-9xl font-heading font-bold text-fadedGold leading-none mr-3 mt-2">
-              {firstLetter}
-            </span>
+            {isClient && firstLetter && (
+              <span className="float-left text-9xl font-heading font-bold text-fadedGold leading-none mr-3 mt-2">
+                {firstLetter}
+              </span>
+            )}
             {restOfFirst}
           </p>
 

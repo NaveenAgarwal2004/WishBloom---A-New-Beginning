@@ -12,6 +12,23 @@ const TAG_COLORS = {
 }
 
 /**
+ * Calculate deterministic rotation based on ID to avoid hydration mismatch
+ */
+function getRotation(id, type) {
+  // Create a deterministic hash from the ID
+  const hash = id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)
+  const base = (hash % 100) / 100 // 0-1 range
+  
+  if (type === 'featured') {
+    return base * 24 - 12 // -12 to +12
+  } else if (type === 'quote') {
+    return base * 20 - 10 // -10 to +10
+  } else {
+    return base * 16 - 8 // -8 to +8
+  }
+}
+
+/**
  * Standard Memory Card (60% of cards)
  */
 function StandardMemoryCard({ memory, rotation, index }) {
@@ -242,7 +259,7 @@ function QuoteMemoryCard({ memory, rotation, index }) {
     >
       {/* HUGE opening quote mark */}
       <span className="absolute -top-8 -left-8 text-lavenderPress/30 font-heading font-bold leading-none" style={{ fontSize: '160px' }}>
-        “
+        "
       </span>
 
       {/* Quote text */}
@@ -271,12 +288,8 @@ function QuoteMemoryCard({ memory, rotation, index }) {
  * Main Memory Card component that renders the appropriate type
  */
 export default function MemoryCard({ memory, index }) {
-  // Calculate rotation based on type
-  const rotation = memory.type === 'featured' 
-    ? (Math.random() * 24 - 12) // -12 to +12 for featured
-    : memory.type === 'quote'
-    ? (Math.random() * 20 - 10) // -10 to +10 for quotes
-    : (Math.random() * 16 - 8) // -8 to +8 for standard
+  // Calculate deterministic rotation based on memory ID to avoid hydration mismatch
+  const rotation = getRotation(memory.id, memory.type)
 
   if (memory.type === 'featured') {
     return <FeaturedMemoryCard memory={memory} rotation={rotation} index={index} />

@@ -24,10 +24,13 @@ export default function FloralDecoration({
     transition: { duration: 1.5, ease: [0.34, 1.56, 0.64, 1] }
   } : {}
 
+  // Ensure size is a valid number
+  const validSize = typeof size === 'number' && size > 0 ? size : 200
+
   return (
     <MotionSvg
-      width={size}
-      height={size}
+      width={validSize}
+      height={validSize}
       viewBox="0 0 200 200"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -37,7 +40,7 @@ export default function FloralDecoration({
       {/* Center circle */}
       <circle cx="100" cy="100" r="20" fill={color} opacity="0.9" />
       
-      {/* Petals */}
+      {/* Petals - all with explicit rx and ry values */}
       <ellipse cx="100" cy="60" rx="18" ry="35" fill={color} opacity="0.85" />
       <ellipse cx="140" cy="100" rx="35" ry="18" fill={color} opacity="0.85" />
       <ellipse cx="100" cy="140" rx="18" ry="35" fill={color} opacity="0.85" />

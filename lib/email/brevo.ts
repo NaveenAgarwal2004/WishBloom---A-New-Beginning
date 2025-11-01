@@ -1,23 +1,123 @@
-import { NextResponse } from 'next/server'
-import { Resend } from 'resend'
+import { env } from '@/lib/env'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+interface BrevoEmailParams {
+  to: string
+  toName: string
+  subject: string
+  htmlContent: string
+  textContent?: string
+}
 
-export async function POST(request) {
-  try {
-    const body = await request.json()
-    const { recipientEmail, recipientName, wishbloomUrl, senderName, customMessage } = body
+interface BrevoResponse {
+  messageId: string
+}
 
-    // Validate required fields
-    if (!recipientEmail || !recipientName || !wishbloomUrl || !senderName) {
-      return NextResponse.json(
-        { success: false, error: 'Missing required fields' },
-        { status: 400 }
-      )
+class BrevoEmailService {
+  private apiKey: string
+  private baseUrl = 'https://api.brevo.com/v3'
+  private senderEmail: string
+  private senderName: string
+
+  constructor() {
+    this.apiKey = env.BREVO_API_KEY
+    this.senderEmail = env.BREVO_SENDER_EMAIL
+    this.senderName = env.BREVO_SENDER_NAME
+  }
+
+  async sendEmail(params: BrevoEmailParams): Promise<BrevoResponse> {
+    try {
+      const response = await fetch(`${this.baseUrl}/smtp/email`, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'api-key': this.apiKey,
+        },
+        body: JSON.stringify({
+          sender: {
+            email: this.senderEmail,
+            name: this.senderName,
+          },
+          to: [
+            {
+              email: params.to,
+              name: params.toName,
+            },
+          ],
+          subject: params.subject,
+          htmlContent: params.htmlContent,
+          textContent: params.textContent || this.htmlToText(params.htmlContent),
+        }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(
+          `Brevo API error: ${response.status} - ${JSON.stringify(errorData)}`
+        )
+      }
+
+      const data = await response.json()
+      return {
+        messageId: data.messageId || data['message-id'] || 'unknown',
+      }
+    } catch (error) {
+      console.error('❌ Brevo email send failed:', error)
+      throw error
     }
+  }
 
-    // Create HTML email template
-    const emailHtml = `
+  // Simple HTML to text conversion for fallback
+  private htmlToText(html: string): string {
+    return html
+      .replace(/<style[^>]*>.*?<\/style>/gi, '')
+      .replace(/<script[^>]*>.*?<\/script>/gi, '')
+      .replace(/<[^>]+>/g, '')
+      .replace(/\s\s+/g, ' ')
+      .trim()
+  }
+
+  // Template for WishBloom notification email
+  async sendWishBloomNotification({
+    recipientEmail,
+    recipientName,
+    wishbloomUrl,
+    senderName,
+    customMessage,
+  }: {
+    recipientEmail: string
+    recipientName: string
+    wishbloomUrl: string
+    senderName: string
+    customMessage?: string
+  }): Promise<BrevoResponse> {
+    const htmlContent = this.generateWishBloomEmailHTML({
+      recipientName,
+      wishbloomUrl,
+      senderName,
+      customMessage,
+    })
+
+    return this.sendEmail({
+      to: recipientEmail,
+      toName: recipientName,
+      subject: `${senderName} has created a WishBloom for you! 🌸`,
+      htmlContent,
+    })
+  }
+
+  private generateWishBloomEmailHTML({
+    recipientName,
+    wishbloomUrl,
+    senderName,
+    customMessage,
+  }: {
+    recipientName: string
+    wishbloomUrl: string
+    senderName: string
+    customMessage?: string
+  }): string {
+    return `
       <!DOCTYPE html>
       <html>
         <head>
@@ -154,24 +254,8 @@ export async function POST(request) {
         </body>
       </html>
     `
-
-    // Send email
-    const data = await resend.emails.send({
-      from: 'WishBloom <onboarding@resend.dev>', // Update this when you have a verified domain
-      to: recipientEmail,
-      subject: `${senderName} has created a WishBloom for you! 🌸`,
-      html: emailHtml,
-    })
-
-    return NextResponse.json({
-      success: true,
-      emailId: data.id,
-    })
-  } catch (error) {
-    console.error('Error sending email:', error)
-    return NextResponse.json(
-      { success: false, error: error.message || 'Failed to send email' },
-      { status: 500 }
-    )
   }
 }
+
+// Export singleton instance
+export const brevoEmailService = new BrevoEmailService()

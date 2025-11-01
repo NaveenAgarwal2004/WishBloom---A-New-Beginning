@@ -10,20 +10,32 @@ import { motion } from 'framer-motion'
 export default function Confetti({ particleCount = 400 }) {
   // Generate particles with random properties
   const particles = useMemo(() => {
-    return Array.from({ length: particleCount }).map((_, i) => ({
-      id: i,
-      type: ['petal', 'circle', 'heart', 'leaf', 'star'][Math.floor(Math.random() * 5)],
-      color: ['#D4859D', '#A88BC7', '#8FA582', '#E6A957', '#C97B84', '#6B6B9B'][Math.floor(Math.random() * 6)],
-      size: 12 + Math.random() * 16, // 12-28px
-      x: typeof window !== 'undefined' ? Math.random() * window.innerWidth : 0,
-      y: -100 - Math.random() * 100,
-      rotation: Math.random() * 360,
-      rotationSpeed: (Math.random() - 0.5) * 720,
-      scale: 0.7 + Math.random() * 0.6,
-      duration: 5 + Math.random() * 4, // 5-9 seconds
-      drift: (Math.random() - 0.5) * 100,
-      delay: Math.random() * 0.3,
-    }))
+    const types = ['petal', 'circle', 'heart', 'leaf', 'star']
+    const colors = ['#D4859D', '#A88BC7', '#8FA582', '#E6A957', '#C97B84', '#6B6B9B']
+    const windowWidth = typeof window !== 'undefined' ? window.innerWidth : 800
+
+    return Array.from({ length: particleCount }).map((_, i) => {
+      const seed = i * 0.1 // Use deterministic seed based on index
+      const pseudoRandom = (seed) => {
+        const x = Math.sin(seed) * 10000
+        return x - Math.floor(x)
+      }
+
+      return {
+        id: i,
+        type: types[Math.floor(pseudoRandom(seed) * types.length)],
+        color: colors[Math.floor(pseudoRandom(seed + 1) * colors.length)],
+        size: 12 + pseudoRandom(seed + 2) * 16, // 12-28px
+        x: pseudoRandom(seed + 3) * windowWidth,
+        y: -100 - pseudoRandom(seed + 4) * 100,
+        rotation: pseudoRandom(seed + 5) * 360,
+        rotationSpeed: (pseudoRandom(seed + 6) - 0.5) * 720,
+        scale: 0.7 + pseudoRandom(seed + 7) * 0.6,
+        duration: 5 + pseudoRandom(seed + 8) * 4, // 5-9 seconds
+        drift: (pseudoRandom(seed + 9) - 0.5) * 100,
+        delay: pseudoRandom(seed + 10) * 0.3,
+      }
+    })
   }, [particleCount])
 
   return (
@@ -47,16 +59,12 @@ export default function Confetti({ particleCount = 400 }) {
               opacity: 1,
               rotate: 0,
               scale: particle.scale,
-              rotateX: 0,
-              rotateY: 0,
             }}
             animate={{
               y: windowHeight + 100,
-              x: particle.x + Math.sin(Date.now() * 0.001 + particle.id) * particle.drift,
+              x: particle.x + Math.sin(particle.id * 0.1) * particle.drift,
               opacity: [1, 1, 1, 0.8, 0],
               rotate: particle.rotation + particle.rotationSpeed,
-              rotateX: [0, 180, 360],
-              rotateY: [0, 180, 360],
               scale: [particle.scale, particle.scale, particle.scale * 0.7],
             }}
             transition={{

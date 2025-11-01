@@ -14,32 +14,37 @@ export function AudioProvider({ children }) {
   const audioRef = useRef(null)
   const soundsRef = useRef({})
 
-  useEffect(() => {
+useEffect(() => {
     // Create audio element for background music
-    audioRef.current = new Audio('/audio/background-music.mp3')
-    audioRef.current.loop = true
-    audioRef.current.volume = volume
+    const audio = new Audio('/audio/background-music.mp3')
+    audio.loop = true
+    audio.volume = volume
+    audioRef.current = audio
 
     // Handle loading errors gracefully
-    audioRef.current.addEventListener('error', () => {
+    const handleError = () => {
       // Silently handle - music is optional
-    })
+    }
+    audio.addEventListener('error', handleError)
 
     // Preload sound effects
     const soundConfig = {
       'candle-blow': 'wav',
       'confetti-pop': 'wav',
       'success-chime': 'mp3'
-    }
+    };
+
+    const loadedSounds = {}
     Object.entries(soundConfig).forEach(([name, ext]) => {
-      const audio = new Audio(`/audio/${name}.${ext}`)
-      audio.preload = 'auto'
-      audio.volume = 0.7
-      audio.addEventListener('error', () => {
+      const soundAudio = new Audio(`/audio/${name}.${ext}`)
+      soundAudio.preload = 'auto'
+      soundAudio.volume = 0.7
+      soundAudio.addEventListener('error', () => {
         // Silently handle - sound effects are optional
       })
-      soundsRef.current[name] = audio
+      loadedSounds[name] = soundAudio
     })
+    soundsRef.current = loadedSounds
 
     // Auto-start background music on page load (user interaction required by browsers)
     const startMusic = () => {
@@ -58,17 +63,32 @@ export function AudioProvider({ children }) {
     document.addEventListener('click', startMusic)
     document.addEventListener('touchstart', startMusic)
 
+    // Cleanup function
     return () => {
-      if (audioRef.current) {
-        audioRef.current.pause()
-        audioRef.current.src = ''
-      }
-      Object.values(soundsRef.current).forEach(audio => {
-        audio.pause()
-        audio.src = ''
-      })
+      // Clean up event listeners
+      audio.removeEventListener('error', handleError)
       document.removeEventListener('click', startMusic)
       document.removeEventListener('touchstart', startMusic)
+
+      // Stop and clean up main audio
+      if (audioRef.current) {
+        audioRef.current.pause()
+        audioRef.current.currentTime = 0
+        audioRef.current.src = ''
+        audioRef.current.load() // Release resources
+      }
+
+      // Stop and clean up sound effects
+      Object.values(soundsRef.current).forEach(soundAudio => {
+        soundAudio.pause()
+        soundAudio.currentTime = 0
+        soundAudio.src = ''
+        soundAudio.load() // Release resources
+      })
+
+      // Clear refs
+      audioRef.current = null
+      soundsRef.current = {}
     }
   }, [])
 

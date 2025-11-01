@@ -1,38 +1,73 @@
-import type { Metadata } from "next";
-import { Inter, IBM_Plex_Mono } from "next/font/google";
-import "./globals.css";
-import { AudioProvider } from "@/context/AudioContext";
+import { Cormorant_Garamond, Spectral, EB_Garamond, IBM_Plex_Mono } from 'next/font/google'
+import './globals.css'
+import { AudioProvider } from '@/context/AudioContext'
+import type { Metadata } from 'next'
 
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-});
+// Font setup
+const cormorantGaramond = Cormorant_Garamond({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  style: ['normal', 'italic'],
+  variable: '--font-heading',
+  display: 'swap',
+})
 
-const plexMono = IBM_Plex_Mono({
-  variable: "--font-mono",
-  weight: ["400", "600"],
-  subsets: ["latin"],
-});
+const spectral = Spectral({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600'],
+  style: ['normal', 'italic'],
+  variable: '--font-body',
+  display: 'swap',
+})
 
+const ebGaramond = EB_Garamond({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  style: ['italic'],
+  variable: '--font-accent',
+  display: 'swap',
+})
+
+const ibmPlexMono = IBM_Plex_Mono({
+  subsets: ['latin'],
+  weight: ['400', '600'],
+  variable: '--font-mono',
+  display: 'swap',
+})
+
+// ✅ Add metadataBase here (NOT in next.config.js)
 export const metadata: Metadata = {
-  title: "WishBloom - Celebrate Memories",
-  description: "Create beautiful birthday memory collections",
-};
+  metadataBase: new URL('https://wishbloom.vercel.app'),
+  title: 'WishBloom - Pressed Flower Birthday Memories',
+  description:
+    "Create beautiful, interactive birthday memory books. Preserve and share life's most precious moments in a digital pressed flower scrapbook.",
+  keywords: ['birthday', 'memories', 'gift', 'scrapbook', 'pressed flowers'],
+  openGraph: {
+    title: 'WishBloom - Pressed Flower Birthday Memories',
+    description: "Preserve and share life's most precious moments",
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://wishbloom.vercel.app',
+    siteName: 'WishBloom',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+}
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: {
+  children: React.ReactNode
+}) {
   return (
     <html lang="en">
       <body
-        className={`${inter.variable} ${plexMono.variable} font-sans antialiased`}
+        className={`${cormorantGaramond.variable} ${spectral.variable} ${ebGaramond.variable} ${ibmPlexMono.variable} antialiased`}
       >
-        <AudioProvider>
-          {children}
-        </AudioProvider>
+        <AudioProvider>{children}</AudioProvider>
       </body>
     </html>
-  );
+  )
 }

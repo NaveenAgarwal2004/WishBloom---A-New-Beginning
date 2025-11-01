@@ -40,7 +40,7 @@ const WishBloomSchema = new mongoose.Schema(
     age: { type: Number },
     creativeAgeDescription: { type: String },
     introMessage: { type: String, required: true },
-    uniqueUrl: { type: String, required: true, unique: true },
+    uniqueUrl: { type: String, required: true }, // ❌ Removed `unique: true`
     createdBy: { type: ContributorSchema, required: true },
     contributors: [ContributorSchema],
     memories: [MemorySchema],
@@ -52,5 +52,14 @@ const WishBloomSchema = new mongoose.Schema(
   },
   { timestamps: true }
 )
+
+// ✅ Indexes (no duplicates)
+WishBloomSchema.index({ uniqueUrl: 1 }, { unique: true }) // only once
+WishBloomSchema.index({ 'createdBy.id': 1 })
+WishBloomSchema.index({ viewCount: -1 })
+WishBloomSchema.index({ isArchived: 1 })
+WishBloomSchema.index({ createdDate: -1 })
+// ✅ Compound index: for queries like { isArchived: { $ne: true } } sorted by createdDate
+WishBloomSchema.index({ isArchived: 1, createdDate: -1 })
 
 export default mongoose.models.WishBloom || mongoose.model('WishBloom', WishBloomSchema)

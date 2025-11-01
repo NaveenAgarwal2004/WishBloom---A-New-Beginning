@@ -10,6 +10,7 @@ export function useBreathDetection() {
   const [isBlowing, setIsBlowing] = useState(false)
   const [error, setError] = useState(null)
   const [hasPermission, setHasPermission] = useState(false)
+  const [supported, setSupported] = useState(true)
   const audioContextRef = useRef(null)
   const analyserRef = useRef(null)
   const streamRef = useRef(null)
@@ -20,10 +21,17 @@ export function useBreathDetection() {
       // Check if browser supports AudioContext
       if (!window.AudioContext && !window.webkitAudioContext) {
         setError('Your browser does not support audio detection')
+        setSupported(false)
         return
       }
 
       // Request microphone access
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        setError('No microphone found. Please connect a microphone.')
+        setSupported(false)
+        return
+      }
+
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
       streamRef.current = stream
 
@@ -70,6 +78,7 @@ export function useBreathDetection() {
         setError('Microphone access denied. Please enable it in your browser settings.')
       } else if (err.name === 'NotFoundError') {
         setError('No microphone found. Please connect a microphone.')
+        setSupported(false)
       } else {
         setError('Could not access microphone. Please check your browser settings.')
       }
@@ -101,6 +110,12 @@ export function useBreathDetection() {
     isBlowing,
     error,
     requestPermission,
-    hasPermission
+    hasPermission,
+    supported,
+    // Fallback: simulate a blow event in environments without mic
+    simulateBlow: (durationMs = 800) => {
+      setIsBlowing(true)
+      setTimeout(() => setIsBlowing(false), durationMs)
+    }
   }
 }

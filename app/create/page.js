@@ -59,7 +59,7 @@ export default function CreatePage() {
       syncCreatedBy()
     }
 
-    const canProceed = recipientNameLocal.trim() && introLocal.trim() && createdByLocal.name.trim()
+    const canProceed = Boolean(recipientNameLocal.trim() && introLocal.trim())
 
     return (
       <div className="max-w-3xl mx-auto">
@@ -125,9 +125,9 @@ export default function CreatePage() {
             <p className="text-caption text-warmCream-600 text-right mt-1">{introLocal.length}/1000</p>
           </div>
 
-          {/* Your Name */}
+          {/* Your Name (optional for initial step) */}
           <div>
-            <label className="text-body-sm font-body font-semibold text-sepiaInk mb-2 block">Your Name *</label>
+            <label className="text-body-sm font-body font-semibold text-sepiaInk mb-2 block">Your Name</label>
             <input
               type="text"
               value={createdByLocal.name}

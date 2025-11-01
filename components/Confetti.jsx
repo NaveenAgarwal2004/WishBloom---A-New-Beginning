@@ -27,7 +27,7 @@ export default function Confetti({ particleCount = 400 }) {
   }, [particleCount])
 
   return (
-    <div className="fixed inset-0 pointer-events-none z-[100]">
+    <div className="fixed inset-0 pointer-events-none z-[100]" data-testid="confetti-active">
       {particles.map((particle) => {
         const windowHeight = typeof window !== 'undefined' ? window.innerHeight : 800
 

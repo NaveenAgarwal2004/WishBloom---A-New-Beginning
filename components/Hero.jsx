@@ -2,11 +2,14 @@
 
 import { motion } from 'framer-motion'
 import FloralDecoration from './FloralDecoration'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 /**
  * Hero section with dramatic animations
  */
 export default function Hero({ recipientName, age, creativeAgeDescription }) {
+  const router = useRouter()
   return (
     <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-b from-warmCream-100 to-rosePetal/10 overflow-hidden px-4 md:px-8 py-16 md:py-32">
       {/* Large decorative floral - top right */}
@@ -93,12 +96,20 @@ export default function Hero({ recipientName, age, creativeAgeDescription }) {
             boxShadow: '0px 8px 24px rgba(212, 163, 115, 0.3)'
           }}
           whileTap={{ scale: 0.95 }}
+          data-testid="cta-create-button"
           onClick={() => {
-            document.getElementById('intro-message')?.scrollIntoView({ behavior: 'smooth' })
+            router.push('/create')
           }}
         >
           Explore Your Memories ✨
         </motion.button>
+
+        {/* Redundant Link for automated testing reliability */}
+        <div className="mt-4">
+          <Link href="/create" data-testid="cta-create-link" className="underline text-fadedGold text-body">
+            Start creating →
+          </Link>
+        </div>
 
         {/* Scroll indicator */}
         <motion.div

@@ -12,7 +12,7 @@ export default function WishesFloat({ wishes }) {
   const colors = ['#7A5C47', '#D4A373', '#D4859D', '#A88BC7']
 
   return (
-    <div className="fixed inset-0 pointer-events-none z-[90]">
+    <div className="fixed inset-0 pointer-events-none z-[90]" data-testid="wishes-active">
       {wishes.map((wish, i) => {
         const color = colors[i % colors.length]
         const windowHeight = typeof window !== 'undefined' ? window.innerHeight : 800

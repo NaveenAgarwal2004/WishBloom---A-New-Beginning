@@ -17,7 +17,7 @@ export default function CakeComponent({ candleCount = 25, onCandlesBlow }) {
   const [isShaking, setIsShaking] = useState(false)
   const [showPermissionPrompt, setShowPermissionPrompt] = useState(false)
   
-  const { isBlowing, error, requestPermission, hasPermission } = useBreathDetection()
+  const { isBlowing, error, requestPermission, hasPermission, supported, simulateBlow } = useBreathDetection()
   const { playSound } = useAudio()
 
   // Limit candles to 10 for visual clarity
@@ -219,7 +219,7 @@ export default function CakeComponent({ candleCount = 25, onCandlesBlow }) {
       </motion.button>
 
       {/* Breath Detection Toggle */}
-      {!hasPermission && !error && (
+      {!hasPermission && !error && supported && (
         <motion.button
           className="mt-4 mx-auto block px-8 py-3 rounded-xl text-body font-body bg-warmCream-200 text-warmCream-700 hover:bg-warmCream-300 transition-colors"
           whileHover={{ y: -2 }}
@@ -253,6 +253,20 @@ export default function CakeComponent({ candleCount = 25, onCandlesBlow }) {
         >
           {error}
         </motion.p>
+      )}
+
+      {/* Fallback simulate if mic unsupported */}
+      {!supported && (
+        <motion.button
+          className="mt-4 mx-auto block px-8 py-3 rounded-xl text-body font-body bg-warmCream-200 text-warmCream-700 hover:bg-warmCream-300 transition-colors"
+          whileHover={{ y: -2 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => simulateBlow()}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+        >
+          💨 Simulate Blow (No Microphone)
+        </motion.button>
       )}
 
       {/* Success Message */}

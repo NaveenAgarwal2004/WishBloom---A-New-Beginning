@@ -11,7 +11,10 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "analyze": "cross-env ANALYZE=true next build",
-    "db:indexes": "ts-node --project tsconfig.scripts.json scripts/create-indexes.ts"
+    "db:indexes": "ts-node --project tsconfig.scripts.json scripts/create-indexes.ts",
+    "test:e2e": "playwright test",
+    "test:a11y": "playwright test tests/accessibility",
+    "lighthouse": "lhci autorun"
   },
   "dependencies": {
     "@auth/mongodb-adapter": "^2.6.0",
@@ -63,12 +66,16 @@
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.3.1",
     "tailwindcss-animate": "^1.0.7",
+    "web-vitals": "^3.5.2",
     "zod": "^3.22.4",
     "zustand": "^5.0.8"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.0",
     "@jest/globals": "^30.2.0",
+    "@lhci/cli": "^0.12.0",
     "@next/bundle-analyzer": "^14.2.33",
+    "@playwright/test": "^1.56.1",
     "@types/bcryptjs": "^2.4.6",
     "@types/jest": "^30.0.0",
     "@types/node": "^20.10.0",
@@ -79,6 +86,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.0.1",
     "jest": "^30.2.0",
+    "lighthouse": "^11.7.1",
     "postcss": "^8.4.31",
     "tailwindcss": "^3.3.5",
     "ts-jest": "^29.4.5",

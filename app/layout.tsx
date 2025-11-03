@@ -2,6 +2,7 @@ import { Cormorant_Garamond, Spectral, EB_Garamond, IBM_Plex_Mono } from 'next/f
 import './globals.css'
 import { AudioProvider } from '@/context/AudioContext'
 import type { Metadata } from 'next'
+import { WebVitals } from './web-vitals'
 
 // Font setup
 const cormorantGaramond = Cormorant_Garamond({
@@ -66,7 +67,10 @@ export default function RootLayout({
       <body
         className={`${cormorantGaramond.variable} ${spectral.variable} ${ebGaramond.variable} ${ibmPlexMono.variable} antialiased`}
       >
-        <AudioProvider>{children}</AudioProvider>
+        <AudioProvider>
+          {children}
+        </AudioProvider>
+        <WebVitals />  {/* ← ADD THIS */}
       </body>
     </html>
   )

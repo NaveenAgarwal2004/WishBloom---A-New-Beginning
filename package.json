@@ -12,6 +12,7 @@
     "test:watch": "jest --watch",
     "analyze": "cross-env ANALYZE=true next build",
     "db:indexes": "ts-node --project tsconfig.scripts.json scripts/create-indexes.ts",
+    "test:indexes": "ts-node --project tsconfig.scripts.json scripts/test-indexes.ts",
     "test:e2e": "playwright test",
     "test:a11y": "playwright test tests/accessibility",
     "lighthouse": "lhci autorun"

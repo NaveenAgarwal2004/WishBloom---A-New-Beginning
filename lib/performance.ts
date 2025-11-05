@@ -37,7 +37,8 @@ function getRating(name: string, value: number): 'good' | 'needs-improvement' | 
  * Report Web Vitals to analytics
  */
 export function reportWebVitals(metric: Metric) {
-  const { name, value, rating, id } = metric
+  const { name, value, id } = metric
+  const rating = getRating(name, value)
 
   logger.info(`Web Vital: ${name}`, {
     metric: name,
@@ -161,7 +162,6 @@ export function monitorLayoutShifts() {
     const observer = new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) {
         if (!(entry as any).hadRecentInput) {
-          const firstSessionEntry = clsEntries[0]
           const lastSessionEntry = clsEntries[clsEntries.length - 1]
 
           if (

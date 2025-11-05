@@ -92,3 +92,6 @@ testsprite_tests/
 
 # Text files
 *.txt
+
+test-results/
+playwright-report/

@@ -40,13 +40,13 @@ export default function FloralDecoration({
       {/* Center circle */}
       <circle cx="100" cy="100" r="20" fill={color} opacity="0.9" />
       
-      {/* Petals - all with explicit rx and ry values */}
+      {/* Petals - all with explicit numeric rx and ry values */}
       <ellipse cx="100" cy="60" rx="18" ry="35" fill={color} opacity="0.85" />
       <ellipse cx="140" cy="100" rx="35" ry="18" fill={color} opacity="0.85" />
       <ellipse cx="100" cy="140" rx="18" ry="35" fill={color} opacity="0.85" />
       <ellipse cx="60" cy="100" rx="35" ry="18" fill={color} opacity="0.85" />
       
-      {/* Diagonal petals */}
+      {/* Diagonal petals with transforms */}
       <ellipse cx="130" cy="70" rx="25" ry="15" fill={color} opacity="0.8" transform="rotate(45 130 70)" />
       <ellipse cx="130" cy="130" rx="25" ry="15" fill={color} opacity="0.8" transform="rotate(-45 130 130)" />
       <ellipse cx="70" cy="130" rx="25" ry="15" fill={color} opacity="0.8" transform="rotate(45 70 130)" />

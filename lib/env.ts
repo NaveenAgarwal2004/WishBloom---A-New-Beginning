@@ -37,7 +37,7 @@ const envSchema = z.object({
 
 export type Env = z.infer<typeof envSchema>
 
-// Validate on startup
+// Validate environment variables
 function validateEnv(): Env {
   try {
     const parsed = envSchema.safeParse(process.env)
@@ -66,7 +66,6 @@ function validateEnv(): Env {
 
     return parsed.data
   } catch (error) {
-    // Re-throw with more context
     if (error instanceof Error) {
       throw new Error(`Environment validation failed: ${error.message}`)
     }
@@ -74,23 +73,36 @@ function validateEnv(): Env {
   }
 }
 
-// Only validate on server-side to avoid client-side errors
-let cachedEnv: Env | null = null
-
-export function getEnv(): Env {
-  if (cachedEnv) return cachedEnv
-  
-  // Only validate if we're on the server
-  if (typeof window === 'undefined') {
+// Server-side environment (always validate fully)
+function getServerEnv(): Env {
+  if (!cachedEnv) {
     cachedEnv = validateEnv()
-    return cachedEnv
   }
-  
-  // On client, return a minimal object with only public variables
+  return cachedEnv
+}
+
+// Client-side environment (only public variables)
+function getClientEnv(): Env {
   return {
     NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000',
     NODE_ENV: (process.env.NODE_ENV as any) || 'development',
   } as Env
+}
+
+let cachedEnv: Env | null = null
+
+// Main getter - checks if running in Node.js or browser
+export function getEnv(): Env {
+  // Check if we're in Node.js environment (has 'process.versions.node')
+  const isNode = typeof process !== 'undefined' && 
+                 process.versions != null && 
+                 process.versions.node != null
+  
+  if (isNode) {
+    return getServerEnv()
+  } else {
+    return getClientEnv()
+  }
 }
 
 export const env = getEnv()

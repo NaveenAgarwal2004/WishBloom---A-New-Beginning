@@ -4,6 +4,7 @@
  */
 
 import { useEffect, useRef } from 'react'
+import React from 'react'
 
 // Hook to detect if user prefers reduced motion
 export function usePrefersReducedMotion(): boolean {
@@ -70,18 +71,6 @@ export function useFocusTrap(active: boolean) {
   return containerRef
 }
 
-// Skip to main content link (for keyboard users)
-export function SkipToContent() {
-  return (
-    <a
-      href="#main-content"
-      className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-6 focus:py-3 focus:bg-burntSienna focus:text-warmCream-50 focus:rounded-lg focus:shadow-dramatic"
-    >
-      Skip to main content
-    </a>
-  )
-}
-
 // Announce to screen readers
 export function announce(message: string, priority: 'polite' | 'assertive' = 'polite') {
   const announcement = document.createElement('div')
@@ -112,6 +101,3 @@ export function useUniqueId(prefix: string = 'wb'): string {
   
   return idRef.current
 }
-
-// React import for usePrefersReducedMotion
-import React from 'react'

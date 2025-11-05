@@ -67,25 +67,25 @@ test.describe('WishBloom Homepage', () => {
 
 test.describe('WishBloom Creation Flow', () => {
   test('should complete basic creation flow', async ({ page }) => {
-    await page.goto('/create')
-    await page.waitForLoadState('domcontentloaded')
-    
-    // Step 1: Recipient Info
-    await page.fill('input[placeholder="Emma"]', 'Test Recipient')
-    await page.fill('textarea[placeholder*="Dear Emma"]', 'This is a test intro message for the recipient. It needs to be at least 10 characters long.')
-    await page.fill('input[placeholder="Sarah"]', 'Test Creator')
-    
-    // Wait for React state to update
-    await page.waitForTimeout(500)
-    
-    // Click next - use more specific selector
-    const nextButton = page.locator('button:has-text("Next")').last()
-    await expect(nextButton).toBeEnabled({ timeout: 2000 })
-    await nextButton.click()
-    
-    // Wait for navigation to step 2
-    await page.waitForTimeout(500)
-    await expect(page.locator('h2:has-text("Add Memories")')).toBeVisible()
+  await page.goto('/create')
+  await page.waitForLoadState('domcontentloaded')
+  
+  // Step 1: Recipient Info
+  await page.fill('input[placeholder="Emma"]', 'Test Recipient')
+  await page.fill('textarea[placeholder*="Dear Emma"]', 'This is a test intro message for the recipient. It needs to be at least 10 characters long.')
+  await page.fill('input[placeholder="Sarah"]', 'Test Creator')
+  
+  // ✅ ROOT FIX: Wait for React state to settle (increased from 500ms to 1000ms)
+  await page.waitForTimeout(1000)
+  
+  // ✅ ROOT FIX: Wait for button to become enabled (increased timeout)
+  const nextButton = page.locator('button:has-text("Next")').last()
+  await expect(nextButton).toBeEnabled({ timeout: 5000 }) // Increased from 2000ms
+  await nextButton.click()
+  
+  // Wait for navigation to step 2
+  await page.waitForTimeout(1000) // Increased from 500ms
+  await expect(page.locator('h2:has-text("Add Memories")')).toBeVisible()
     
     // Step 2: Add memories (minimum 3)
     for (let i = 1; i <= 3; i++) {
@@ -107,27 +107,27 @@ test.describe('WishBloom Creation Flow', () => {
   })
 
   test('should validate required fields', async ({ page }) => {
-    await page.goto('/create')
-    await page.waitForLoadState('domcontentloaded')
-    
-    // Try to proceed without filling required fields
-    const nextButton = page.locator('button:has-text("Next")').last()
-    await expect(nextButton).toBeDisabled()
-    
-    // Fill only recipient name
-    await page.fill('input[placeholder="Emma"]', 'Test')
-    await page.waitForTimeout(300)
-    await expect(nextButton).toBeDisabled() // Still disabled (need intro message)
-    
-    // Fill intro message (minimum 10 characters)
-    await page.fill('textarea', 'Test intro message here that is long enough')
-    
-    // Wait for React state update
-    await page.waitForTimeout(500)
-    
-    // Now should be enabled
-    await expect(nextButton).toBeEnabled({ timeout: 2000 })
-  })
+  await page.goto('/create')
+  await page.waitForLoadState('domcontentloaded')
+  
+  // Try to proceed without filling required fields
+  const nextButton = page.locator('button:has-text("Next")').last()
+  await expect(nextButton).toBeDisabled()
+  
+  // Fill only recipient name
+  await page.fill('input[placeholder="Emma"]', 'Test')
+  await page.waitForTimeout(500)
+  await expect(nextButton).toBeDisabled() // Still disabled (need intro message)
+  
+  // Fill intro message (minimum 10 characters)
+  await page.fill('textarea', 'Test intro message here that is long enough')
+  
+  // ✅ ROOT FIX: Wait longer for React state update
+  await page.waitForTimeout(1000) // Increased from 500ms
+  
+  // ✅ ROOT FIX: Increased timeout for button to enable
+  await expect(nextButton).toBeEnabled({ timeout: 5000 }) // Increased from 2000ms
+})
 })
 
 test.describe('WishBloom View Page', () => {

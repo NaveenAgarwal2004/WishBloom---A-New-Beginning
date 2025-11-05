@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { nanoid } from 'nanoid'
 import { useRouter } from 'next/navigation'
@@ -26,145 +26,179 @@ export default function CreatePage() {
 
   // Step 1: Recipient Info (use local state with debounced sync to store to avoid typing issues)
   const Step1 = () => {
-    // Local copies to avoid updating global store on every keystroke
-    const [recipientNameLocal, setRecipientNameLocal] = useState(store.recipientName || '')
-    const [ageLocal, setAgeLocal] = useState(store.age ?? '')
-    const [creativeLocal, setCreativeLocal] = useState(store.creativeAgeDescription || '')
-    const [introLocal, setIntroLocal] = useState(store.introMessage || '')
-    const [createdByLocal, setCreatedByLocal] = useState({ ...(store.createdBy || { id: '', name: '', email: '' }) })
+  // Local state for form fields
+  const [recipientNameLocal, setRecipientNameLocal] = useState(store.recipientName || '')
+  const [ageLocal, setAgeLocal] = useState(store.age ?? '')
+  const [creativeLocal, setCreativeLocal] = useState(store.creativeAgeDescription || '')
+  const [introLocal, setIntroLocal] = useState(store.introMessage || '')
+  const [createdByLocal, setCreatedByLocal] = useState({ ...(store.createdBy || { id: '', name: '', email: '' }) })
 
-    // Initialize local state from the store on mount only (avoid syncing on every store update to prevent input overwrite)
-    useEffect(() => {
-      setRecipientNameLocal(store.recipientName || '')
-      setAgeLocal(store.age ?? '')
-      setCreativeLocal(store.creativeAgeDescription || '')
-      setIntroLocal(store.introMessage || '')
-      setCreatedByLocal({ ...(store.createdBy || { id: '', name: '', email: '' }) })
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+  // ✅ ROOT FIX: Calculate canProceed with current local state
+  // Using useMemo to ensure it recalculates on every state change
+  const canProceed = useMemo(() => {
+    return Boolean(
+      recipientNameLocal?.trim() && 
+      introLocal?.trim()
+    )
+  }, [recipientNameLocal, introLocal])
 
-    // Sync to store on blur (or when user explicitly leaves the field) to avoid race conditions
-    const syncRecipientName = () => store.setRecipientName(recipientNameLocal)
-    const syncAge = () => store.setAge(ageLocal === '' ? null : parseInt(ageLocal))
-    const syncCreative = () => store.setCreativeAgeDescription(creativeLocal)
-    const syncIntro = () => store.setIntroMessage(introLocal)
-    const syncCreatedBy = () => store.setCreatedBy({ ...createdByLocal, id: createdByLocal.id || undefined })
+  // Initialize from store on mount
+  useEffect(() => {
+    setRecipientNameLocal(store.recipientName || '')
+    setAgeLocal(store.age ?? '')
+    setCreativeLocal(store.creativeAgeDescription || '')
+    setIntroLocal(store.introMessage || '')
+    setCreatedByLocal({ ...(store.createdBy || { id: '', name: '', email: '' }) })
+  }, [])
 
-    // Sync all data to store
-    const syncAllData = () => {
-      syncRecipientName()
-      syncAge()
-      syncCreative()
-      syncIntro()
-      syncCreatedBy()
-    }
+  // ✅ ROOT FIX: Sync to store immediately on change, not on blur
+  const handleRecipientNameChange = (e) => {
+    const value = e.target.value
+    setRecipientNameLocal(value)
+    store.setRecipientName(value)
+  }
 
-    const canProceed = Boolean(recipientNameLocal.trim() && introLocal.trim())
+  const handleAgeChange = (e) => {
+    const value = e.target.value
+    setAgeLocal(value)
+    store.setAge(value === '' ? null : parseInt(value))
+  }
 
-    return (
-      <div className="max-w-3xl mx-auto">
-        <h2 className="text-h2 font-heading font-bold text-sepiaInk mb-8">Recipient Information</h2>
+  const handleCreativeChange = (e) => {
+    const value = e.target.value
+    setCreativeLocal(value)
+    store.setCreativeAgeDescription(value)
+  }
 
-        <div className="space-y-6">
-          {/* Recipient Name */}
-          <div>
-            <label className="text-body-sm font-body font-semibold text-sepiaInk mb-2 block">Recipient Name *</label>
-            <input
-              type="text"
-              value={recipientNameLocal}
-              onChange={(e) => setRecipientNameLocal(e.target.value)}
-              onBlur={syncRecipientName}
-              maxLength={50}
-              className="w-full bg-warmCream-50 border-2 border-warmCream-300 focus:border-fadedGold rounded-lg px-4 py-3 text-body font-body transition-colors outline-none"
-              placeholder="Emma"
-            />
-            <p className="text-caption text-warmCream-600 text-right mt-1">{recipientNameLocal.length}/50</p>
-          </div>
+  const handleIntroChange = (e) => {
+    const value = e.target.value
+    setIntroLocal(value)
+    store.setIntroMessage(value)
+  }
 
-          {/* Age (optional) */}
-          <div>
-            <label className="text-body-sm font-body font-semibold text-sepiaInk mb-2 block">Age (optional)</label>
-            <input
-              type="number"
-              value={ageLocal}
-              onChange={(e) => setAgeLocal(e.target.value)}
-              onBlur={syncAge}
-              min="1"
-              max="120"
-              className="w-full bg-warmCream-50 border-2 border-warmCream-300 focus:border-fadedGold rounded-lg px-4 py-3 text-body font-body transition-colors outline-none"
-              placeholder="25"
-            />
-          </div>
+  const handleCreatedByNameChange = (e) => {
+    const newCreatedBy = { ...createdByLocal, name: e.target.value }
+    setCreatedByLocal(newCreatedBy)
+    store.setCreatedBy({ ...newCreatedBy, id: newCreatedBy.id || undefined })
+  }
 
-          {/* Creative Age Description */}
-          <div>
-            <label className="text-body-sm font-body font-semibold text-sepiaInk mb-2 block">Creative Age Description (optional)</label>
-            <input
-              type="text"
-              value={creativeLocal}
-              onChange={(e) => setCreativeLocal(e.target.value)}
-              onBlur={syncCreative}
-              maxLength={100}
-              className="w-full bg-warmCream-50 border-2 border-warmCream-300 focus:border-fadedGold rounded-lg px-4 py-3 text-body font-body transition-colors outline-none"
-              placeholder="Twenty-Five Rotations Around the Sun"
-            />
-          </div>
+  const handleCreatedByEmailChange = (e) => {
+    const newCreatedBy = { ...createdByLocal, email: e.target.value }
+    setCreatedByLocal(newCreatedBy)
+    store.setCreatedBy({ ...newCreatedBy, id: newCreatedBy.id || undefined })
+  }
 
-          {/* Intro Message */}
-          <div>
-            <label className="text-body-sm font-body font-semibold text-sepiaInk mb-2 block">Intro Message *</label>
-            <textarea
-              value={introLocal}
-              onChange={(e) => setIntroLocal(e.target.value)}
-              onBlur={syncIntro}
-              maxLength={1000}
-              rows={8}
-              className="w-full bg-warmCream-50 border-2 border-warmCream-300 focus:border-fadedGold rounded-lg px-4 py-3 text-body font-body transition-colors outline-none resize-none"
-              placeholder="Dear Emma, on this special day..."
-            />
-            <p className="text-caption text-warmCream-600 text-right mt-1">{introLocal.length}/1000</p>
-          </div>
+  return (
+    <div className="max-w-3xl mx-auto">
+      <h2 className="text-h2 font-heading font-bold text-sepiaInk mb-8">Recipient Information</h2>
 
-          {/* Your Name (optional for initial step) */}
-          <div>
-            <label className="text-body-sm font-body font-semibold text-sepiaInk mb-2 block">Your Name</label>
-            <input
-              type="text"
-              value={createdByLocal.name}
-              onChange={(e) => setCreatedByLocal({ ...createdByLocal, name: e.target.value })}
-              onBlur={syncCreatedBy}
-              className="w-full bg-warmCream-50 border-2 border-warmCream-300 focus:border-fadedGold rounded-lg px-4 py-3 text-body font-body transition-colors outline-none"
-              placeholder="Sarah"
-            />
-          </div>
-
-          {/* Your Email (optional) */}
-          <div>
-            <label className="text-body-sm font-body font-semibold text-sepiaInk mb-2 block">Your Email (optional)</label>
-            <input
-              type="email"
-              value={createdByLocal.email}
-              onChange={(e) => setCreatedByLocal({ ...createdByLocal, email: e.target.value })}
-              onBlur={syncCreatedBy}
-              className="w-full bg-warmCream-50 border-2 border-warmCream-300 focus:border-fadedGold rounded-lg px-4 py-3 text-body font-body transition-colors outline-none"
-              placeholder="sarah@example.com"
-            />
-          </div>
+      <div className="space-y-6">
+        {/* Recipient Name */}
+        <div>
+          <label className="text-body-sm font-body font-semibold text-sepiaInk mb-2 block">
+            Recipient Name *
+          </label>
+          <input
+            type="text"
+            value={recipientNameLocal}
+            onChange={handleRecipientNameChange}
+            maxLength={50}
+            className="w-full bg-warmCream-50 border-2 border-warmCream-300 focus:border-fadedGold rounded-lg px-4 py-3 text-body font-body transition-colors outline-none"
+            placeholder="Emma"
+          />
+          <p className="text-caption text-warmCream-600 text-right mt-1">
+            {recipientNameLocal.length}/50
+          </p>
         </div>
 
-        <button
-          onClick={() => {
-            syncAllData()
-            store.nextStep()
-          }}
-          disabled={!canProceed}
-          className="mt-8 px-8 py-4 bg-burntSienna text-warmCream-50 rounded-xl text-h6 font-heading font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-colored-gold transition-all flex items-center gap-2 ml-auto"
-        >
-          Next <ArrowRight size={20} />
-        </button>
+        {/* Age (optional) */}
+        <div>
+          <label className="text-body-sm font-body font-semibold text-sepiaInk mb-2 block">
+            Age (optional)
+          </label>
+          <input
+            type="number"
+            value={ageLocal}
+            onChange={handleAgeChange}
+            min="1"
+            max="120"
+            className="w-full bg-warmCream-50 border-2 border-warmCream-300 focus:border-fadedGold rounded-lg px-4 py-3 text-body font-body transition-colors outline-none"
+            placeholder="25"
+          />
+        </div>
+
+        {/* Creative Age Description */}
+        <div>
+          <label className="text-body-sm font-body font-semibold text-sepiaInk mb-2 block">
+            Creative Age Description (optional)
+          </label>
+          <input
+            type="text"
+            value={creativeLocal}
+            onChange={handleCreativeChange}
+            maxLength={100}
+            className="w-full bg-warmCream-50 border-2 border-warmCream-300 focus:border-fadedGold rounded-lg px-4 py-3 text-body font-body transition-colors outline-none"
+            placeholder="Twenty-Five Rotations Around the Sun"
+          />
+        </div>
+
+        {/* Intro Message */}
+        <div>
+          <label className="text-body-sm font-body font-semibold text-sepiaInk mb-2 block">
+            Intro Message *
+          </label>
+          <textarea
+            value={introLocal}
+            onChange={handleIntroChange}
+            maxLength={1000}
+            rows={8}
+            className="w-full bg-warmCream-50 border-2 border-warmCream-300 focus:border-fadedGold rounded-lg px-4 py-3 text-body font-body transition-colors outline-none resize-none"
+            placeholder="Dear Emma, on this special day..."
+          />
+          <p className="text-caption text-warmCream-600 text-right mt-1">
+            {introLocal.length}/1000
+          </p>
+        </div>
+
+        {/* Your Name (optional) */}
+        <div>
+          <label className="text-body-sm font-body font-semibold text-sepiaInk mb-2 block">
+            Your Name
+          </label>
+          <input
+            type="text"
+            value={createdByLocal.name}
+            onChange={handleCreatedByNameChange}
+            className="w-full bg-warmCream-50 border-2 border-warmCream-300 focus:border-fadedGold rounded-lg px-4 py-3 text-body font-body transition-colors outline-none"
+            placeholder="Sarah"
+          />
+        </div>
+
+        {/* Your Email (optional) */}
+        <div>
+          <label className="text-body-sm font-body font-semibold text-sepiaInk mb-2 block">
+            Your Email (optional)
+          </label>
+          <input
+            type="email"
+            value={createdByLocal.email}
+            onChange={handleCreatedByEmailChange}
+            className="w-full bg-warmCream-50 border-2 border-warmCream-300 focus:border-fadedGold rounded-lg px-4 py-3 text-body font-body transition-colors outline-none"
+            placeholder="sarah@example.com"
+          />
+        </div>
       </div>
-    )
-  }
+
+      <button
+        onClick={() => store.nextStep()}
+        disabled={!canProceed}
+        className="mt-8 px-8 py-4 bg-burntSienna text-warmCream-50 rounded-xl text-h6 font-heading font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-colored-gold transition-all flex items-center gap-2 ml-auto"
+      >
+        Next <ArrowRight size={20} />
+      </button>
+    </div>
+  )
+}
 
   // Step 2: Memories
   const Step2 = () => {

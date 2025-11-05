@@ -3,6 +3,7 @@ import './globals.css'
 import { AudioProvider } from '@/context/AudioContext'
 import type { Metadata } from 'next'
 import { WebVitals } from './web-vitals'
+import SkipLink from '@/components/SkipLink'
 
 // Font setup
 const cormorantGaramond = Cormorant_Garamond({
@@ -36,19 +37,18 @@ const ibmPlexMono = IBM_Plex_Mono({
   display: 'swap',
 })
 
-// ✅ Add metadataBase here (NOT in next.config.js)
 export const metadata: Metadata = {
-  metadataBase: new URL('https://wishbloom.vercel.app'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'),
   title: 'WishBloom - Pressed Flower Birthday Memories',
   description:
-    "Create beautiful, interactive birthday memory books. Preserve and share life's most precious moments in a digital pressed flower scrapbook.",
+    'Create beautiful, interactive birthday memory books. Preserve and share memories with pressed flowers aesthetic.',
   keywords: ['birthday', 'memories', 'gift', 'scrapbook', 'pressed flowers'],
   openGraph: {
     title: 'WishBloom - Pressed Flower Birthday Memories',
     description: "Preserve and share life's most precious moments",
     type: 'website',
     locale: 'en_US',
-    url: 'https://wishbloom.vercel.app',
+    url: process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000',
     siteName: 'WishBloom',
   },
   robots: {
@@ -67,10 +67,11 @@ export default function RootLayout({
       <body
         className={`${cormorantGaramond.variable} ${spectral.variable} ${ebGaramond.variable} ${ibmPlexMono.variable} antialiased`}
       >
+        <SkipLink />
         <AudioProvider>
           {children}
         </AudioProvider>
-        <WebVitals />  {/* ← ADD THIS */}
+        <WebVitals />
       </body>
     </html>
   )

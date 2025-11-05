@@ -15,38 +15,40 @@ import { sampleWishBloom } from '@/lib/sampleData'
  */
 export default function App() {
   return (
-    <main className="min-h-screen bg-warmCream-100">
+    <>
       {/* Music Control */}
       <MusicControl />
       
-      {/* Hero Section */}
-      <Hero 
-        recipientName={sampleWishBloom.recipientName}
-        age={sampleWishBloom.age}
-        creativeAgeDescription={sampleWishBloom.creativeAgeDescription}
-      />
+      <main id="main-content" className="min-h-screen bg-warmCream-100">
+        {/* Hero Section */}
+        <Hero 
+          recipientName={sampleWishBloom.recipientName}
+          age={sampleWishBloom.age}
+          creativeAgeDescription={sampleWishBloom.creativeAgeDescription}
+        />
 
-      {/* Intro Message */}
-      <IntroMessage message={sampleWishBloom.introMessage} />
+        {/* Intro Message */}
+        <IntroMessage message={sampleWishBloom.introMessage} />
 
-      {/* Memory Gallery */}
-      <MemoryGallery memories={sampleWishBloom.memories} />
+        {/* Memory Gallery */}
+        <MemoryGallery memories={sampleWishBloom.memories} />
 
-      {/* Messages Section */}
-      <MessagesSection messages={sampleWishBloom.messages} />
+        {/* Messages Section */}
+        <MessagesSection messages={sampleWishBloom.messages} />
 
-      {/* Celebration Section with Cake, Confetti & Wishes */}
-      <CelebrationSection 
-        age={sampleWishBloom.age}
-        celebrationWishPhrases={sampleWishBloom.celebrationWishPhrases}
-        contributors={sampleWishBloom.contributors}
-      />
+        {/* Celebration Section with Cake, Confetti & Wishes */}
+        <CelebrationSection 
+          age={sampleWishBloom.age}
+          celebrationWishPhrases={sampleWishBloom.celebrationWishPhrases}
+          contributors={sampleWishBloom.contributors}
+        />
 
-      {/* Footer with easter egg */}
-      <Footer 
-        contributors={sampleWishBloom.contributors}
-        createdDate={sampleWishBloom.createdDate}
-      />
-    </main>
+        {/* Footer with easter egg */}
+        <Footer 
+          contributors={sampleWishBloom.contributors}
+          createdDate={sampleWishBloom.createdDate}
+        />
+      </main>
+    </>
   )
 }

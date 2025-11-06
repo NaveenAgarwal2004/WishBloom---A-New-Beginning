@@ -26,66 +26,51 @@ export default function CreatePage() {
 
   // Step 1: Recipient Info (use local state with debounced sync to store to avoid typing issues)
   const Step1 = () => {
-  // Local state for form fields
-  const [recipientNameLocal, setRecipientNameLocal] = useState(store.recipientName || '')
-  const [ageLocal, setAgeLocal] = useState(store.age ?? '')
-  const [creativeLocal, setCreativeLocal] = useState(store.creativeAgeDescription || '')
-  const [introLocal, setIntroLocal] = useState(store.introMessage || '')
-  const [createdByLocal, setCreatedByLocal] = useState({ ...(store.createdBy || { id: '', name: '', email: '' }) })
+  // ✅ Use store values directly for validation
+  const recipientName = store.recipientName || ''
+  const introMessage = store.introMessage || ''
+  const createdBy = store.createdBy || { id: '', name: '', email: '' }
+  const age = store.age ?? ''
+  const creativeAgeDescription = store.creativeAgeDescription || ''
 
-  // ✅ ROOT FIX: Calculate canProceed with current local state
-  // Using useMemo to ensure it recalculates on every state change
-  const canProceed = useMemo(() => {
-    return Boolean(
-      recipientNameLocal?.trim() && 
-      introLocal?.trim()
-    )
-  }, [recipientNameLocal, introLocal])
+  // ✅ Calculate canProceed directly from store (no useMemo needed)
+  const canProceed = Boolean(
+    recipientName.trim() && 
+    introMessage.trim()
+  )
 
-  // Initialize from store on mount
-  useEffect(() => {
-    setRecipientNameLocal(store.recipientName || '')
-    setAgeLocal(store.age ?? '')
-    setCreativeLocal(store.creativeAgeDescription || '')
-    setIntroLocal(store.introMessage || '')
-    setCreatedByLocal({ ...(store.createdBy || { id: '', name: '', email: '' }) })
-  }, [])
-
-  // ✅ ROOT FIX: Sync to store immediately on change, not on blur
+  // ✅ Update store directly (no local state delay)
   const handleRecipientNameChange = (e) => {
-    const value = e.target.value
-    setRecipientNameLocal(value)
-    store.setRecipientName(value)
+    store.setRecipientName(e.target.value)
   }
 
   const handleAgeChange = (e) => {
     const value = e.target.value
-    setAgeLocal(value)
     store.setAge(value === '' ? null : parseInt(value))
   }
 
   const handleCreativeChange = (e) => {
-    const value = e.target.value
-    setCreativeLocal(value)
-    store.setCreativeAgeDescription(value)
+    store.setCreativeAgeDescription(e.target.value)
   }
 
   const handleIntroChange = (e) => {
-    const value = e.target.value
-    setIntroLocal(value)
-    store.setIntroMessage(value)
+    store.setIntroMessage(e.target.value)
   }
 
   const handleCreatedByNameChange = (e) => {
-    const newCreatedBy = { ...createdByLocal, name: e.target.value }
-    setCreatedByLocal(newCreatedBy)
-    store.setCreatedBy({ ...newCreatedBy, id: newCreatedBy.id || undefined })
+    store.setCreatedBy({ 
+      ...createdBy, 
+      name: e.target.value,
+      id: createdBy.id || undefined 
+    })
   }
 
   const handleCreatedByEmailChange = (e) => {
-    const newCreatedBy = { ...createdByLocal, email: e.target.value }
-    setCreatedByLocal(newCreatedBy)
-    store.setCreatedBy({ ...newCreatedBy, id: newCreatedBy.id || undefined })
+    store.setCreatedBy({ 
+      ...createdBy, 
+      email: e.target.value,
+      id: createdBy.id || undefined 
+    })
   }
 
   return (
@@ -100,14 +85,14 @@ export default function CreatePage() {
           </label>
           <input
             type="text"
-            value={recipientNameLocal}
+            value={recipientName}
             onChange={handleRecipientNameChange}
             maxLength={50}
             className="w-full bg-warmCream-50 border-2 border-warmCream-300 focus:border-fadedGold rounded-lg px-4 py-3 text-body font-body transition-colors outline-none"
             placeholder="Emma"
           />
           <p className="text-caption text-warmCream-600 text-right mt-1">
-            {recipientNameLocal.length}/50
+            {recipientName.length}/50
           </p>
         </div>
 
@@ -118,7 +103,7 @@ export default function CreatePage() {
           </label>
           <input
             type="number"
-            value={ageLocal}
+            value={age}
             onChange={handleAgeChange}
             min="1"
             max="120"
@@ -134,7 +119,7 @@ export default function CreatePage() {
           </label>
           <input
             type="text"
-            value={creativeLocal}
+            value={creativeAgeDescription}
             onChange={handleCreativeChange}
             maxLength={100}
             className="w-full bg-warmCream-50 border-2 border-warmCream-300 focus:border-fadedGold rounded-lg px-4 py-3 text-body font-body transition-colors outline-none"
@@ -148,7 +133,7 @@ export default function CreatePage() {
             Intro Message *
           </label>
           <textarea
-            value={introLocal}
+            value={introMessage}
             onChange={handleIntroChange}
             maxLength={1000}
             rows={8}
@@ -156,7 +141,7 @@ export default function CreatePage() {
             placeholder="Dear Emma, on this special day..."
           />
           <p className="text-caption text-warmCream-600 text-right mt-1">
-            {introLocal.length}/1000
+            {introMessage.length}/1000
           </p>
         </div>
 
@@ -167,7 +152,7 @@ export default function CreatePage() {
           </label>
           <input
             type="text"
-            value={createdByLocal.name}
+            value={createdBy.name}
             onChange={handleCreatedByNameChange}
             className="w-full bg-warmCream-50 border-2 border-warmCream-300 focus:border-fadedGold rounded-lg px-4 py-3 text-body font-body transition-colors outline-none"
             placeholder="Sarah"
@@ -181,7 +166,7 @@ export default function CreatePage() {
           </label>
           <input
             type="email"
-            value={createdByLocal.email}
+            value={createdBy.email}
             onChange={handleCreatedByEmailChange}
             className="w-full bg-warmCream-50 border-2 border-warmCream-300 focus:border-fadedGold rounded-lg px-4 py-3 text-body font-body transition-colors outline-none"
             placeholder="sarah@example.com"

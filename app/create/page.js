@@ -187,7 +187,7 @@ export default function CreatePage() {
         className="mt-8 px-8 py-4 bg-burntSienna text-warmCream-50 rounded-xl text-h6 font-heading font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-colored-gold transition-all flex items-center gap-2 ml-auto"
         data-testid="step1-next-button"
       >
-        {isValidating ? 'Validating...' : 'Next'} <ArrowRight size={20} />
+      {isValidating ? 'Validating...' : 'Next'} <ArrowRight size={20} />
       </button>
     </div>
   )

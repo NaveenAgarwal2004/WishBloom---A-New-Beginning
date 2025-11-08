@@ -69,26 +69,27 @@ test.describe('WishBloom Creation Flow', () => {
     await page.goto('/create')
     await page.waitForLoadState('domcontentloaded')
     
-    // Step 1: Fill recipient info
-    await page.fill('input[placeholder="Emma"]', 'Test Recipient')
+    // ✅ FIX: Use more robust selectors and wait strategies
+    const recipientInput = page.locator('input[data-testid="recipient-name-input"]')
+    const introTextarea = page.locator('textarea[data-testid="intro-message-textarea"]')
     
-    // ✅ ROOT FIX #3: Trigger blur to ensure Zustand store updates
-    await page.locator('input[placeholder="Emma"]').blur()
-    await page.waitForTimeout(100)
+    // Step 1: Fill recipient info with explicit waits
+    await recipientInput.waitFor({ state: 'visible' })
+    await recipientInput.fill('Test Recipient')
+    await page.waitForTimeout(200) // Allow Zustand to update
     
-    await page.fill('textarea[placeholder*="Dear Emma"]', 'This is a test intro message for the recipient. It needs to be at least 10 characters long.')
-    await page.locator('textarea[placeholder*="Dear Emma"]').blur()
-    await page.waitForTimeout(100)
+    await introTextarea.waitFor({ state: 'visible' })
+    await introTextarea.fill('This is a test intro message for the recipient. It needs to be at least 10 characters long.')
+    await page.waitForTimeout(200)
     
-    await page.fill('input[placeholder="Sarah"]', 'Test Creator')
+    const creatorInput = page.locator('input[placeholder="Sarah"]')
+    await creatorInput.waitFor({ state: 'visible' })
+    await creatorInput.fill('Test Creator')
+    await page.waitForTimeout(300) // Allow validation to complete
     
-    // Wait for form validation
-    await page.waitForTimeout(300)
-    
+    // Wait for Next button to be enabled
     const nextButton = page.locator('button:has-text("Next")').last()
-    
-    // ✅ Increase timeout for slower browsers
-    await expect(nextButton).toBeEnabled({ timeout: 5000 })
+    await expect(nextButton).toBeEnabled({ timeout: 10000 })
     await nextButton.click()
     
     await page.waitForTimeout(500)
@@ -96,6 +97,9 @@ test.describe('WishBloom Creation Flow', () => {
     
     // Step 2: Add memories (minimum 3)
     for (let i = 1; i <= 3; i++) {
+      // Wait for form to be ready
+      await page.waitForLoadState('domcontentloaded')
+      
       await page.fill('input[placeholder*="Coffee Shop"]', `Memory ${i}`)
       await page.fill('textarea[placeholder*="Tell the story"]', `Description for memory ${i} that is long enough to pass validation`)
       await page.fill('input[type="date"]', '2024-01-01')
@@ -113,24 +117,28 @@ test.describe('WishBloom Creation Flow', () => {
     await page.goto('/create')
     await page.waitForLoadState('domcontentloaded')
     
+    // Wait for form to fully render
+    await page.waitForTimeout(500)
+    
     // Try to proceed without filling required fields
-    const nextButton = page.locator('button:has-text("Next")').last()
+    const nextButton = page.locator('button[data-testid="step1-next-button"]')
+    await nextButton.waitFor({ state: 'visible' })
     await expect(nextButton).toBeDisabled()
     
     // Fill only recipient name
-    await page.fill('input[placeholder="Emma"]', 'Test')
-    await page.locator('input[placeholder="Emma"]').blur()
-    await page.waitForTimeout(200)
+    const recipientInput = page.locator('input[data-testid="recipient-name-input"]')
+    await recipientInput.fill('Test')
+    await page.waitForTimeout(300) // Allow validation
     
     await expect(nextButton).toBeDisabled() // Still disabled (need intro message)
     
     // Fill intro message
-    await page.fill('textarea', 'Test intro message here that is long enough')
-    await page.locator('textarea').blur()
-    await page.waitForTimeout(300)
+    const introTextarea = page.locator('textarea[data-testid="intro-message-textarea"]')
+    await introTextarea.fill('Test intro message here that is long enough')
+    await page.waitForTimeout(500) // Allow validation
     
     // ✅ Increase timeout for slower browsers
-    await expect(nextButton).toBeEnabled({ timeout: 5000 })
+    await expect(nextButton).toBeEnabled({ timeout: 10000 })
   })
 })
 

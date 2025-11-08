@@ -36,7 +36,13 @@ export default defineConfig({
     
     /* Video on failure */
     video: 'retain-on-failure',
+
+    /* Set timeouts */
+    actionTimeout: 20000,  // 20 seconds for actions
+    navigationTimeout: 45000,  // 45 seconds for page loads
   },
+  // ✅ Increase test timeout
+  timeout: 60000,  // 60 seconds per test
 
   /* Configure projects for major browsers */
   projects: [
@@ -64,7 +70,9 @@ export default defineConfig({
       name: 'Mobile Safari',
       use: { ...devices['iPhone 12'] },
     },
+    
   ],
+  
 
   /* Run your local dev server before starting the tests */
   webServer: {

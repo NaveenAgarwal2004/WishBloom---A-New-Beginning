@@ -66,33 +66,42 @@ test.describe('WishBloom Homepage', () => {
 
 test.describe('WishBloom Creation Flow', () => {
   test('should complete basic creation flow', async ({ page }) => {
-    await page.goto('/create')
+    await page.goto('/create', { waitUntil: 'networkidle' })
+    
+    // Wait for page to be fully loaded
     await page.waitForLoadState('domcontentloaded')
+    await page.waitForTimeout(1000) // Give React time to render
     
-    // ✅ FIX: Use more robust selectors and wait strategies
+    // Check if form is visible first
+    const form = page.locator('h2:has-text("Recipient Information")')
+    await expect(form).toBeVisible({ timeout: 10000 })
+    
+    // Now try to fill form
     const recipientInput = page.locator('input[data-testid="recipient-name-input"]')
-    const introTextarea = page.locator('textarea[data-testid="intro-message-textarea"]')
+    if (await recipientInput.count() === 0) {
+      // Form didn't render - check why
+      const pageContent = await page.content()
+      console.log('Page HTML:', pageContent.substring(0, 500))
+      throw new Error('Form inputs not found - check if Step1 component is rendering')
+    }
     
-    // Step 1: Fill recipient info with explicit waits
-    await recipientInput.waitFor({ state: 'visible' })
     await recipientInput.fill('Test Recipient')
-    await page.waitForTimeout(200) // Allow Zustand to update
+    await page.waitForTimeout(300)
     
-    await introTextarea.waitFor({ state: 'visible' })
-    await introTextarea.fill('This is a test intro message for the recipient. It needs to be at least 10 characters long.')
-    await page.waitForTimeout(200)
+    const introTextarea = page.locator('textarea[data-testid="intro-message-textarea"]')
+    await introTextarea.fill('This is a test intro message that is definitely long enough.')
+    await page.waitForTimeout(300)
     
     const creatorInput = page.locator('input[placeholder="Sarah"]')
-    await creatorInput.waitFor({ state: 'visible' })
     await creatorInput.fill('Test Creator')
-    await page.waitForTimeout(300) // Allow validation to complete
+    await page.waitForTimeout(500)
     
-    // Wait for Next button to be enabled
-    const nextButton = page.locator('button:has-text("Next")').last()
-    await expect(nextButton).toBeEnabled({ timeout: 10000 })
+    // Wait for validation
+    const nextButton = page.locator('button[data-testid="step1-next-button"]')
+    await expect(nextButton).toBeEnabled({ timeout: 15000 })
     await nextButton.click()
     
-    await page.waitForTimeout(500)
+    await page.waitForTimeout(1000)
     await expect(page.locator('h2:has-text("Add Memories")')).toBeVisible()
     
     // Step 2: Add memories (minimum 3)

@@ -26,22 +26,23 @@ export default function CreatePage() {
 
   // Step 1: Recipient Info (use local state with debounced sync to store to avoid typing issues)
   const Step1 = () => {
-  // ✅ Use store values directly for validation
+  // ✅ Use validation state from store
   const recipientName = store.recipientName || ''
   const introMessage = store.introMessage || ''
   const createdBy = store.createdBy || { id: '', name: '', email: '' }
   const age = store.age ?? ''
   const creativeAgeDescription = store.creativeAgeDescription || ''
+  
+  // ✅ NEW: Get validation state
+  const { step1Valid, isValidating } = store.validationState
 
-  // ✅ Calculate canProceed directly from store (no useMemo needed)
-  const canProceed = Boolean(
-    recipientName.trim() && 
-    introMessage.trim()
-  )
-
-  // ✅ Update store directly (no local state delay)
+  // ✅ Update handlers to use new setters (they trigger validation automatically)
   const handleRecipientNameChange = (e) => {
     store.setRecipientName(e.target.value)
+  }
+
+  const handleIntroChange = (e) => {
+    store.setIntroMessage(e.target.value)
   }
 
   const handleAgeChange = (e) => {
@@ -51,10 +52,6 @@ export default function CreatePage() {
 
   const handleCreativeChange = (e) => {
     store.setCreativeAgeDescription(e.target.value)
-  }
-
-  const handleIntroChange = (e) => {
-    store.setIntroMessage(e.target.value)
   }
 
   const handleCreatedByNameChange = (e) => {
@@ -73,6 +70,11 @@ export default function CreatePage() {
     })
   }
 
+  // ✅ NEW: Validate on mount (in case returning to step)
+  useEffect(() => {
+    store.validateStep1()
+  }, [])
+
   return (
     <div className="max-w-3xl mx-auto">
       <h2 className="text-h2 font-heading font-bold text-sepiaInk mb-8">Recipient Information</h2>
@@ -87,9 +89,11 @@ export default function CreatePage() {
             type="text"
             value={recipientName}
             onChange={handleRecipientNameChange}
+            onBlur={() => store.validateStep1()} // ✅ Validate on blur
             maxLength={50}
             className="w-full bg-warmCream-50 border-2 border-warmCream-300 focus:border-fadedGold rounded-lg px-4 py-3 text-body font-body transition-colors outline-none"
             placeholder="Emma"
+            data-testid="recipient-name-input"
           />
           <p className="text-caption text-warmCream-600 text-right mt-1">
             {recipientName.length}/50
@@ -135,10 +139,12 @@ export default function CreatePage() {
           <textarea
             value={introMessage}
             onChange={handleIntroChange}
+            onBlur={() => store.validateStep1()} // ✅ Validate on blur
             maxLength={1000}
             rows={8}
             className="w-full bg-warmCream-50 border-2 border-warmCream-300 focus:border-fadedGold rounded-lg px-4 py-3 text-body font-body transition-colors outline-none resize-none"
             placeholder="Dear Emma, on this special day..."
+            data-testid="intro-message-textarea"
           />
           <p className="text-caption text-warmCream-600 text-right mt-1">
             {introMessage.length}/1000
@@ -174,12 +180,14 @@ export default function CreatePage() {
         </div>
       </div>
 
+      {/* ✅ Updated button with validation state */}
       <button
         onClick={() => store.nextStep()}
-        disabled={!canProceed}
+        disabled={!step1Valid || isValidating}
         className="mt-8 px-8 py-4 bg-burntSienna text-warmCream-50 rounded-xl text-h6 font-heading font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-colored-gold transition-all flex items-center gap-2 ml-auto"
+        data-testid="step1-next-button"
       >
-        Next <ArrowRight size={20} />
+        {isValidating ? 'Validating...' : 'Next'} <ArrowRight size={20} />
       </button>
     </div>
   )

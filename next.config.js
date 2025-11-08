@@ -4,27 +4,35 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Enable strict mode to catch issues early
   reactStrictMode: true,
 
-  // Image optimization enabled (removed unoptimized: true)
+  // ✅ OPTIMIZED: Image configuration for performance
   images: {
     domains: ['res.cloudinary.com', 'images.unsplash.com'],
-    formats: ['image/avif', 'image/webp'],
+    formats: ['image/avif', 'image/webp'], // Modern formats first
+    
+    // ✅ NEW: Mobile-first image sizes
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    
+    // ✅ NEW: Lazy loading by default
+    minimumCacheTTL: 60,
+    
+    // ✅ NEW: Quality optimization
+    dangerouslyAllowSVG: true,
+    contentDispositionType: 'attachment',
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
-  
-
-  // Only use standalone for Docker deployments
-  // output: 'standalone',
 
   experimental: {
     serverComponentsExternalPackages: ['mongodb', 'mongoose'],
+    
+    // ✅ NEW: Optimize CSS
+    optimizeCss: true,
   },
 
-  // Optimized webpack config
-  webpack(config, { dev }) {
+  // ✅ Optimized webpack config
+  webpack(config, { dev, isServer }) {
     if (dev) {
       config.watchOptions = {
         poll: 2000,
@@ -32,6 +40,43 @@ const nextConfig = {
         ignored: ['**/node_modules', '**/.git', '**/.next'],
       }
     }
+    
+    // ✅ NEW: Optimize production builds
+    if (!dev && !isServer) {
+      config.optimization = {
+        ...config.optimization,
+        splitChunks: {
+          chunks: 'all',
+          cacheGroups: {
+            default: false,
+            vendors: false,
+            // Vendor chunk for node_modules
+            vendor: {
+              name: 'vendor',
+              chunks: 'all',
+              test: /node_modules/,
+              priority: 20
+            },
+            // Common chunk for shared components
+            common: {
+              name: 'common',
+              minChunks: 2,
+              chunks: 'all',
+              priority: 10,
+              reuseExistingChunk: true,
+              enforce: true
+            },
+            // Framer Motion in separate chunk
+            framer: {
+              name: 'framer',
+              test: /[\\/]node_modules[\\/]framer-motion[\\/]/,
+              priority: 30
+            }
+          }
+        }
+      }
+    }
+    
     return config
   },
 
@@ -40,7 +85,7 @@ const nextConfig = {
     pagesBufferLength: 2,
   },
 
-  // Security headers
+  // Security headers (existing)
   async headers() {
     const allowedOrigins = (process.env.ALLOWED_ORIGINS || 'http://localhost:3000')
       .split(',')
@@ -52,7 +97,7 @@ const nextConfig = {
         headers: [
           {
             key: 'Access-Control-Allow-Origin',
-            value: allowedOrigins[0], // Use first allowed origin
+            value: allowedOrigins[0],
           },
           {
             key: 'Access-Control-Allow-Methods',
@@ -95,12 +140,17 @@ const nextConfig = {
             key: 'Referrer-Policy',
             value: 'strict-origin-when-cross-origin',
           },
+          // ✅ NEW: Resource hints
+          {
+            key: 'Link',
+            value: '<https://res.cloudinary.com>; rel=preconnect',
+          },
         ],
       },
     ]
   },
 
-  // Redirects
+  // Redirects (existing)
   async redirects() {
     return [
       {
@@ -113,5 +163,3 @@ const nextConfig = {
 }
 
 module.exports = withBundleAnalyzer(nextConfig)
-
-// module.exports = nextConfig

@@ -1,6 +1,6 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { motion } from '@/lib/motion'
 import FloralDecoration from './FloralDecoration'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -10,6 +10,7 @@ import Link from 'next/link'
  */
 export default function Hero({ recipientName, age, creativeAgeDescription }) {
   const router = useRouter()
+  
   return (
     <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-b from-warmCream-100 to-rosePetal/10 overflow-hidden px-4 md:px-8 py-16 md:py-32">
       {/* Large decorative floral - top right */}

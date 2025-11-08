@@ -32,7 +32,7 @@ const UserSchema = new Schema<IUser>(
     },
     hashedPassword: {
       type: String,
-      select: false, // Don't include by default in queries
+      select: false,
     },
     role: {
       type: String,
@@ -45,8 +45,11 @@ const UserSchema = new Schema<IUser>(
   }
 )
 
-// Indexes
-UserSchema.index({ email: 1 })
+//  REMOVE THIS - it duplicates the unique constraint above
+// UserSchema.index({ email: 1 }, { unique: true })
+
+// ✅ Keep these - they're different indexes
 UserSchema.index({ createdAt: -1 })
+UserSchema.index({ role: 1 })
 
 export default mongoose.models.User || mongoose.model<IUser>('User', UserSchema)

@@ -1,3 +1,4 @@
+// store/useWishBloomStore.js
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { nanoid } from 'nanoid'
@@ -31,80 +32,81 @@ const useWishBloomStore = create(
 
       // ✅ NEW: Validation state tracking
       validationState: {
-        isValidating: false,
         step1Valid: false,
         step2Valid: false,
         step3Valid: false,
         step4Valid: true, // Wishes are optional
       },
 
-      // ✅ NEW: Validation helper
+      // ✅ FIXED: Validation helpers (NO setState inside)
       validateStep1: () => {
         const state = get()
         const isValid = Boolean(
           state.recipientName.trim().length > 0 &&
           state.introMessage.trim().length >= 10
         )
-        set({ 
-          validationState: { 
-            ...state.validationState, 
-            step1Valid: isValid,
-            isValidating: false 
-          } 
-        })
+        
+        // Only update if validation state actually changed
+        if (state.validationState.step1Valid !== isValid) {
+          set({ 
+            validationState: { 
+              ...state.validationState, 
+              step1Valid: isValid
+            } 
+          })
+        }
+        
         return isValid
       },
 
       validateStep2: () => {
         const state = get()
         const isValid = state.memories.length >= 3
-        set({ 
-          validationState: { 
-            ...state.validationState, 
-            step2Valid: isValid,
-            isValidating: false 
-          } 
-        })
+        
+        if (state.validationState.step2Valid !== isValid) {
+          set({ 
+            validationState: { 
+              ...state.validationState, 
+              step2Valid: isValid
+            } 
+          })
+        }
+        
         return isValid
       },
 
       validateStep3: () => {
         const state = get()
         const isValid = state.messages.length >= 1
-        set({ 
-          validationState: { 
-            ...state.validationState, 
-            step3Valid: isValid,
-            isValidating: false 
-          } 
-        })
+        
+        if (state.validationState.step3Valid !== isValid) {
+          set({ 
+            validationState: { 
+              ...state.validationState, 
+              step3Valid: isValid
+            } 
+          })
+        }
+        
         return isValid
       },
 
-      // Actions
+      // ✅ FIXED: Actions (NO automatic validation)
       setCurrentStep: (step) => set({ currentStep: step }),
       nextStep: () => set((state) => ({ currentStep: Math.min(state.currentStep + 1, 6) })),
       previousStep: () => set((state) => ({ currentStep: Math.max(state.currentStep - 1, 1) })),
 
+      // ✅ FIXED: Don't trigger validation automatically
       setRecipientName: (name) => {
-        set({ 
-          recipientName: name,
-          validationState: { ...get().validationState, isValidating: true }
-        })
-        // Trigger validation after state update
-        setTimeout(() => get().validateStep1(), 0)
+        set({ recipientName: name })
       },
 
       setAge: (age) => set({ age }),
       setCreativeAgeDescription: (desc) => set({ creativeAgeDescription: desc }),
       
+      // ✅ FIXED: Don't trigger validation automatically
       setIntroMessage: (msg) => {
-        set({ 
-          introMessage: msg,
-          validationState: { ...get().validationState, isValidating: true }
-        })
-        // Trigger validation after state update
-        setTimeout(() => get().validateStep1(), 0)
+        set({ introMessage: msg })
       },
 
       setCreatedBy: (creator) => set({ createdBy: { ...creator, id: creator.id || nanoid(8) } }),
@@ -114,6 +116,7 @@ const useWishBloomStore = create(
         set((state) => ({
           memories: [...state.memories, { ...memory, id: memory.id || nanoid(8) }]
         }))
+        // ✅ Validate immediately after adding
         setTimeout(() => get().validateStep2(), 0)
       },
 
@@ -125,6 +128,7 @@ const useWishBloomStore = create(
         set((state) => ({
           memories: state.memories.filter(mem => mem.id !== id)
         }))
+        // ✅ Validate immediately after deleting
         setTimeout(() => get().validateStep2(), 0)
       },
 
@@ -133,6 +137,7 @@ const useWishBloomStore = create(
         set((state) => ({
           messages: [...state.messages, { ...message, id: message.id || nanoid(8) }]
         }))
+        // ✅ Validate immediately after adding
         setTimeout(() => get().validateStep3(), 0)
       },
 
@@ -144,6 +149,7 @@ const useWishBloomStore = create(
         set((state) => ({
           messages: state.messages.filter(msg => msg.id !== id)
         }))
+        // ✅ Validate immediately after deleting
         setTimeout(() => get().validateStep3(), 0)
       },
 
@@ -184,7 +190,6 @@ const useWishBloomStore = create(
           'Cheers! 🥂',
         ],
         validationState: {
-          isValidating: false,
           step1Valid: false,
           step2Valid: false,
           step3Valid: false,

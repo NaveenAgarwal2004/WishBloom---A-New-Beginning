@@ -24,174 +24,178 @@ export default function CreatePage() {
   const [publishError, setPublishError] = useState(null)
   const [publishedUrl, setPublishedUrl] = useState(null)
 
-  // Step 1: Recipient Info (use local state with debounced sync to store to avoid typing issues)
+  // ✅ Step 1: Recipient Info with Debounced Validation
   const Step1 = () => {
-  // ✅ Use validation state from store
-  const recipientName = store.recipientName || ''
-  const introMessage = store.introMessage || ''
-  const createdBy = store.createdBy || { id: '', name: '', email: '' }
-  const age = store.age ?? ''
-  const creativeAgeDescription = store.creativeAgeDescription || ''
-  
-  // ✅ NEW: Get validation state
-  const { step1Valid, isValidating } = store.validationState
+    const recipientName = store.recipientName || ''
+    const introMessage = store.introMessage || ''
+    const createdBy = store.createdBy || { id: '', name: '', email: '' }
+    const age = store.age ?? ''
+    const creativeAgeDescription = store.creativeAgeDescription || ''
+    
+    const { step1Valid } = store.validationState
 
-  // ✅ Update handlers to use new setters (they trigger validation automatically)
-  const handleRecipientNameChange = (e) => {
-    store.setRecipientName(e.target.value)
-  }
+    // ✅ NEW: Debounced validation (only validate after user stops typing)
+    useEffect(() => {
+      const timer = setTimeout(() => {
+        store.validateStep1()
+      }, 500) // Wait 500ms after last keystroke
+      
+      return () => clearTimeout(timer)
+    }, [recipientName, introMessage]) // Only re-run when these change
 
-  const handleIntroChange = (e) => {
-    store.setIntroMessage(e.target.value)
-  }
+    // ✅ REMOVED: Manual validation on mount (causes loop)
+    // useEffect(() => {
+    //   store.validateStep1()
+    // }, [])
 
-  const handleAgeChange = (e) => {
-    const value = e.target.value
-    store.setAge(value === '' ? null : parseInt(value))
-  }
+    const handleRecipientNameChange = (e) => {
+      store.setRecipientName(e.target.value)
+    }
 
-  const handleCreativeChange = (e) => {
-    store.setCreativeAgeDescription(e.target.value)
-  }
+    const handleIntroChange = (e) => {
+      store.setIntroMessage(e.target.value)
+    }
 
-  const handleCreatedByNameChange = (e) => {
-    store.setCreatedBy({ 
-      ...createdBy, 
-      name: e.target.value,
-      id: createdBy.id || undefined 
-    })
-  }
+    const handleAgeChange = (e) => {
+      const value = e.target.value
+      store.setAge(value === '' ? null : parseInt(value))
+    }
 
-  const handleCreatedByEmailChange = (e) => {
-    store.setCreatedBy({ 
-      ...createdBy, 
-      email: e.target.value,
-      id: createdBy.id || undefined 
-    })
-  }
+    const handleCreativeChange = (e) => {
+      store.setCreativeAgeDescription(e.target.value)
+    }
 
-  // ✅ NEW: Validate on mount (in case returning to step)
-  useEffect(() => {
-    store.validateStep1()
-  }, [])
+    const handleCreatedByNameChange = (e) => {
+      store.setCreatedBy({ 
+        ...createdBy, 
+        name: e.target.value,
+        id: createdBy.id || undefined 
+      })
+    }
 
-  return (
-    <div className="max-w-3xl mx-auto">
-      <h2 className="text-h2 font-heading font-bold text-sepiaInk mb-8">Recipient Information</h2>
+    const handleCreatedByEmailChange = (e) => {
+      store.setCreatedBy({ 
+        ...createdBy, 
+        email: e.target.value,
+        id: createdBy.id || undefined 
+      })
+    }
 
-      <div className="space-y-6">
-        {/* Recipient Name */}
-        <div>
-          <label className="text-body-sm font-body font-semibold text-sepiaInk mb-2 block">
-            Recipient Name *
-          </label>
-          <input
-            type="text"
-            value={recipientName}
-            onChange={handleRecipientNameChange}
-            onBlur={() => store.validateStep1()} // ✅ Validate on blur
-            maxLength={50}
-            className="w-full bg-warmCream-50 border-2 border-warmCream-300 focus:border-fadedGold rounded-lg px-4 py-3 text-body font-body transition-colors outline-none"
-            placeholder="Emma"
-            data-testid="recipient-name-input"
-          />
-          <p className="text-caption text-warmCream-600 text-right mt-1">
-            {recipientName.length}/50
-          </p>
+    return (
+      <div className="max-w-3xl mx-auto">
+        <h2 className="text-h2 font-heading font-bold text-sepiaInk mb-8">Recipient Information</h2>
+
+        <div className="space-y-6">
+          {/* Recipient Name */}
+          <div>
+            <label className="text-body-sm font-body font-semibold text-sepiaInk mb-2 block">
+              Recipient Name *
+            </label>
+            <input
+              type="text"
+              value={recipientName}
+              onChange={handleRecipientNameChange}
+              maxLength={50}
+              className="w-full bg-warmCream-50 border-2 border-warmCream-300 focus:border-fadedGold rounded-lg px-4 py-3 text-body font-body transition-colors outline-none"
+              placeholder="Emma"
+              data-testid="recipient-name-input"
+            />
+            <p className="text-caption text-warmCream-600 text-right mt-1">
+              {recipientName.length}/50
+            </p>
+          </div>
+
+          {/* Age (optional) */}
+          <div>
+            <label className="text-body-sm font-body font-semibold text-sepiaInk mb-2 block">
+              Age (optional)
+            </label>
+            <input
+              type="number"
+              value={age}
+              onChange={handleAgeChange}
+              min="1"
+              max="120"
+              className="w-full bg-warmCream-50 border-2 border-warmCream-300 focus:border-fadedGold rounded-lg px-4 py-3 text-body font-body transition-colors outline-none"
+              placeholder="25"
+            />
+          </div>
+
+          {/* Creative Age Description */}
+          <div>
+            <label className="text-body-sm font-body font-semibold text-sepiaInk mb-2 block">
+              Creative Age Description (optional)
+            </label>
+            <input
+              type="text"
+              value={creativeAgeDescription}
+              onChange={handleCreativeChange}
+              maxLength={100}
+              className="w-full bg-warmCream-50 border-2 border-warmCream-300 focus:border-fadedGold rounded-lg px-4 py-3 text-body font-body transition-colors outline-none"
+              placeholder="Twenty-Five Rotations Around the Sun"
+            />
+          </div>
+
+          {/* Intro Message */}
+          <div>
+            <label className="text-body-sm font-body font-semibold text-sepiaInk mb-2 block">
+              Intro Message *
+            </label>
+            <textarea
+              value={introMessage}
+              onChange={handleIntroChange}
+              maxLength={1000}
+              rows={8}
+              className="w-full bg-warmCream-50 border-2 border-warmCream-300 focus:border-fadedGold rounded-lg px-4 py-3 text-body font-body transition-colors outline-none resize-none"
+              placeholder="Dear Emma, on this special day..."
+              data-testid="intro-message-textarea"
+            />
+            <p className="text-caption text-warmCream-600 text-right mt-1">
+              {introMessage.length}/1000
+            </p>
+          </div>
+
+          {/* Your Name (optional) */}
+          <div>
+            <label className="text-body-sm font-body font-semibold text-sepiaInk mb-2 block">
+              Your Name
+            </label>
+            <input
+              type="text"
+              value={createdBy.name}
+              onChange={handleCreatedByNameChange}
+              className="w-full bg-warmCream-50 border-2 border-warmCream-300 focus:border-fadedGold rounded-lg px-4 py-3 text-body font-body transition-colors outline-none"
+              placeholder="Sarah"
+            />
+          </div>
+
+          {/* Your Email (optional) */}
+          <div>
+            <label className="text-body-sm font-body font-semibold text-sepiaInk mb-2 block">
+              Your Email (optional)
+            </label>
+            <input
+              type="email"
+              value={createdBy.email}
+              onChange={handleCreatedByEmailChange}
+              className="w-full bg-warmCream-50 border-2 border-warmCream-300 focus:border-fadedGold rounded-lg px-4 py-3 text-body font-body transition-colors outline-none"
+              placeholder="sarah@example.com"
+            />
+          </div>
         </div>
 
-        {/* Age (optional) */}
-        <div>
-          <label className="text-body-sm font-body font-semibold text-sepiaInk mb-2 block">
-            Age (optional)
-          </label>
-          <input
-            type="number"
-            value={age}
-            onChange={handleAgeChange}
-            min="1"
-            max="120"
-            className="w-full bg-warmCream-50 border-2 border-warmCream-300 focus:border-fadedGold rounded-lg px-4 py-3 text-body font-body transition-colors outline-none"
-            placeholder="25"
-          />
-        </div>
-
-        {/* Creative Age Description */}
-        <div>
-          <label className="text-body-sm font-body font-semibold text-sepiaInk mb-2 block">
-            Creative Age Description (optional)
-          </label>
-          <input
-            type="text"
-            value={creativeAgeDescription}
-            onChange={handleCreativeChange}
-            maxLength={100}
-            className="w-full bg-warmCream-50 border-2 border-warmCream-300 focus:border-fadedGold rounded-lg px-4 py-3 text-body font-body transition-colors outline-none"
-            placeholder="Twenty-Five Rotations Around the Sun"
-          />
-        </div>
-
-        {/* Intro Message */}
-        <div>
-          <label className="text-body-sm font-body font-semibold text-sepiaInk mb-2 block">
-            Intro Message *
-          </label>
-          <textarea
-            value={introMessage}
-            onChange={handleIntroChange}
-            onBlur={() => store.validateStep1()} // ✅ Validate on blur
-            maxLength={1000}
-            rows={8}
-            className="w-full bg-warmCream-50 border-2 border-warmCream-300 focus:border-fadedGold rounded-lg px-4 py-3 text-body font-body transition-colors outline-none resize-none"
-            placeholder="Dear Emma, on this special day..."
-            data-testid="intro-message-textarea"
-          />
-          <p className="text-caption text-warmCream-600 text-right mt-1">
-            {introMessage.length}/1000
-          </p>
-        </div>
-
-        {/* Your Name (optional) */}
-        <div>
-          <label className="text-body-sm font-body font-semibold text-sepiaInk mb-2 block">
-            Your Name
-          </label>
-          <input
-            type="text"
-            value={createdBy.name}
-            onChange={handleCreatedByNameChange}
-            className="w-full bg-warmCream-50 border-2 border-warmCream-300 focus:border-fadedGold rounded-lg px-4 py-3 text-body font-body transition-colors outline-none"
-            placeholder="Sarah"
-          />
-        </div>
-
-        {/* Your Email (optional) */}
-        <div>
-          <label className="text-body-sm font-body font-semibold text-sepiaInk mb-2 block">
-            Your Email (optional)
-          </label>
-          <input
-            type="email"
-            value={createdBy.email}
-            onChange={handleCreatedByEmailChange}
-            className="w-full bg-warmCream-50 border-2 border-warmCream-300 focus:border-fadedGold rounded-lg px-4 py-3 text-body font-body transition-colors outline-none"
-            placeholder="sarah@example.com"
-          />
-        </div>
+        {/* Next Button */}
+        <button
+          onClick={() => store.nextStep()}
+          disabled={!step1Valid}
+          className="mt-8 px-8 py-4 bg-burntSienna text-warmCream-50 rounded-xl text-h6 font-heading font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-colored-gold transition-all flex items-center gap-2 ml-auto"
+          data-testid="step1-next-button"
+        >
+          Next <ArrowRight size={20} />
+        </button>
       </div>
-
-      {/* ✅ Updated button with validation state */}
-      <button
-        onClick={() => store.nextStep()}
-        disabled={!step1Valid || isValidating}
-        className="mt-8 px-8 py-4 bg-burntSienna text-warmCream-50 rounded-xl text-h6 font-heading font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-colored-gold transition-all flex items-center gap-2 ml-auto"
-        data-testid="step1-next-button"
-      >
-      {isValidating ? 'Validating...' : 'Next'} <ArrowRight size={20} />
-      </button>
-    </div>
-  )
-}
+    )
+  }
 
   // Step 2: Memories
   const Step2 = () => {

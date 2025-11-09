@@ -1,41 +1,83 @@
-import { Cormorant_Garamond, Spectral, EB_Garamond, IBM_Plex_Mono } from 'next/font/google'
+import localFont from 'next/font/local'
 import './globals.css'
 import { AudioProvider } from '@/context/AudioContext'
 import type { Metadata } from 'next'
 import { WebVitals } from './web-vitals'
 import SkipLink from '@/components/SkipLink'
 
-// Font setup
-const cormorantGaramond = Cormorant_Garamond({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  style: ['normal', 'italic'],
+// ✅ Self-hosted fonts with Next.js optimization
+const cormorantGaramond = localFont({
+  src: [
+    {
+      path: '../public/fonts/cormorant-garamond-400.woff2',
+      weight: '400',
+      style: 'normal',
+    },
+    {
+      path: '../public/fonts/cormorant-garamond-700.woff2',
+      weight: '700',
+      style: 'normal',
+    },
+  ],
   variable: '--font-heading',
   display: 'swap',
+  preload: true,
 })
 
-const spectral = Spectral({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600'],
-  style: ['normal', 'italic'],
+const spectral = localFont({
+  src: [
+    {
+      path: '../public/fonts/spectral-400.woff2',
+      weight: '400',
+      style: 'normal',
+    },
+    {
+      path: '../public/fonts/spectral-600.woff2',
+      weight: '600',
+      style: 'normal',
+    },
+  ],
   variable: '--font-body',
   display: 'swap',
+  preload: true,
 })
 
-const ebGaramond = EB_Garamond({
-  subsets: ['latin'],
-  weight: ['400', '500', '600'],
-  style: ['italic'],
+const ebGaramond = localFont({
+  src: [
+    {
+      path: '../public/fonts/eb-garamond-400.woff2',
+      weight: '400',
+      style: 'italic',
+    },
+    {
+      path: '../public/fonts/eb-garamond-600.woff2',
+      weight: '600',
+      style: 'italic',
+    },
+  ],
   variable: '--font-accent',
   display: 'swap',
+  preload: true,
 })
 
-const ibmPlexMono = IBM_Plex_Mono({
-  subsets: ['latin'],
-  weight: ['400', '600'],
+const ibmPlexMono = localFont({
+  src: [
+    {
+      path: '../public/fonts/ibm-plex-mono-400.woff2',
+      weight: '400',
+      style: 'normal',
+    },
+    {
+      path: '../public/fonts/ibm-plex-mono-600.woff2',
+      weight: '600',
+      style: 'normal',
+    },
+  ],
   variable: '--font-mono',
   display: 'swap',
+  preload: true,
 })
+
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'),

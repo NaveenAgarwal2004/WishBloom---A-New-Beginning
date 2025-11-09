@@ -31,6 +31,13 @@ const nextConfig = {
     optimizeCss: true,
   },
 
+  // ✅ STEP 3: Optimize font loading and remove console logs in production
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production' ? {
+      exclude: ['error', 'warn'], // Keep error and warn logs
+    } : false,
+  },
+
   // ✅ Optimized webpack config
   webpack(config, { dev, isServer }) {
     if (dev) {
@@ -85,7 +92,7 @@ const nextConfig = {
     pagesBufferLength: 2,
   },
 
-  // Security headers (existing)
+  // Security headers + Font caching optimization
   async headers() {
     const allowedOrigins = (process.env.ALLOWED_ORIGINS || 'http://localhost:3000')
       .split(',')
@@ -110,6 +117,20 @@ const nextConfig = {
           {
             key: 'Access-Control-Allow-Credentials',
             value: 'true',
+          },
+        ],
+      },
+      // ✅ STEP 3: Aggressive caching for self-hosted fonts
+      {
+        source: '/fonts/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+          {
+            key: 'Access-Control-Allow-Origin',
+            value: '*',
           },
         ],
       },
@@ -140,7 +161,7 @@ const nextConfig = {
             key: 'Referrer-Policy',
             value: 'strict-origin-when-cross-origin',
           },
-          // ✅ NEW: Resource hints
+          // ✅ Resource hints (keeping existing + adding fonts)
           {
             key: 'Link',
             value: '<https://res.cloudinary.com>; rel=preconnect',

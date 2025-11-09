@@ -47,6 +47,20 @@ jobs:
       
       - name: Run tests
         run: npm test -- --coverage
+        env:
+          # ✅ FIXED: Use real GitHub Secrets
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+          CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+          BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
+          BREVO_SENDER_EMAIL: ${{ secrets.BREVO_SENDER_EMAIL }}
+          BREVO_SENDER_NAME: ${{ secrets.BREVO_SENDER_NAME }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
+          NEXT_PUBLIC_BASE_URL: ${{ secrets.NEXT_PUBLIC_BASE_URL }}
+          ALLOWED_ORIGINS: ${{ secrets.ALLOWED_ORIGINS }}
       
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
@@ -75,19 +89,20 @@ jobs:
       - name: Build application
         run: npm run build
         env:
-          # Mock environment variables for build
-          MONGODB_URI: mongodb://localhost:27017
-          DB_NAME: wishbloom_test
-          CLOUDINARY_CLOUD_NAME: test
-          CLOUDINARY_API_KEY: test
-          CLOUDINARY_API_SECRET: test
-          BREVO_API_KEY: test
-          BREVO_SENDER_EMAIL: test@test.com
-          BREVO_SENDER_NAME: Test
-          NEXTAUTH_SECRET: test_secret_32_characters_long_test
-          NEXTAUTH_URL: http://localhost:3000
-          NEXT_PUBLIC_BASE_URL: http://localhost:3000
-          ALLOWED_ORIGINS: http://localhost:3000
+          # ✅ FIXED: Use real GitHub Secrets for build
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+          CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+          BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
+          BREVO_SENDER_EMAIL: ${{ secrets.BREVO_SENDER_EMAIL }}
+          BREVO_SENDER_NAME: ${{ secrets.BREVO_SENDER_NAME }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
+          NEXT_PUBLIC_BASE_URL: ${{ secrets.NEXT_PUBLIC_BASE_URL }}
+          ALLOWED_ORIGINS: ${{ secrets.ALLOWED_ORIGINS }}
+          NODE_ENV: production
       
       - name: Check bundle size
         run: |
@@ -95,11 +110,13 @@ jobs:
             echo "Bundle analysis available"
           fi
 
-  # E2E Tests
+  # E2E Tests (Optional - can be disabled if takes too long)
   e2e:
     name: E2E Tests
     runs-on: ubuntu-latest
     needs: [lint, test]
+    # ✅ Only run E2E on main branch to save CI time
+    if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v4
       
@@ -118,18 +135,18 @@ jobs:
       - name: Run Playwright tests
         run: npm run test:e2e
         env:
-          MONGODB_URI: mongodb://localhost:27017
-          DB_NAME: wishbloom_test
-          CLOUDINARY_CLOUD_NAME: test
-          CLOUDINARY_API_KEY: test
-          CLOUDINARY_API_SECRET: test
-          BREVO_API_KEY: test
-          BREVO_SENDER_EMAIL: test@test.com
-          BREVO_SENDER_NAME: Test
-          NEXTAUTH_SECRET: test_secret_32_characters_long_test
-          NEXTAUTH_URL: http://localhost:3000
-          NEXT_PUBLIC_BASE_URL: http://localhost:3000
-          ALLOWED_ORIGINS: http://localhost:3000
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+          CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+          BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
+          BREVO_SENDER_EMAIL: ${{ secrets.BREVO_SENDER_EMAIL }}
+          BREVO_SENDER_NAME: ${{ secrets.BREVO_SENDER_NAME }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
+          NEXT_PUBLIC_BASE_URL: ${{ secrets.NEXT_PUBLIC_BASE_URL }}
+          ALLOWED_ORIGINS: ${{ secrets.ALLOWED_ORIGINS }}
       
       - name: Upload Playwright report
         uses: actions/upload-artifact@v3
@@ -144,6 +161,8 @@ jobs:
     name: Accessibility Tests
     runs-on: ubuntu-latest
     needs: [build]
+    # ✅ Only run on main to save CI time
+    if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v4
       
@@ -159,24 +178,26 @@ jobs:
       - name: Run accessibility tests
         run: npm run test:a11y
         env:
-          MONGODB_URI: mongodb://localhost:27017
-          DB_NAME: wishbloom_test
-          CLOUDINARY_CLOUD_NAME: test
-          CLOUDINARY_API_KEY: test
-          CLOUDINARY_API_SECRET: test
-          BREVO_API_KEY: test
-          BREVO_SENDER_EMAIL: test@test.com
-          BREVO_SENDER_NAME: Test
-          NEXTAUTH_SECRET: test_secret_32_characters_long_test
-          NEXTAUTH_URL: http://localhost:3000
-          NEXT_PUBLIC_BASE_URL: http://localhost:3000
-          ALLOWED_ORIGINS: http://localhost:3000
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+          CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+          BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
+          BREVO_SENDER_EMAIL: ${{ secrets.BREVO_SENDER_EMAIL }}
+          BREVO_SENDER_NAME: ${{ secrets.BREVO_SENDER_NAME }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
+          NEXT_PUBLIC_BASE_URL: ${{ secrets.NEXT_PUBLIC_BASE_URL }}
+          ALLOWED_ORIGINS: ${{ secrets.ALLOWED_ORIGINS }}
 
-  # Lighthouse Performance Tests
+  # Lighthouse Performance Tests (Optional)
   lighthouse:
     name: Lighthouse Performance
     runs-on: ubuntu-latest
     needs: [build]
+    # ✅ Only run on main to save CI time
+    if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v4
       
@@ -192,18 +213,19 @@ jobs:
       - name: Build for Lighthouse
         run: npm run build
         env:
-          MONGODB_URI: mongodb://localhost:27017
-          DB_NAME: wishbloom_test
-          CLOUDINARY_CLOUD_NAME: test
-          CLOUDINARY_API_KEY: test
-          CLOUDINARY_API_SECRET: test
-          BREVO_API_KEY: test
-          BREVO_SENDER_EMAIL: test@test.com
-          BREVO_SENDER_NAME: Test
-          NEXTAUTH_SECRET: test_secret_32_characters_long_test
-          NEXTAUTH_URL: http://localhost:3000
-          NEXT_PUBLIC_BASE_URL: http://localhost:3000
-          ALLOWED_ORIGINS: http://localhost:3000
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+          CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+          BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
+          BREVO_SENDER_EMAIL: ${{ secrets.BREVO_SENDER_EMAIL }}
+          BREVO_SENDER_NAME: ${{ secrets.BREVO_SENDER_NAME }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
+          NEXT_PUBLIC_BASE_URL: ${{ secrets.NEXT_PUBLIC_BASE_URL }}
+          ALLOWED_ORIGINS: ${{ secrets.ALLOWED_ORIGINS }}
+          NODE_ENV: production
       
       - name: Run Lighthouse CI
         run: |

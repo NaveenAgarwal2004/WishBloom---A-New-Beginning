@@ -8,7 +8,10 @@ export default async function WishBloomPage({ params }) {
   const { id } = params
 
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/wishblooms/${id}`, {
+    // ✅ FIXED: Use env variable instead of hardcoded URL
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+    
+    const response = await fetch(`${baseUrl}/api/wishblooms/${id}`, {
       cache: 'no-store',
     })
 

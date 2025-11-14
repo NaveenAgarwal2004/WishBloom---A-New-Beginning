@@ -5,13 +5,15 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useBreathDetection } from '@/hooks/useBreathDetection'
 import { useAudio } from '@/context/AudioContext'
 
-/**
- * CakeComponent with animated candles and flames
- * Supports both breath detection and manual blowing
- * @param {number} candleCount - Number of candles (default 25)
- * @param {function} onCandlesBlow - Callback when candles are blown out
- */
-export default function CakeComponent({ candleCount = 25, onCandlesBlow }) {
+interface CakeComponentProps {
+  candleCount?: number
+  onCandlesBlow?: () => void
+}
+
+export default function CakeComponent({ 
+  candleCount = 25, 
+  onCandlesBlow 
+}: CakeComponentProps) {  
   const [flamesLit, setFlamesLit] = useState(true)
   const [blowCount, setBlowCount] = useState(0)
   const [isShaking, setIsShaking] = useState(false)

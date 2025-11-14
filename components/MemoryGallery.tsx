@@ -3,11 +3,13 @@
 import { motion } from 'framer-motion'
 import MemoryCard from './MemoryCard'
 import FloralDecoration from './FloralDecoration'
+import type { IMemory } from '@/models/WishBloom'
 
-/**
- * Memory Gallery with masonry grid layout
- */
-export default function MemoryGallery({ memories }) {
+interface MemoryGalleryProps {
+  memories: IMemory[]
+}
+
+export default function MemoryGallery({ memories }: MemoryGalleryProps) {
   return (
     <section className="relative py-16 md:py-32 bg-gradient-to-b from-warmCream-100 via-driedSage/5 to-warmCream-100 px-4 md:px-8">
       {/* Background decorative florals */}

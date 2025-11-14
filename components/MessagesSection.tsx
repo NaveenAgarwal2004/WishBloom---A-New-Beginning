@@ -2,11 +2,13 @@
 
 import { motion } from 'framer-motion'
 import MessageCard from './MessageCard'
+import type { IMessage } from '@/models/WishBloom'
 
-/**
- * Messages Section with botanical dividers
- */
-export default function MessagesSection({ messages }) {
+interface MessagesSectionProps {
+  messages: IMessage[]
+}
+
+export default function MessagesSection({ messages }: MessagesSectionProps) {
   // Botanical divider component
   const BotanicalDivider = () => (
     <motion.div

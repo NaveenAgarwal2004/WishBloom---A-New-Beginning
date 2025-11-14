@@ -4,9 +4,7 @@ import { motion } from 'framer-motion'
 import { Volume2, VolumeX } from 'lucide-react'
 import { useAudio } from '@/context/AudioContext'
 
-/**
- * Music control toggle button
- */
+// No props interface needed - component has no props
 export default function MusicControl() {
   const { isMusicPlaying, toggleMusic } = useAudio()
 

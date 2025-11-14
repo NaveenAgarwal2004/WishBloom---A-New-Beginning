@@ -6,11 +6,19 @@ import CakeComponent from './CakeComponent'
 import Confetti from './Confetti'
 import WishesFloat from './WishesFloat'
 import { useAudio } from '@/context/AudioContext'
+import type { IContributor } from '@/models/WishBloom'
 
-/**
- * CelebrationSection - The grand finale with cake, confetti, and wishes
- */
-export default function CelebrationSection({ age, celebrationWishPhrases, contributors }) {
+interface CelebrationSectionProps {
+  age: number
+  celebrationWishPhrases: string[]
+  contributors: IContributor[]
+}
+
+export default function CelebrationSection({ 
+  age, 
+  celebrationWishPhrases, 
+  contributors 
+}: CelebrationSectionProps) {
   const [showConfetti, setShowConfetti] = useState(false)
   const [showWishes, setShowWishes] = useState(false)
   const [showThankYou, setShowThankYou] = useState(false)

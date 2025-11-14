@@ -13,10 +13,8 @@ import MessagesSection from '@/components/MessagesSection'
 import CelebrationSection from '@/components/CelebrationSection'
 import Footer from '@/components/Footer'
 import { ArrowRight, ArrowLeft, Plus, Trash2, Edit2, Check, Loader2 } from 'lucide-react'
+import type { IMemory, IMessage } from '@/models/WishBloom'
 
-/**
- * Multi-step Creator Flow
- */
 export default function CreatePage() {
   const router = useRouter()
   const store = useWishBloomStore()

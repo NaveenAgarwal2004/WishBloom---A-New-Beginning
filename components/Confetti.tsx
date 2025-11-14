@@ -3,11 +3,11 @@
 import { useMemo } from 'react'
 import { motion } from 'framer-motion'
 
-/**
- * Confetti component with 300-500 particles
- * @param {number} particleCount - Number of particles (default 400)
- */
-export default function Confetti({ particleCount = 400 }) {
+interface ConfettiProps {
+  particleCount?: number
+}
+
+export default function Confetti({ particleCount = 400 }: ConfettiProps) {
   // Generate particles with random properties
   const particles = useMemo(() => {
     const types = ['petal', 'circle', 'heart', 'leaf', 'star']

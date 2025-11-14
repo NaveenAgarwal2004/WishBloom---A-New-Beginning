@@ -1,6 +1,17 @@
 'use client'
 
-export default function Error({ error, reset }) {
+import { useEffect } from 'react'
+
+interface ErrorProps {
+  error: Error & { digest?: string }
+  reset: () => void
+}
+
+export default function Error({ error, reset }: ErrorProps) {
+  useEffect(() => {
+    console.error('WishBloom view error:', error)
+  }, [error])
+
   return (
     <main className="min-h-screen bg-warmCream-100 flex items-center justify-center px-4">
       <div className="text-center max-w-md">

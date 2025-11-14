@@ -5,10 +5,12 @@ import { useDropzone } from 'react-dropzone'
 import { motion } from 'framer-motion'
 import { Upload, X, Loader2 } from 'lucide-react'
 
-/**
- * Image uploader component with Cloudinary
- */
-export default function ImageUploader({ onUpload, existingImage }) {
+interface ImageUploaderProps {
+  onUpload?: (url: string | null) => void
+  existingImage?: string | null
+}
+
+export default function ImageUploader({ onUpload, existingImage }: ImageUploaderProps) {
   const [uploading, setUploading] = useState(false)
   const [imageUrl, setImageUrl] = useState(existingImage || null)
   const [error, setError] = useState(null)

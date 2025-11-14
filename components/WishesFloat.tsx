@@ -2,11 +2,11 @@
 
 import { motion } from 'framer-motion'
 
-/**
- * WishesFloat component - floats wishes up the screen
- * @param {string[]} wishes - Array of wish phrases
- */
-export default function WishesFloat({ wishes }) {
+interface WishesFloatProps {
+  wishes: string[]
+}
+
+export default function WishesFloat({ wishes }: WishesFloatProps) {
   if (!wishes || wishes.length === 0) return null
 
   const colors = ['#7A5C47', '#D4A373', '#D4859D', '#A88BC7']

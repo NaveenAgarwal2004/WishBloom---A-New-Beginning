@@ -1,9 +1,19 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import type { IMemory } from '@/models/WishBloom'
+
+// Type for tag colors
+type TagType = 'love' | 'milestone' | 'nostalgic' | 'celebration' | 'funny'
+
+interface TagColors {
+  bg: string
+  border: string
+  text: string
+}
 
 // Tag color mapping
-const TAG_COLORS = {
+const TAG_COLORS: Record<TagType, TagColors> = {
   love: { bg: 'bg-rosePetal/20', border: 'border-rosePetal/60', text: 'text-rosePetal' },
   milestone: { bg: 'bg-sunsetAmber/20', border: 'border-sunsetAmber/60', text: 'text-sunsetAmber' },
   nostalgic: { bg: 'bg-lavenderPress/20', border: 'border-lavenderPress/60', text: 'text-lavenderPress' },
@@ -14,7 +24,7 @@ const TAG_COLORS = {
 /**
  * Calculate deterministic rotation based on ID to avoid hydration mismatch
  */
-function getRotation(id, type) {
+function getRotation(id: string, type: 'standard' | 'featured' | 'quote'): number {
   // Create a deterministic hash from the ID
   const hash = id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)
   const base = (hash % 100) / 100 // 0-1 range
@@ -28,10 +38,16 @@ function getRotation(id, type) {
   }
 }
 
+interface MemoryCardComponentProps {
+  memory: IMemory
+  rotation: number
+  index: number
+}
+
 /**
  * Standard Memory Card (60% of cards)
  */
-function StandardMemoryCard({ memory, rotation, index }) {
+function StandardMemoryCard({ memory, rotation, index }: MemoryCardComponentProps) {
   return (
     <motion.article
       className="relative bg-warmCream-200 rounded-xl p-6 md:p-10 shadow-medium border-2 border-warmCream-400 cursor-pointer group"
@@ -101,7 +117,7 @@ function StandardMemoryCard({ memory, rotation, index }) {
       {memory.tags && memory.tags.length > 0 && (
         <div className="flex flex-wrap gap-2 mb-6">
           {memory.tags.map((tag, i) => {
-            const colors = TAG_COLORS[tag] || TAG_COLORS.love
+            const colors = TAG_COLORS[tag as TagType] || TAG_COLORS.love
             return (
               <span
                 key={i}
@@ -140,7 +156,7 @@ function StandardMemoryCard({ memory, rotation, index }) {
 /**
  * Featured Memory Card (15% of cards)
  */
-function FeaturedMemoryCard({ memory, rotation, index }) {
+function FeaturedMemoryCard({ memory, rotation, index }: MemoryCardComponentProps) {
   return (
     <motion.article
       className="relative col-span-2 row-span-2 bg-warmCream-50 rounded-2xl p-12 md:p-16 shadow-dramatic border-4 border-fadedGold/60 cursor-pointer group z-20"
@@ -215,7 +231,7 @@ function FeaturedMemoryCard({ memory, rotation, index }) {
       {memory.tags && memory.tags.length > 0 && (
         <div className="flex flex-wrap gap-3 mb-8">
           {memory.tags.map((tag, i) => {
-            const colors = TAG_COLORS[tag] || TAG_COLORS.love
+            const colors = TAG_COLORS[tag as TagType] || TAG_COLORS.love
             return (
               <span
                 key={i}
@@ -241,7 +257,7 @@ function FeaturedMemoryCard({ memory, rotation, index }) {
 /**
  * Quote Memory Card (10% of cards)
  */
-function QuoteMemoryCard({ memory, rotation, index }) {
+function QuoteMemoryCard({ memory, rotation, index }: MemoryCardComponentProps) {
   return (
     <motion.article
       className="relative bg-gradient-to-br from-lavenderPress/20 to-rosePetal/20 rounded-xl p-8 md:p-12 shadow-medium border-2 border-lavenderPress/40 cursor-pointer group"
@@ -284,10 +300,15 @@ function QuoteMemoryCard({ memory, rotation, index }) {
   )
 }
 
+interface MemoryCardProps {
+  memory: IMemory
+  index: number
+}
+
 /**
  * Main Memory Card component that renders the appropriate type
  */
-export default function MemoryCard({ memory, index }) {
+export default function MemoryCard({ memory, index }: MemoryCardProps) {
   // Calculate deterministic rotation based on memory ID to avoid hydration mismatch
   const rotation = getRotation(memory.id, memory.type)
 

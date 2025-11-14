@@ -2,20 +2,19 @@
 
 import { motion } from 'framer-motion'
 
-/**
- * Reusable floral decoration SVG component
- * @param {Object} props
- * @param {string} props.className - Additional classes
- * @param {number} props.size - Size in pixels (default 200)
- * @param {string} props.color - Color (default rosePetal)
- * @param {boolean} props.animate - Whether to animate (default true)
- */
+interface FloralDecorationProps {
+  className?: string
+  size?: number
+  color?: string
+  animate?: boolean
+}
+
 export default function FloralDecoration({ 
   className = '', 
   size = 200, 
   color = '#D4859D',
   animate = true 
-}) {
+}: FloralDecorationProps) {
   const MotionSvg = animate ? motion.svg : 'svg'
   
   const animationProps = animate ? {

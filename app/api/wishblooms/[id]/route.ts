@@ -2,8 +2,14 @@ import { NextResponse } from 'next/server'
 import dbConnect from '@/lib/mongodb'
 import WishBloom from '@/models/WishBloom'
 
+interface RouteParams {
+  params: {
+    id: string
+  }
+}
+
 // GET - Get WishBloom by ID or unique URL
-export async function GET(request, { params }) {
+export async function GET(request: Request, { params }: RouteParams) {
   try {
     await dbConnect()
 
@@ -40,7 +46,7 @@ export async function GET(request, { params }) {
 }
 
 // PATCH - Update WishBloom
-export async function PATCH(request, { params }) {
+export async function PATCH(request: Request, { params }: RouteParams) {
   try {
     await dbConnect()
 
@@ -74,7 +80,7 @@ export async function PATCH(request, { params }) {
 }
 
 // DELETE - Archive WishBloom (soft delete)
-export async function DELETE(request, { params }) {
+export async function DELETE(request: Request, { params }: RouteParams) {
   try {
     await dbConnect()
 

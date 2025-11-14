@@ -5,29 +5,29 @@ import FloralDecoration from './FloralDecoration'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
-/**
- * Hero section with dramatic animations
- */
-export default function Hero({ recipientName, age, creativeAgeDescription }) {
+interface HeroProps {
+  recipientName: string
+  age?: number
+  creativeAgeDescription?: string
+}
+
+export default function Hero({ recipientName, age, creativeAgeDescription }: HeroProps) {
   const router = useRouter()
   
   return (
     <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-b from-warmCream-100 to-rosePetal/10 overflow-hidden px-4 md:px-8 py-16 md:py-32">
-      {/* Large decorative floral - top right */}
       <FloralDecoration 
         className="absolute -top-20 -right-20 md:top-0 md:right-0 opacity-40"
         size={400}
         color="#D4859D"
       />
       
-      {/* Small botanical corner accent - top left */}
       <FloralDecoration 
         className="absolute top-8 left-8 opacity-25"
         size={120}
         color="#A88BC7"
       />
       
-      {/* Paper texture overlay */}
       <div className="absolute inset-0 opacity-20 mix-blend-multiply pointer-events-none">
         <svg width="100%" height="100%">
           <defs>
@@ -40,9 +40,7 @@ export default function Hero({ recipientName, age, creativeAgeDescription }) {
         </svg>
       </div>
 
-      {/* Content */}
       <div className="relative z-10 text-center max-w-5xl mx-auto">
-        {/* Recipient Name */}
         <motion.h1
           className="font-heading font-bold text-sepiaInk mb-8"
           style={{ fontSize: 'clamp(48px, 10vw, 120px)' }}
@@ -53,7 +51,6 @@ export default function Hero({ recipientName, age, creativeAgeDescription }) {
           {recipientName}
         </motion.h1>
 
-        {/* Hand-drawn underline */}
         <motion.svg
           className="mx-auto mb-12"
           width="400"
@@ -72,7 +69,6 @@ export default function Hero({ recipientName, age, creativeAgeDescription }) {
           />
         </motion.svg>
 
-        {/* Creative age description */}
         {creativeAgeDescription && (
           <motion.p
             className="text-h4 md:text-h3 font-body text-warmCream-700 mb-16"
@@ -84,7 +80,6 @@ export default function Hero({ recipientName, age, creativeAgeDescription }) {
           </motion.p>
         )}
 
-        {/* CTA Button */}
         <motion.button
           className="px-12 py-6 bg-burntSienna text-warmCream-50 rounded-xl text-h5 md:text-h4 font-heading font-semibold shadow-dramatic transition-all duration-300"
           initial={{ opacity: 0, scale: 0.8 }}
@@ -98,21 +93,17 @@ export default function Hero({ recipientName, age, creativeAgeDescription }) {
           }}
           whileTap={{ scale: 0.95 }}
           data-testid="cta-create-button"
-          onClick={() => {
-            router.push('/create')
-          }}
+          onClick={() => router.push('/create')}
         >
           Explore Your Memories ✨
         </motion.button>
 
-        {/* Redundant Link for automated testing reliability */}
         <div className="mt-4">
           <Link href="/create" data-testid="cta-create-link" className="underline text-fadedGold text-body">
             Start creating →
           </Link>
         </div>
 
-        {/* Scroll indicator */}
         <motion.div
           className="absolute bottom-8 left-1/2 -translate-x-1/2"
           animate={{ y: [0, 10, 0] }}

@@ -2,19 +2,23 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import type { IContributor } from '@/models/WishBloom'
+
+interface FooterProps {
+  contributors: IContributor[]
+  createdDate: string
+}
 
 /**
  * Footer with signature easter egg
  */
-export default function Footer({ contributors, createdDate }) {
+export default function Footer({ contributors, createdDate }: FooterProps) {
   const [showSignatures, setShowSignatures] = useState(false)
 
   return (
     <footer className="relative bg-gradient-to-b from-warmCream-200 to-warmCream-300 border-t-2 border-fadedGold/30 py-20 px-4 md:px-8">
       <div className="max-w-7xl mx-auto">
-        {/* Main footer grid */}
         <div className="grid md:grid-cols-3 gap-16 text-center md:text-left mb-16">
-          {/* About Column */}
           <div>
             <h4 className="text-h6 font-heading font-bold text-sepiaInk mb-4">
               Pressed & Preserved
@@ -26,7 +30,6 @@ export default function Footer({ contributors, createdDate }) {
               {contributors.length} heart{contributors.length !== 1 ? 's' : ''} contributed
             </p>
             
-            {/* Decorative divider */}
             <div className="flex items-center gap-3 justify-center md:justify-start">
               <div className="h-px w-12 bg-gradient-to-r from-transparent to-fadedGold" />
               <svg className="w-8 h-8 text-fadedGold" viewBox="0 0 32 32">
@@ -40,7 +43,6 @@ export default function Footer({ contributors, createdDate }) {
             </div>
           </div>
 
-          {/* Brand Column */}
           <div className="text-center">
             <div className="flex items-center gap-3 justify-center mb-4">
               <svg className="w-10 h-10 text-pressedLeaf" viewBox="0 0 40 40">
@@ -57,7 +59,6 @@ export default function Footer({ contributors, createdDate }) {
             </p>
           </div>
 
-          {/* Copyright Column */}
           <div className="text-center md:text-right">
             <p className="text-micro text-warmCream-600/70 font-body mb-2">
               © 2025 WISHBLOOM · MADE WITH 💛
@@ -65,7 +66,6 @@ export default function Footer({ contributors, createdDate }) {
           </div>
         </div>
 
-        {/* Signature Easter Egg */}
         <motion.div className="text-center pt-8 border-t border-fadedGold/20">
           <motion.button
             className="text-caption text-warmCream-600/60 hover:text-fadedGold font-accent italic cursor-pointer transition-colors"
@@ -86,7 +86,6 @@ export default function Footer({ contributors, createdDate }) {
                 transition={{ duration: 0.6 }}
               >
                 {contributors.map((contributor, i) => {
-                  // Calculate random position
                   const positions = [
                     { left: '10%', top: '20%' },
                     { left: '30%', top: '40%' },

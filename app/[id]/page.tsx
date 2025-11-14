@@ -1,14 +1,19 @@
 import { notFound } from 'next/navigation'
 import WishBloomView from './WishBloomView'
 
+interface WishBloomPageProps {
+  params: {
+    id: string
+  }
+}
+
 /**
  * Dynamic route for viewing WishBlooms
  */
-export default async function WishBloomPage({ params }) {
+export default async function WishBloomPage({ params }: WishBloomPageProps) {
   const { id } = params
 
   try {
-    // ✅ FIXED: Use env variable instead of hardcoded URL
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
     
     const response = await fetch(`${baseUrl}/api/wishblooms/${id}`, {

@@ -1,23 +1,36 @@
 'use client'
 
-import { createContext, useContext, useState, useRef, useEffect } from 'react'
+import { createContext, useContext, useState, useRef, useEffect, ReactNode } from 'react'
 
-const AudioContext = createContext(null)
+interface AudioContextType {
+  isMusicPlaying: boolean
+  volume: number
+  toggleMusic: () => void
+  playSound: (soundName: 'candle-blow' | 'confetti-pop' | 'success-chime') => void
+  setVolume: (volume: number) => void
+  audioReady: boolean
+}
+
+const AudioContext = createContext<AudioContextType | null>(null)
+
+interface AudioProviderProps {
+  children: ReactNode
+}
 
 /**
  * Audio Context Provider
- * ✅ OPTIMIZED: Lazy-loads audio after page interactive
+ * Lazy-loads audio after page interactive
  */
-export function AudioProvider({ children }) {
+export function AudioProvider({ children }: AudioProviderProps) {
   const [isMusicPlaying, setIsMusicPlaying] = useState(false)
-  const [volume, setVolume] = useState(0.08)
+  const [volume, setVolumeState] = useState(0.08)
   const [audioReady, setAudioReady] = useState(false)
-  const audioRef = useRef(null)
-  const soundsRef = useRef({})
+  
+  const audioRef = useRef<HTMLAudioElement | null>(null)
+  const soundsRef = useRef<Record<string, HTMLAudioElement>>({})
 
-  // ✅ NEW: Lazy-load audio after page is interactive
+  // Lazy-load audio after page is interactive
   useEffect(() => {
-    // Only run in browser
     if (typeof window === 'undefined') return
 
     const loadAudio = () => {
@@ -25,9 +38,7 @@ export function AudioProvider({ children }) {
       const audio = new Audio('/audio/background-music.mp3')
       audio.loop = true
       audio.volume = volume
-      
-      // ✅ FIX: Don't block page load
-      audio.preload = 'none' // Changed from 'auto'
+      audio.preload = 'none'
       
       audioRef.current = audio
 
@@ -37,17 +48,17 @@ export function AudioProvider({ children }) {
       }
       audio.addEventListener('error', handleError)
 
-      // ✅ Preload sound effects (small files)
-      const soundConfig = {
+      // Preload sound effects (small files)
+      const soundConfig: Record<string, string> = {
         'candle-blow': 'wav',
         'confetti-pop': 'wav',
         'success-chime': 'mp3'
       }
 
-      const loadedSounds = {}
+      const loadedSounds: Record<string, HTMLAudioElement> = {}
       Object.entries(soundConfig).forEach(([name, ext]) => {
         const soundAudio = new Audio(`/audio/${name}.${ext}`)
-        soundAudio.preload = 'auto' // These are small, OK to preload
+        soundAudio.preload = 'auto'
         soundAudio.volume = 0.7
         soundAudio.addEventListener('error', () => {
           console.log(`Sound ${name} not available`)
@@ -58,22 +69,19 @@ export function AudioProvider({ children }) {
 
       setAudioReady(true)
 
-      // Cleanup
       return () => {
         audio.removeEventListener('error', handleError)
       }
     }
 
-    // ✅ NEW: Load audio AFTER page is fully interactive
+    // Load audio AFTER page is fully interactive
     if (document.readyState === 'complete') {
-      // Page already loaded
       loadAudio()
     } else {
-      // Wait for page load
       window.addEventListener('load', loadAudio)
       return () => window.removeEventListener('load', loadAudio)
     }
-  }, [])
+  }, [volume])
 
   // Update volume when it changes
   useEffect(() => {
@@ -85,7 +93,6 @@ export function AudioProvider({ children }) {
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      // Stop and clean up main audio
       if (audioRef.current) {
         audioRef.current.pause()
         audioRef.current.currentTime = 0
@@ -93,7 +100,6 @@ export function AudioProvider({ children }) {
         audioRef.current.load()
       }
 
-      // Stop and clean up sound effects
       Object.values(soundsRef.current).forEach(soundAudio => {
         soundAudio.pause()
         soundAudio.currentTime = 0
@@ -101,7 +107,6 @@ export function AudioProvider({ children }) {
         soundAudio.load()
       })
 
-      // Clear refs
       audioRef.current = null
       soundsRef.current = {}
     }
@@ -114,7 +119,6 @@ export function AudioProvider({ children }) {
       audioRef.current.pause()
       setIsMusicPlaying(false)
     } else {
-      // Load audio on first play
       if (audioRef.current.preload === 'none') {
         audioRef.current.preload = 'auto'
         audioRef.current.load()
@@ -128,7 +132,7 @@ export function AudioProvider({ children }) {
     }
   }
 
-  const playSound = (soundName) => {
+  const playSound = (soundName: 'candle-blow' | 'confetti-pop' | 'success-chime') => {
     if (!audioReady) return
 
     const preloadedSound = soundsRef.current[soundName]
@@ -140,9 +144,9 @@ export function AudioProvider({ children }) {
     }
   }
 
-  const updateVolume = (newVolume) => {
+  const updateVolume = (newVolume: number) => {
     const clampedVolume = Math.max(0, Math.min(1, newVolume))
-    setVolume(clampedVolume)
+    setVolumeState(clampedVolume)
   }
 
   return (
@@ -159,7 +163,7 @@ export function AudioProvider({ children }) {
   )
 }
 
-export function useAudio() {
+export function useAudio(): AudioContextType {
   const context = useContext(AudioContext)
   if (!context) {
     throw new Error('useAudio must be used within AudioProvider')

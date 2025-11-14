@@ -2,24 +2,34 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react'
 
+interface UseBreathDetectionReturn {
+  isBlowing: boolean
+  error: string | null
+  requestPermission: () => Promise<void>
+  hasPermission: boolean
+  supported: boolean
+  simulateBlow: (durationMs?: number) => void
+}
+
 /**
  * Custom hook for detecting breath/blowing using microphone
- * @returns {Object} - { isBlowing, error, requestPermission, hasPermission }
  */
-export function useBreathDetection() {
+export function useBreathDetection(): UseBreathDetectionReturn {
   const [isBlowing, setIsBlowing] = useState(false)
-  const [error, setError] = useState(null)
+  const [error, setError] = useState<string | null>(null)
   const [hasPermission, setHasPermission] = useState(false)
   const [supported, setSupported] = useState(true)
-  const audioContextRef = useRef(null)
-  const analyserRef = useRef(null)
-  const streamRef = useRef(null)
-  const animationFrameRef = useRef(null)
+  
+  const audioContextRef = useRef<AudioContext | null>(null)
+  const analyserRef = useRef<AnalyserNode | null>(null)
+  const streamRef = useRef<MediaStream | null>(null)
+  const animationFrameRef = useRef<number | null>(null)
 
   const requestPermission = useCallback(async () => {
     try {
       // Check if browser supports AudioContext
-      if (!window.AudioContext && !window.webkitAudioContext) {
+      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext
+      if (!AudioContextClass) {
         setError('Your browser does not support audio detection')
         setSupported(false)
         return
@@ -36,7 +46,6 @@ export function useBreathDetection() {
       streamRef.current = stream
 
       // Create audio context and analyzer
-      const AudioContextClass = window.AudioContext || window.webkitAudioContext
       const context = new AudioContextClass()
       const source = context.createMediaStreamSource(stream)
       const analyser = context.createAnalyser()
@@ -58,13 +67,11 @@ export function useBreathDetection() {
         analyserRef.current.getByteFrequencyData(dataArray)
 
         // Analyze low frequencies (0-500Hz) for breath detection
-        // This range captures the sound of blowing/breath
         const lowFreqSlice = dataArray.slice(0, 10)
         const lowFreqSum = lowFreqSlice.reduce((sum, val) => sum + val, 0)
         const avgAmplitude = lowFreqSum / 10
 
-        // Threshold for detecting blowing (adjust if needed)
-        // Higher values = less sensitive, Lower values = more sensitive
+        // Threshold for detecting blowing
         const BLOW_THRESHOLD = 180
         setIsBlowing(avgAmplitude > BLOW_THRESHOLD)
 
@@ -74,13 +81,15 @@ export function useBreathDetection() {
       analyze()
     } catch (err) {
       console.error('Error accessing microphone:', err)
-      if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
-        setError('Microphone access denied. Please enable it in your browser settings.')
-      } else if (err.name === 'NotFoundError') {
-        setError('No microphone found. Please connect a microphone.')
-        setSupported(false)
-      } else {
-        setError('Could not access microphone. Please check your browser settings.')
+      if (err instanceof Error) {
+        if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+          setError('Microphone access denied. Please enable it in your browser settings.')
+        } else if (err.name === 'NotFoundError') {
+          setError('No microphone found. Please connect a microphone.')
+          setSupported(false)
+        } else {
+          setError('Could not access microphone. Please check your browser settings.')
+        }
       }
       setHasPermission(false)
     }
@@ -89,21 +98,23 @@ export function useBreathDetection() {
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      // Cancel animation frame
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current)
       }
 
-      // Stop all audio tracks
       if (streamRef.current) {
         streamRef.current.getTracks().forEach(track => track.stop())
       }
 
-      // Close audio context
       if (audioContextRef.current) {
         audioContextRef.current.close()
       }
     }
+  }, [])
+
+  const simulateBlow = useCallback((durationMs: number = 800) => {
+    setIsBlowing(true)
+    setTimeout(() => setIsBlowing(false), durationMs)
   }, [])
 
   return {
@@ -112,10 +123,6 @@ export function useBreathDetection() {
     requestPermission,
     hasPermission,
     supported,
-    // Fallback: simulate a blow event in environments without mic
-    simulateBlow: (durationMs = 800) => {
-      setIsBlowing(true)
-      setTimeout(() => setIsBlowing(false), durationMs)
-    }
+    simulateBlow,
   }
 }

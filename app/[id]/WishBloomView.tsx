@@ -6,12 +6,16 @@ import MemoryGallery from '@/components/MemoryGallery'
 import MessagesSection from '@/components/MessagesSection'
 import CelebrationSection from '@/components/CelebrationSection'
 import Footer from '@/components/Footer'
+import type { IWishBloom, IContributor } from '@/models/WishBloom'
+
+interface WishBloomViewProps {
+  wishbloom: IWishBloom
+}
 
 /**
  * Client component for viewing a WishBloom
  */
-export default function WishBloomView({ wishbloom }) {
-  // Validate wishbloom data
+export default function WishBloomView({ wishbloom }: WishBloomViewProps) {
   if (!wishbloom) {
     return (
       <main className="min-h-screen bg-warmCream-100 flex items-center justify-center">
@@ -20,7 +24,7 @@ export default function WishBloomView({ wishbloom }) {
             WishBloom Not Found
           </h1>
           <p className="text-body text-warmCream-700">
-            This WishBloom may have been removed or doesn't exist.
+            This WishBloom may have been removed or doesn&apos;t exist.
           </p>
         </div>
       </main>
@@ -28,7 +32,7 @@ export default function WishBloomView({ wishbloom }) {
   }
 
   // Calculate contributors from memories and messages
-  const contributorMap = new Map()
+  const contributorMap = new Map<string, IContributor>()
   
   if (wishbloom.createdBy) {
     contributorMap.set(wishbloom.createdBy.id, wishbloom.createdBy)
@@ -76,7 +80,7 @@ export default function WishBloomView({ wishbloom }) {
 
       <Footer 
         contributors={contributors}
-        createdDate={wishbloom.createdDate || new Date().toISOString()}
+        createdDate={wishbloom.createdDate?.toString() || new Date().toISOString()}
       />
     </main>
   )

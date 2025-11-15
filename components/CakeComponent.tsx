@@ -17,7 +17,6 @@ export default function CakeComponent({
   const [flamesLit, setFlamesLit] = useState(true)
   const [blowCount, setBlowCount] = useState(0)
   const [isShaking, setIsShaking] = useState(false)
-  const [showPermissionPrompt, setShowPermissionPrompt] = useState(false)
   
   const { isBlowing, error, requestPermission, hasPermission, supported, simulateBlow } = useBreathDetection()
   const { playSound } = useAudio()
@@ -53,10 +52,11 @@ export default function CakeComponent({
     if (isBlowing && flamesLit) {
       setTimeout(() => handleBlow(), 0)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isBlowing, flamesLit])
 
   const handleEnableBreathDetection = async () => {
-    setShowPermissionPrompt(false)
+    // ✅ ROOT FIX: Function kept but no longer uses removed state
     await requestPermission()
   }
 

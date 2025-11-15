@@ -1,5 +1,3 @@
-// Sample WishBloom data for testing and demo
-
 export const sampleWishBloom = {
   id: 'sample-001',
   recipientName: 'Emma',
@@ -34,10 +32,10 @@ May this collection remind you of how cherished you are, today and always.`,
       date: '2021-08-12',
       contributor: { id: 'user-001', name: 'Sarah Mitchell', contributionCount: 3 },
       imageUrl: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1200&q=80',
-      type: 'featured' as const, // ✅ Fixed: Use `as const`
+      type: 'featured' as const,
       tags: ['nostalgic', 'milestone'],
       rotation: -2.5,
-      createdAt: '2024-05-10T14:30:00Z',
+      createdAt: new Date('2024-05-10T14:30:00Z'), // ✅ Date object
     },
     {
       id: 'mem-002',
@@ -45,10 +43,10 @@ May this collection remind you of how cherished you are, today and always.`,
       description: "Remember when we promised we'd only study for two hours, and somehow it turned into an all-nighter fueled by terrible coffee and even worse jokes? Your determination to understand every concept, to not just memorize but truly grasp the meaning—that's what made those exhausting nights bearable. You made learning feel like an adventure.",
       date: '2022-03-15',
       contributor: { id: 'user-002', name: 'Michael Chen', contributionCount: 2 },
-      type: 'standard' as const, // ✅ Fixed: Use `as const`
+      type: 'standard' as const,
       tags: ['funny', 'nostalgic'],
       rotation: 3.2,
-      createdAt: '2024-05-10T14:35:00Z',
+      createdAt: new Date('2024-05-10T14:35:00Z'), // ✅ Date object
     },
     {
       id: 'mem-003',
@@ -56,10 +54,10 @@ May this collection remind you of how cherished you are, today and always.`,
       description: "You don't just exist in the world—you actively make it better, one small kindness at a time.",
       date: '2023-07-20',
       contributor: { id: 'user-003', name: 'Lisa Thompson', contributionCount: 2 },
-      type: 'quote' as const, // ✅ Fixed: Use `as const`
+      type: 'quote' as const,
       tags: ['love'],
       rotation: -4.8,
-      createdAt: '2024-05-10T14:40:00Z',
+      createdAt: new Date('2024-05-10T14:40:00Z'), // ✅ Date object
     },
     {
       id: 'mem-004',
@@ -71,7 +69,7 @@ May this collection remind you of how cherished you are, today and always.`,
       type: 'standard' as const,
       tags: ['love', 'nostalgic'],
       rotation: 5.1,
-      createdAt: '2024-05-10T14:45:00Z',
+      createdAt: new Date('2024-05-10T14:45:00Z'), // ✅ Date object
     },
     {
       id: 'mem-005',
@@ -83,7 +81,7 @@ May this collection remind you of how cherished you are, today and always.`,
       type: 'featured' as const,
       tags: ['milestone', 'celebration'],
       rotation: -3.7,
-      createdAt: '2024-05-10T14:50:00Z',
+      createdAt: new Date('2024-05-10T14:50:00Z'), // ✅ Date object
     },
     {
       id: 'mem-006',
@@ -94,7 +92,7 @@ May this collection remind you of how cherished you are, today and always.`,
       type: 'quote' as const,
       tags: ['love'],
       rotation: 6.3,
-      createdAt: '2024-05-10T14:55:00Z',
+      createdAt: new Date('2024-05-10T14:55:00Z'), // ✅ Date object
     },
     {
       id: 'mem-007',
@@ -106,7 +104,7 @@ May this collection remind you of how cherished you are, today and always.`,
       type: 'standard' as const,
       tags: ['celebration', 'funny'],
       rotation: -5.9,
-      createdAt: '2024-05-10T15:00:00Z',
+      createdAt: new Date('2024-05-10T15:00:00Z'), // ✅ Date object
     },
     {
       id: 'mem-008',
@@ -118,7 +116,7 @@ May this collection remind you of how cherished you are, today and always.`,
       type: 'standard' as const,
       tags: ['nostalgic'],
       rotation: 4.4,
-      createdAt: '2024-05-10T15:05:00Z',
+      createdAt: new Date('2024-05-10T15:05:00Z'), // ✅ Date object
     },
   ],
   messages: [
@@ -132,7 +130,7 @@ May this collection remind you of how cherished you are, today and always.`,
       postscript: "P.S. — I finally finished that book you recommended. You were right. You always are.",
       contributor: { id: 'user-001', name: 'Sarah Mitchell', contributionCount: 3 },
       date: '2024-05-14',
-      createdAt: '2024-05-10T14:30:00Z',
+      createdAt: new Date('2024-05-10T14:30:00Z'), // ✅ Date object
     },
     {
       id: 'msg-002',
@@ -142,7 +140,7 @@ May this collection remind you of how cherished you are, today and always.`,
       signature: 'Michael',
       contributor: { id: 'user-002', name: 'Michael Chen', contributionCount: 2 },
       date: '2024-05-14',
-      createdAt: '2024-05-10T14:35:00Z',
+      createdAt: new Date('2024-05-10T14:35:00Z'), // ✅ Date object
     },
     {
       id: 'msg-003',
@@ -153,7 +151,7 @@ May this collection remind you of how cherished you are, today and always.`,
       signature: 'Lisa',
       contributor: { id: 'user-003', name: 'Lisa Thompson', contributionCount: 2 },
       date: '2024-05-14',
-      createdAt: '2024-05-10T14:40:00Z',
+      createdAt: new Date('2024-05-10T14:40:00Z'), // ✅ Date object
     },
     {
       id: 'msg-004',
@@ -164,7 +162,7 @@ May this collection remind you of how cherished you are, today and always.`,
       signature: 'David',
       contributor: { id: 'user-004', name: 'David Rodriguez', contributionCount: 1 },
       date: '2024-05-14',
-      createdAt: '2024-05-10T14:45:00Z',
+      createdAt: new Date('2024-05-10T14:45:00Z'), // ✅ Date object
     },
   ],
   celebrationWishPhrases: [

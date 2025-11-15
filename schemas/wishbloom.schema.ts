@@ -3,8 +3,8 @@ import { z } from 'zod'
 // Contributor Schema
 export const ContributorSchema = z.object({
   id: z.string().optional(),
-  name: z.string().min(1, 'Name is required').max(100),
-  email: z.string().email('Invalid email').optional(), // ✅ Just .optional()
+  name: z.string().optional().default('Anonymous'),
+  email: z.string().email().or(z.literal('')).optional(),
   contributionCount: z.number().int().min(0).default(1),
 })
 

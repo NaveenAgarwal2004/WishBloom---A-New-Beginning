@@ -1,13 +1,19 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import type { IMessage } from '@/models/WishBloom'
+
+interface MessageCardProps {
+  message: IMessage
+  index: number
+}
 
 /**
  * Letter Type Message Card
  */
-function LetterCard({ message, index }) {
+function LetterCard({ message, index }: MessageCardProps) {
   // Split content into paragraphs
-  const paragraphs = message.content.split('\n\n').filter(p => p.trim())
+  const paragraphs = message.content.split('\n\n').filter((p: string) => p.trim())
   
   // Random coffee stain (30% chance)
   const hasCoffeeStain = index % 3 === 0
@@ -46,7 +52,7 @@ function LetterCard({ message, index }) {
 
       {/* Body paragraphs */}
       <div className="space-y-6 mb-12">
-        {paragraphs.map((paragraph, i) => (
+        {paragraphs.map((paragraph: string, i: number) => (
           <motion.p
             key={i}
             className="text-body-xl font-body text-warmCream-800 leading-loose"
@@ -96,9 +102,9 @@ function LetterCard({ message, index }) {
 /**
  * Poem Type Message Card
  */
-function PoemCard({ message, index }) {
+function PoemCard({ message, index }: MessageCardProps) {
   // Split content into lines
-  const lines = message.content.split('\n').filter(l => l.trim())
+  const lines = message.content.split('\n').filter((l: string) => l.trim())
 
   return (
     <motion.article
@@ -110,7 +116,7 @@ function PoemCard({ message, index }) {
     >
       {/* Giant decorative quote */}
       <span className="absolute -top-12 -left-8 text-lavenderPress/20 font-heading font-bold leading-none pointer-events-none" style={{ fontSize: '180px' }}>
-        “
+        "
       </span>
 
       {/* Poem title */}
@@ -122,7 +128,7 @@ function PoemCard({ message, index }) {
 
       {/* Poem lines */}
       <div className="relative z-10 space-y-4 mb-8">
-        {lines.map((line, i) => (
+        {lines.map((line: string, i: number) => (
           <motion.p
             key={i}
             className="text-h6 font-accent italic text-warmCream-800 leading-relaxed text-center"
@@ -154,7 +160,7 @@ function PoemCard({ message, index }) {
 /**
  * Main Message Card component
  */
-export default function MessageCard({ message, index }) {
+export default function MessageCard({ message, index }: MessageCardProps) {
   if (message.type === 'poem') {
     return <PoemCard message={message} index={index} />
   }

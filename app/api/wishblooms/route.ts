@@ -131,7 +131,7 @@ export async function POST(request: Request) {
           {
             success: true,
             wishbloom: {
-              id: wishbloom._id.toString(),
+              id: (wishbloom._id as any).toString(),
               uniqueUrl: wishbloom.uniqueUrl,
               createdDate: wishbloom.createdDate,
             },

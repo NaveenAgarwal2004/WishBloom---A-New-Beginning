@@ -9,7 +9,7 @@ interface RouteParams {
 }
 
 // GET - Get WishBloom by ID or unique URL
-export async function GET(request: Request, { params }: RouteParams) {
+export async function GET(_request: Request, { params }: RouteParams) {
   try {
     await dbConnect()
 
@@ -80,7 +80,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
 }
 
 // DELETE - Archive WishBloom (soft delete)
-export async function DELETE(request: Request, { params }: RouteParams) {
+export async function DELETE(_request: Request, { params }: RouteParams) {
   try {
     await dbConnect()
 

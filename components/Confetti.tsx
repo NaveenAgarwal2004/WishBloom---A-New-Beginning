@@ -16,10 +16,10 @@ export default function Confetti({ particleCount = 400 }: ConfettiProps) {
 
     return Array.from({ length: particleCount }).map((_, i) => {
       const seed = i * 0.1 // Use deterministic seed based on index
-      const pseudoRandom = (seed) => {
-        const x = Math.sin(seed) * 10000
-        return x - Math.floor(x)
-      }
+      const pseudoRandom = (seed: number) => {
+  const x = Math.sin(seed) * 10000
+  return x - Math.floor(x)
+}
 
       return {
         id: i,

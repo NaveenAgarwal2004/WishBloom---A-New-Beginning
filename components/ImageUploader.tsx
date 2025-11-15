@@ -1,8 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useDropzone } from 'react-dropzone'
-import { motion } from 'framer-motion'
+import { useDropzone, FileWithPath } from 'react-dropzone'
 import { Upload, X, Loader2 } from 'lucide-react'
 
 interface ImageUploaderProps {
@@ -12,10 +11,10 @@ interface ImageUploaderProps {
 
 export default function ImageUploader({ onUpload, existingImage }: ImageUploaderProps) {
   const [uploading, setUploading] = useState(false)
-  const [imageUrl, setImageUrl] = useState(existingImage || null)
-  const [error, setError] = useState(null)
+  const [imageUrl, setImageUrl] = useState<string | null>(existingImage || null)
+  const [error, setError] = useState<string | null>(null)
 
-  const onDrop = async (acceptedFiles) => {
+  const onDrop = async (acceptedFiles: FileWithPath[]) => {
     const file = acceptedFiles[0]
     if (!file) return
 
@@ -59,7 +58,8 @@ export default function ImageUploader({ onUpload, existingImage }: ImageUploader
         setError(data.error || 'Upload failed')
       }
     } catch (err) {
-      setError(err.message || 'Upload failed. Please try again.')
+      const errorMessage = err instanceof Error ? err.message : 'Upload failed. Please try again.'
+      setError(errorMessage)
       console.error('Upload error:', err)
     } finally {
       setUploading(false)

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { nanoid } from 'nanoid'
 import { useRouter } from 'next/navigation'
@@ -10,17 +10,40 @@ import Hero from '@/components/Hero'
 import IntroMessage from '@/components/IntroMessage'
 import MemoryGallery from '@/components/MemoryGallery'
 import MessagesSection from '@/components/MessagesSection'
-import CelebrationSection from '@/components/CelebrationSection'
-import Footer from '@/components/Footer'
 import { ArrowRight, ArrowLeft, Plus, Trash2, Edit2, Check, Loader2 } from 'lucide-react'
 import type { IMemory, IMessage } from '@/models/WishBloom'
 
+// Type definitions for form states
+interface MemoryFormState {
+  title: string
+  description: string
+  date: string
+  imageUrl: string | null
+  type: 'standard' | 'featured' | 'quote'
+  tags: ('love' | 'milestone' | 'nostalgic' | 'celebration' | 'funny')[]
+  contributor: { name: string; email: string }
+}
+
+interface MessageFormState {
+  type: 'letter' | 'poem'
+  greeting: string
+  content: string
+  closing: string
+  signature: string
+  title: string
+  postscript: string
+  contributor: { name: string; email: string }
+}
+
+/**
+ * Multi-step Creator Flow
+ */
 export default function CreatePage() {
   const router = useRouter()
   const store = useWishBloomStore()
   const [publishing, setPublishing] = useState(false)
-  const [publishError, setPublishError] = useState(null)
-  const [publishedUrl, setPublishedUrl] = useState(null)
+  const [publishError, setPublishError] = useState<string | null>(null)
+  const [publishedUrl, setPublishedUrl] = useState<string | null>(null)
 
   // ✅ Step 1: Recipient Info with Debounced Validation
   const Step1 = () => {
@@ -39,31 +62,26 @@ export default function CreatePage() {
       }, 500) // Wait 500ms after last keystroke
       
       return () => clearTimeout(timer)
-    }, [recipientName, introMessage]) // Only re-run when these change
+    }, [recipientName, introMessage, store])
 
-    // ✅ REMOVED: Manual validation on mount (causes loop)
-    // useEffect(() => {
-    //   store.validateStep1()
-    // }, [])
-
-    const handleRecipientNameChange = (e) => {
+    const handleRecipientNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       store.setRecipientName(e.target.value)
     }
 
-    const handleIntroChange = (e) => {
+    const handleIntroChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
       store.setIntroMessage(e.target.value)
     }
 
-    const handleAgeChange = (e) => {
+    const handleAgeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value
       store.setAge(value === '' ? null : parseInt(value))
     }
 
-    const handleCreativeChange = (e) => {
+    const handleCreativeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       store.setCreativeAgeDescription(e.target.value)
     }
 
-    const handleCreatedByNameChange = (e) => {
+    const handleCreatedByNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       store.setCreatedBy({ 
         ...createdBy, 
         name: e.target.value,
@@ -71,7 +89,7 @@ export default function CreatePage() {
       })
     }
 
-    const handleCreatedByEmailChange = (e) => {
+    const handleCreatedByEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       store.setCreatedBy({ 
         ...createdBy, 
         email: e.target.value,
@@ -197,18 +215,19 @@ export default function CreatePage() {
 
   // Step 2: Memories
   const Step2 = () => {
-    const [editingMemory, setEditingMemory] = useState(null)
-    const [memoryForm, setMemoryForm] = useState({
+    const [editingMemory, setEditingMemory] = useState<string | null>(null)
+    const [memoryForm, setMemoryForm] = useState<MemoryFormState>({
       title: '',
       description: '',
       date: '',
-      imageUrl: '',
+      imageUrl: null,
       type: 'standard',
       tags: [],
       contributor: { name: '', email: '' },
     })
 
-    const availableTags = ['love', 'milestone', 'nostalgic', 'celebration', 'funny']
+    const availableTags: ('love' | 'milestone' | 'nostalgic' | 'celebration' | 'funny')[] = 
+      ['love', 'milestone', 'nostalgic', 'celebration', 'funny']
 
     const handleAddMemory = () => {
       if (!memoryForm.title || !memoryForm.description || !memoryForm.date || !memoryForm.contributor.name) {
@@ -216,15 +235,16 @@ export default function CreatePage() {
         return
       }
 
-      const memory = {
+      const memory: IMemory = {
         ...memoryForm,
         id: nanoid(8),
         contributor: {
           ...memoryForm.contributor,
           id: nanoid(8),
+          contributionCount: 1,
         },
         rotation: 0,
-        createdAt: new Date().toISOString(),
+        createdAt: new Date(),
       }
 
       if (editingMemory) {
@@ -239,16 +259,27 @@ export default function CreatePage() {
         title: '',
         description: '',
         date: '',
-        imageUrl: '',
+        imageUrl: null,
         type: 'standard',
         tags: [],
         contributor: { name: '', email: '' },
       })
     }
 
-    const handleEdit = (memory) => {
+    const handleEdit = (memory: IMemory) => {
       setEditingMemory(memory.id)
-      setMemoryForm(memory)
+      setMemoryForm({
+        title: memory.title,
+        description: memory.description,
+        date: memory.date,
+        imageUrl: memory.imageUrl || null,
+        type: memory.type,
+        tags: memory.tags as MemoryFormState['tags'],
+        contributor: { 
+          name: memory.contributor.name, 
+          email: memory.contributor.email || '' 
+        },
+      })
     }
 
     const canProceed = store.memories.length >= 3
@@ -306,14 +337,14 @@ export default function CreatePage() {
             <div>
               <label className="text-body-sm font-body font-semibold text-sepiaInk mb-2 block">Memory Type</label>
               <div className="flex gap-4">
-                {['standard', 'featured', 'quote'].map((type) => (
+                {(['standard', 'featured', 'quote'] as const).map((type) => (
                   <label key={type} className="flex items-center gap-2 cursor-pointer">
                     <input
                       type="radio"
                       name="memoryType"
                       value={type}
                       checked={memoryForm.type === type}
-                      onChange={(e) => setMemoryForm({ ...memoryForm, type: e.target.value })}
+                      onChange={(e) => setMemoryForm({ ...memoryForm, type: e.target.value as MemoryFormState['type'] })}
                       className="w-5 h-5"
                     />
                     <span className="text-body font-body capitalize">{type}</span>
@@ -435,9 +466,9 @@ export default function CreatePage() {
     )
   }
 
-  // Step 3: Messages (simplified for brevity - similar to Step 2)
+  // Step 3: Messages
   const Step3 = () => {
-    const [messageForm, setMessageForm] = useState({
+    const [messageForm, setMessageForm] = useState<MessageFormState>({
       type: 'letter',
       greeting: '',
       content: '',
@@ -454,15 +485,16 @@ export default function CreatePage() {
         return
       }
 
-      const message = {
+      const message: IMessage = {
         ...messageForm,
         id: nanoid(8),
         contributor: {
           ...messageForm.contributor,
           id: nanoid(8),
+          contributionCount: 1,
         },
         date: new Date().toISOString().split('T')[0],
-        createdAt: new Date().toISOString(),
+        createdAt: new Date(),
       }
 
       store.addMessage(message)
@@ -499,7 +531,7 @@ export default function CreatePage() {
                     name="messageType"
                     value="letter"
                     checked={messageForm.type === 'letter'}
-                    onChange={(e) => setMessageForm({ ...messageForm, type: e.target.value })}
+                    onChange={(e) => setMessageForm({ ...messageForm, type: e.target.value as MessageFormState['type'] })}
                     className="w-5 h-5"
                   />
                   <span className="text-body font-body">Letter</span>
@@ -510,7 +542,7 @@ export default function CreatePage() {
                     name="messageType"
                     value="poem"
                     checked={messageForm.type === 'poem'}
-                    onChange={(e) => setMessageForm({ ...messageForm, type: e.target.value })}
+                    onChange={(e) => setMessageForm({ ...messageForm, type: e.target.value as MessageFormState['type'] })}
                     className="w-5 h-5"
                   />
                   <span className="text-body font-body">Poem</span>
@@ -795,7 +827,7 @@ export default function CreatePage() {
         <div className="bg-warmCream-100 rounded-2xl overflow-hidden shadow-dramatic mb-8">
           <Hero
             recipientName={previewData.recipientName}
-            age={previewData.age}
+            age={previewData.age || undefined}
             creativeAgeDescription={previewData.creativeAgeDescription}
           />
           <IntroMessage message={previewData.introMessage} />
@@ -907,6 +939,7 @@ export default function CreatePage() {
       if (!publishing && !publishedUrl && !publishError && store.currentStep === 6) {
         handlePublish()
       }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     if (publishing) {

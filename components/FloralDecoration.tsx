@@ -27,15 +27,20 @@ export default function FloralDecoration({
   const validSize = typeof size === 'number' && size > 0 ? size : 200
 
   return (
-    <MotionSvg
-      width={validSize}
-      height={validSize}
-      viewBox="0 0 200 200"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className={className}
-      {...animationProps}
-    >
+    <motion.svg
+  width={validSize}
+  height={validSize}
+  viewBox="0 0 200 200"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+  className={className}
+  initial={{ scale: 0, rotate: -30 }}
+  animate={{ scale: 1, rotate: -15 }}
+  transition={{ 
+    duration: 1.5, 
+    ease: [0.34, 1.56, 0.64, 1]  // ✅ Proper cubic-bezier array
+  }}
+>
       {/* Center circle */}
       <circle cx="100" cy="100" r="20" fill={color} opacity="0.9" />
       
@@ -50,6 +55,5 @@ export default function FloralDecoration({
       <ellipse cx="130" cy="130" rx={25} ry={15} fill={color} opacity="0.8" transform="rotate(-45 130 130)" />
       <ellipse cx="70" cy="130" rx={25} ry={15} fill={color} opacity="0.8" transform="rotate(45 70 130)" />
       <ellipse cx="70" cy="70" rx={25} ry={15} fill={color} opacity="0.8" transform="rotate(-45 70 70)" />
-    </MotionSvg>
-  )
+    </motion.svg>)
 }

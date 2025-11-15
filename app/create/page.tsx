@@ -18,7 +18,7 @@ interface MemoryFormState {
   title: string
   description: string
   date: string
-  imageUrl: string | null
+  imageUrl?: string // ✅ Changed from `string | null`
   type: 'standard' | 'featured' | 'quote'
   tags: ('love' | 'milestone' | 'nostalgic' | 'celebration' | 'funny')[]
   contributor: { name: string; email: string }
@@ -220,7 +220,7 @@ export default function CreatePage() {
       title: '',
       description: '',
       date: '',
-      imageUrl: null,
+      imageUrl: undefined, // ✅ Changed from null
       type: 'standard',
       tags: [],
       contributor: { name: '', email: '' },
@@ -230,57 +230,58 @@ export default function CreatePage() {
       ['love', 'milestone', 'nostalgic', 'celebration', 'funny']
 
     const handleAddMemory = () => {
-      if (!memoryForm.title || !memoryForm.description || !memoryForm.date || !memoryForm.contributor.name) {
-        alert('Please fill in all required fields')
-        return
-      }
+  if (!memoryForm.title || !memoryForm.description || !memoryForm.date || !memoryForm.contributor.name) {
+    alert('Please fill in all required fields')
+    return
+  }
 
-      const memory: IMemory = {
-        ...memoryForm,
-        id: nanoid(8),
-        contributor: {
-          ...memoryForm.contributor,
-          id: nanoid(8),
-          contributionCount: 1,
-        },
-        rotation: 0,
-        createdAt: new Date(),
-      }
+  const memory: IMemory = {
+    ...memoryForm,
+    id: nanoid(8),
+    contributor: {
+      ...memoryForm.contributor,
+      id: nanoid(8),
+      contributionCount: 1,
+    },
+    rotation: 0,
+    createdAt: new Date(),
+    // ✅ imageUrl is already `string | undefined` from memoryForm
+  }
 
-      if (editingMemory) {
-        store.updateMemory(editingMemory, memory)
-        setEditingMemory(null)
-      } else {
-        store.addMemory(memory)
-      }
+  if (editingMemory) {
+    store.updateMemory(editingMemory, memory)
+    setEditingMemory(null)
+  } else {
+    store.addMemory(memory)
+  }
 
-      // Reset form
-      setMemoryForm({
-        title: '',
-        description: '',
-        date: '',
-        imageUrl: null,
-        type: 'standard',
-        tags: [],
-        contributor: { name: '', email: '' },
-      })
-    }
+  // Reset form
+  setMemoryForm({
+    title: '',
+    description: '',
+    date: '',
+    imageUrl: undefined, // ✅ Changed from null
+    type: 'standard',
+    tags: [],
+    contributor: { name: '', email: '' },
+  })
+}
 
     const handleEdit = (memory: IMemory) => {
-      setEditingMemory(memory.id)
-      setMemoryForm({
-        title: memory.title,
-        description: memory.description,
-        date: memory.date,
-        imageUrl: memory.imageUrl || null,
-        type: memory.type,
-        tags: memory.tags as MemoryFormState['tags'],
-        contributor: { 
-          name: memory.contributor.name, 
-          email: memory.contributor.email || '' 
-        },
-      })
-    }
+  setEditingMemory(memory.id)
+  setMemoryForm({
+    title: memory.title,
+    description: memory.description,
+    date: memory.date,
+    imageUrl: memory.imageUrl, // ✅ Already `string | undefined`
+    type: memory.type,
+    tags: memory.tags as MemoryFormState['tags'],
+    contributor: { 
+      name: memory.contributor.name, 
+      email: memory.contributor.email || '' 
+    },
+  })
+}
 
     const canProceed = store.memories.length >= 3
 
@@ -329,7 +330,7 @@ export default function CreatePage() {
             <div>
               <label className="text-body-sm font-body font-semibold text-sepiaInk mb-2 block">Image (optional)</label>
               <ImageUploader
-                onUpload={(url) => setMemoryForm({ ...memoryForm, imageUrl: url })}
+                onUpload={(url) => setMemoryForm({ ...memoryForm, imageUrl: url || undefined })} // ✅ Changed from || null
                 existingImage={memoryForm.imageUrl}
               />
             </div>

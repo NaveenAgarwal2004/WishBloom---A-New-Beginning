@@ -1,10 +1,9 @@
 import mongoose, { Schema, Document, Model } from 'mongoose'
 
-// TypeScript Interfaces
 export interface IContributor {
   id: string
   name: string
-  email?: string
+  email?: string // ✅ Changed from `string | undefined`
   contributionCount: number
 }
 
@@ -14,7 +13,7 @@ export interface IMemory {
   description: string
   date: string
   contributor: IContributor
-  imageUrl?: string
+  imageUrl?: string // ✅ Changed from `string | undefined`
   type: 'standard' | 'featured' | 'quote'
   tags: string[]
   rotation: number
@@ -24,12 +23,12 @@ export interface IMemory {
 export interface IMessage {
   id: string
   type: 'letter' | 'poem'
-  greeting?: string
+  greeting?: string // ✅ Changed from `string | undefined`
   content: string
-  closing?: string
+  closing?: string // ✅ Changed from `string | undefined`
   signature: string
-  title?: string
-  postscript?: string
+  title?: string // ✅ Changed from `string | undefined`
+  postscript?: string // ✅ Changed from `string | undefined`
   contributor: IContributor
   date: string
   createdAt: Date
@@ -37,8 +36,8 @@ export interface IMessage {
 
 export interface IWishBloom extends Document {
   recipientName: string
-  age?: number
-  creativeAgeDescription?: string
+  age?: number // ✅ Optional (not `number | null`)
+  creativeAgeDescription?: string // ✅ Optional
   introMessage: string
   uniqueUrl: string
   createdBy: IContributor
@@ -67,7 +66,7 @@ const MemorySchema = new Schema<IMemory>({
   description: { type: String, required: true },
   date: { type: String, required: true },
   contributor: { type: ContributorSchema, required: true },
-  imageUrl: { type: String },
+  imageUrl: { type: String }, // ✅ No default, just optional
   type: { type: String, enum: ['standard', 'featured', 'quote'], default: 'standard' },
   tags: [{ type: String }],
   rotation: { type: Number, default: 0 },
@@ -91,7 +90,7 @@ const MessageSchema = new Schema<IMessage>({
 const WishBloomSchema = new Schema<IWishBloom>(
   {
     recipientName: { type: String, required: true },
-    age: { type: Number },
+    age: { type: Number }, // ✅ Optional, no default
     creativeAgeDescription: { type: String },
     introMessage: { type: String, required: true },
     uniqueUrl: { type: String, required: true },

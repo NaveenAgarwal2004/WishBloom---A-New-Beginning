@@ -1,3 +1,4 @@
+
 'use client'
 
 import { useState } from 'react'
@@ -5,14 +6,14 @@ import { useDropzone, FileWithPath } from 'react-dropzone'
 import { Upload, X, Loader2 } from 'lucide-react'
 
 interface ImageUploaderProps {
-  onUpload?: (url: string | null) => void
-  existingImage?: string | null
+  onUpload?: (url: string | undefined) => void // ✅ Changed from `string | null`
+  existingImage?: string // ✅ Changed from `string | null`
 }
 
 export default function ImageUploader({ onUpload, existingImage }: ImageUploaderProps) {
   const [uploading, setUploading] = useState(false)
-  const [imageUrl, setImageUrl] = useState<string | null>(existingImage || null)
-  const [error, setError] = useState<string | null>(null)
+  const [imageUrl, setImageUrl] = useState<string | undefined>(existingImage) // ✅ Changed from `string | null`
+  const [error, setError] = useState<string | undefined>(undefined) // ✅ Changed from `string | null`
 
   const onDrop = async (acceptedFiles: FileWithPath[]) => {
     const file = acceptedFiles[0]
@@ -30,7 +31,7 @@ export default function ImageUploader({ onUpload, existingImage }: ImageUploader
       return
     }
 
-    setError(null)
+    setError(undefined) // ✅ Changed from null
     setUploading(true)
 
     try {
@@ -42,7 +43,6 @@ export default function ImageUploader({ onUpload, existingImage }: ImageUploader
         body: formData,
       })
 
-      // Check if response is OK before parsing JSON
       if (!response.ok) {
         const errorText = await response.text()
         console.error('Upload failed:', response.status, errorText)
@@ -76,8 +76,8 @@ export default function ImageUploader({ onUpload, existingImage }: ImageUploader
   })
 
   const handleRemove = () => {
-    setImageUrl(null)
-    if (onUpload) onUpload(null)
+    setImageUrl(undefined) // ✅ Changed from null
+    if (onUpload) onUpload(undefined) // ✅ Changed from null
   }
 
   if (imageUrl) {

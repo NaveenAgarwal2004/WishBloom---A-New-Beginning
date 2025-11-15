@@ -1,7 +1,8 @@
+
 import localFont from 'next/font/local'
 import './globals.css'
 import { AudioProvider } from '@/context/AudioContext'
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { WebVitals } from './web-vitals'
 import SkipLink from '@/components/SkipLink'
 
@@ -78,7 +79,13 @@ const ibmPlexMono = localFont({
   preload: true,
 })
 
+// ✅ Move viewport to separate export (Next.js 14.2+ standard)
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+}
 
+// ✅ Clean metadata object (no more deprecated viewport key)
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'),
   title: 'WishBloom - Pressed Flower Birthday Memories',
@@ -97,7 +104,6 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
-  viewport: 'width=device-width, initial-scale=1',
 }
 
 export default function RootLayout({
@@ -111,6 +117,7 @@ export default function RootLayout({
         className={`${cormorantGaramond.variable} ${spectral.variable} ${ebGaramond.variable} ${ibmPlexMono.variable} antialiased`}
       >
         <SkipLink />
+        {/* ✅ AudioProvider now safely runs client-side */}
         <AudioProvider>
           {children}
         </AudioProvider>

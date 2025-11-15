@@ -13,6 +13,7 @@ interface HeroProps {
 
 export default function Hero({ recipientName, age, creativeAgeDescription }: HeroProps) {
   const router = useRouter()
+  const _age = age
   
   return (
     <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-b from-warmCream-100 to-rosePetal/10 overflow-hidden px-4 md:px-8 py-16 md:py-32">

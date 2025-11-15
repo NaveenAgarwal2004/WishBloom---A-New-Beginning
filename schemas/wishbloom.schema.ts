@@ -8,14 +8,14 @@ export const ContributorSchema = z.object({
   contributionCount: z.number().int().min(0).default(1),
 })
 
-// Memory Schema
+// Memory Schema - updated imageUrl handling
 export const MemorySchema = z.object({
   id: z.string().optional(),
   title: z.string().min(1, 'Title is required').max(200),
   description: z.string().min(1, 'Description is required').max(2000),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format (YYYY-MM-DD)'),
   contributor: ContributorSchema,
-  imageUrl: z.string().url('Invalid image URL').optional().or(z.literal('')),
+  imageUrl: z.string().url('Invalid image URL').optional(), // Changed from .optional().or(z.literal(''))
   type: z.enum(['standard', 'featured', 'quote']).default('standard'),
   tags: z.array(z.enum(['love', 'milestone', 'nostalgic', 'celebration', 'funny'])).default([]),
   rotation: z.number().min(-10).max(10).default(0),

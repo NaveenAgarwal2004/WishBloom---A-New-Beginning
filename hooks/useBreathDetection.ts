@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback, useRef } from 'react'
+import { AUDIO_CONSTANTS } from '@/config/constants'
 
 interface UseBreathDetectionReturn {
   isBlowing: boolean
@@ -50,8 +51,8 @@ export function useBreathDetection(): UseBreathDetectionReturn {
       const source = context.createMediaStreamSource(stream)
       const analyser = context.createAnalyser()
 
-      analyser.fftSize = 2048
-      analyser.smoothingTimeConstant = 0.8
+      analyser.fftSize = AUDIO_CONSTANTS.FFT_SIZE
+      analyser.smoothingTimeConstant = AUDIO_CONSTANTS.SMOOTHING_TIME_CONSTANT
       source.connect(analyser)
 
       audioContextRef.current = context
@@ -67,13 +68,12 @@ export function useBreathDetection(): UseBreathDetectionReturn {
         analyserRef.current.getByteFrequencyData(dataArray)
 
         // Analyze low frequencies (0-500Hz) for breath detection
-        const lowFreqSlice = dataArray.slice(0, 10)
+        const lowFreqSlice = dataArray.slice(0, AUDIO_CONSTANTS.LOW_FREQ_SLICE_END)
         const lowFreqSum = lowFreqSlice.reduce((sum, val) => sum + val, 0)
-        const avgAmplitude = lowFreqSum / 10
+        const avgAmplitude = lowFreqSum / AUDIO_CONSTANTS.LOW_FREQ_SLICE_END
 
         // Threshold for detecting blowing
-        const BLOW_THRESHOLD = 180
-        setIsBlowing(avgAmplitude > BLOW_THRESHOLD)
+        setIsBlowing(avgAmplitude > AUDIO_CONSTANTS.BLOW_THRESHOLD)
 
         animationFrameRef.current = requestAnimationFrame(analyze)
       }

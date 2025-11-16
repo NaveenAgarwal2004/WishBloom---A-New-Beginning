@@ -1,52 +1,98 @@
 import { z } from 'zod'
+import {
+  VALIDATION_LIMITS,
+  FILE_LIMITS,
+  MEMORY_TYPES,
+  MESSAGE_TYPES,
+  MEMORY_TAGS,
+  ERROR_MESSAGES,
+  PATTERNS,
+  DEFAULT_VALUES,
+} from '@/config/constants'
 
 // Contributor Schema
 export const ContributorSchema = z.object({
   id: z.string().optional(),
   name: z.string().optional().default('Anonymous'),
-  email: z.string().email().or(z.literal('')).optional(),
-  contributionCount: z.number().int().min(0).default(1),
+  email: z.string().email(ERROR_MESSAGES.INVALID_EMAIL).or(z.literal('')).optional(),
+  contributionCount: z.number().int().min(0).default(DEFAULT_VALUES.CONTRIBUTOR_COUNT),
 })
 
 // Memory Schema
 export const MemorySchema = z.object({
   id: z.string().optional(),
-  title: z.string().min(1, 'Title is required').max(200),
-  description: z.string().min(1, 'Description is required').max(2000),
-  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format (YYYY-MM-DD)'),
+  title: z
+    .string()
+    .min(VALIDATION_LIMITS.MEMORY_DESCRIPTION_MIN, ERROR_MESSAGES.REQUIRED_FIELD)
+    .max(VALIDATION_LIMITS.MEMORY_TITLE_MAX),
+  description: z
+    .string()
+    .min(VALIDATION_LIMITS.MEMORY_DESCRIPTION_MIN, ERROR_MESSAGES.REQUIRED_FIELD)
+    .max(VALIDATION_LIMITS.MEMORY_DESCRIPTION_MAX),
+  date: z.string().regex(PATTERNS.DATE_FORMAT, ERROR_MESSAGES.INVALID_DATE),
   contributor: ContributorSchema,
-  imageUrl: z.string().url('Invalid image URL').optional(), // ✅ Just .optional()
-  type: z.enum(['standard', 'featured', 'quote']).default('standard'),
-  tags: z.array(z.enum(['love', 'milestone', 'nostalgic', 'celebration', 'funny'])).default([]),
-  rotation: z.number().min(-10).max(10).default(0),
+  imageUrl: z.string().url(ERROR_MESSAGES.INVALID_URL).optional(),
+  type: z.enum(MEMORY_TYPES).default(DEFAULT_VALUES.MEMORY_TYPE),
+  tags: z.array(z.enum(MEMORY_TAGS)).default([]),
+  rotation: z.number().min(-10).max(10).default(DEFAULT_VALUES.MEMORY_ROTATION),
   createdAt: z.string().datetime().optional(),
 })
 
 // Message Schema
 export const MessageSchema = z.object({
   id: z.string().optional(),
-  type: z.enum(['letter', 'poem']),
-  greeting: z.string().max(100).optional(), // ✅ Just .optional()
-  content: z.string().min(10, 'Content must be at least 10 characters').max(5000),
-  closing: z.string().max(100).optional(), // ✅ Just .optional()
-  signature: z.string().min(1, 'Signature is required').max(100),
-  title: z.string().max(200).optional(), // ✅ Just .optional()
-  postscript: z.string().max(500).optional(), // ✅ Just .optional()
+  type: z.enum(MESSAGE_TYPES),
+  greeting: z.string().max(VALIDATION_LIMITS.MESSAGE_GREETING_MAX).optional(),
+  content: z
+    .string()
+    .min(VALIDATION_LIMITS.MESSAGE_CONTENT_MIN, `Content must be at least ${VALIDATION_LIMITS.MESSAGE_CONTENT_MIN} characters`)
+    .max(VALIDATION_LIMITS.MESSAGE_CONTENT_MAX),
+  closing: z.string().max(VALIDATION_LIMITS.MESSAGE_CLOSING_MAX).optional(),
+  signature: z
+    .string()
+    .min(1, ERROR_MESSAGES.REQUIRED_FIELD)
+    .max(VALIDATION_LIMITS.MESSAGE_SIGNATURE_MAX),
+  title: z.string().max(VALIDATION_LIMITS.MESSAGE_TITLE_MAX).optional(),
+  postscript: z.string().max(VALIDATION_LIMITS.MESSAGE_POSTSCRIPT_MAX).optional(),
   contributor: ContributorSchema,
-  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format'),
+  date: z.string().regex(PATTERNS.DATE_FORMAT, ERROR_MESSAGES.INVALID_DATE),
   createdAt: z.string().datetime().optional(),
 })
 
 // Main WishBloom Creation Schema
 export const CreateWishBloomSchema = z.object({
-  recipientName: z.string().min(1, 'Recipient name is required').max(50),
-  age: z.number().int().min(1).max(120).optional(), // ✅ Just .optional() (not .nullable())
-  creativeAgeDescription: z.string().max(100).optional(), // ✅ Just .optional()
-  introMessage: z.string().min(10, 'Intro message must be at least 10 characters').max(2000),
+  recipientName: z
+    .string()
+    .min(VALIDATION_LIMITS.RECIPIENT_NAME_MIN, ERROR_MESSAGES.REQUIRED_FIELD)
+    .max(VALIDATION_LIMITS.RECIPIENT_NAME_MAX),
+  age: z
+    .number()
+    .int()
+    .min(VALIDATION_LIMITS.AGE_MIN)
+    .max(VALIDATION_LIMITS.AGE_MAX)
+    .optional(),
+  creativeAgeDescription: z.string().max(VALIDATION_LIMITS.CREATIVE_AGE_MAX).optional(),
+  introMessage: z
+    .string()
+    .min(
+      VALIDATION_LIMITS.INTRO_MESSAGE_MIN,
+      `Intro message must be at least ${VALIDATION_LIMITS.INTRO_MESSAGE_MIN} characters`
+    )
+    .max(VALIDATION_LIMITS.INTRO_MESSAGE_MAX),
   createdBy: ContributorSchema,
-  memories: z.array(MemorySchema).min(3, 'At least 3 memories required').max(200),
-  messages: z.array(MessageSchema).min(1, 'At least 1 message required').max(100),
-  celebrationWishPhrases: z.array(z.string().max(50)).min(1).max(50).optional(),
+  memories: z
+    .array(MemorySchema)
+    .min(VALIDATION_LIMITS.MEMORIES_MIN_REQUIRED, ERROR_MESSAGES.MIN_MEMORIES)
+    .max(VALIDATION_LIMITS.MEMORIES_MAX_ALLOWED),
+  messages: z
+    .array(MessageSchema)
+    .min(VALIDATION_LIMITS.MESSAGES_MIN_REQUIRED, ERROR_MESSAGES.MIN_MESSAGES)
+    .max(VALIDATION_LIMITS.MESSAGES_MAX_ALLOWED),
+  celebrationWishPhrases: z
+    .array(z.string().max(VALIDATION_LIMITS.CELEBRATION_PHRASE_MAX_LENGTH))
+    .min(VALIDATION_LIMITS.CELEBRATION_PHRASES_MIN)
+    .max(VALIDATION_LIMITS.CELEBRATION_PHRASES_MAX)
+    .optional(),
 })
 
 // Update Schema (partial for PATCH requests)
@@ -54,20 +100,30 @@ export const UpdateWishBloomSchema = CreateWishBloomSchema.partial()
 
 // Email Schema
 export const SendEmailSchema = z.object({
-  recipientEmail: z.string().email('Invalid recipient email'),
-  recipientName: z.string().min(1, 'Recipient name is required').max(100),
-  wishbloomUrl: z.string().url('Invalid WishBloom URL'),
-  senderName: z.string().min(1, 'Sender name is required').max(100),
-  customMessage: z.string().max(500).optional(), // ✅ Just .optional()
+  recipientEmail: z.string().email(ERROR_MESSAGES.INVALID_EMAIL),
+  recipientName: z
+    .string()
+    .min(1, ERROR_MESSAGES.REQUIRED_FIELD)
+    .max(VALIDATION_LIMITS.CONTRIBUTOR_NAME_MAX),
+  wishbloomUrl: z.string().url(ERROR_MESSAGES.INVALID_URL),
+  senderName: z
+    .string()
+    .min(1, ERROR_MESSAGES.REQUIRED_FIELD)
+    .max(VALIDATION_LIMITS.CONTRIBUTOR_NAME_MAX),
+  customMessage: z.string().max(VALIDATION_LIMITS.EMAIL_CUSTOM_MESSAGE_MAX).optional(),
 })
 
-// Image Upload Schema
+// Image Upload Schema - Fixed to use FILE_LIMITS correctly
 export const ImageUploadSchema = z.object({
-  file: z.instanceof(File)
-    .refine((file) => file.size <= 5 * 1024 * 1024, 'File must be less than 5MB')
+  file: z
+    .instanceof(File)
     .refine(
-      (file) => ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'].includes(file.type),
-      'Only JPEG, PNG, and WebP images are allowed'
+      (file) => file.size <= FILE_LIMITS.IMAGE_MAX_SIZE_BYTES,
+      ERROR_MESSAGES.FILE_TOO_LARGE
+    )
+    .refine(
+      (file) => (FILE_LIMITS.ALLOWED_IMAGE_TYPES as readonly string[]).includes(file.type),
+      ERROR_MESSAGES.INVALID_FILE_TYPE
     ),
 })
 

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { v2 as cloudinary } from 'cloudinary'
 import { withRateLimit, rateLimiters } from '@/lib/rate-limit'
 import { env } from '@/lib/env'
+import { FILE_LIMITS, CLOUDINARY_CONFIG, ERROR_MESSAGES } from '@/config/constants'
 
 // Configure Cloudinary
 cloudinary.config({
@@ -26,23 +27,25 @@ export async function POST(request: Request) {
           )
         }
 
-        // Validate file type
-        const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
-        if (!validTypes.includes(file.type)) {
+        // Validate file type - Type-safe check
+        const allowedTypes = FILE_LIMITS.ALLOWED_IMAGE_TYPES as readonly string[]
+        if (!allowedTypes.includes(file.type)) {
           return NextResponse.json(
             {
               success: false,
-              error: 'Invalid file type. Only JPEG, PNG, and WebP are allowed',
+              error: ERROR_MESSAGES.INVALID_FILE_TYPE,
             },
             { status: 400 }
           )
         }
 
-        // Validate file size (max 5MB)
-        const maxSize = 5 * 1024 * 1024 // 5MB
-        if (file.size > maxSize) {
+        // Validate file size
+        if (file.size > FILE_LIMITS.IMAGE_MAX_SIZE_BYTES) {
           return NextResponse.json(
-            { success: false, error: 'File size too large. Maximum 5MB allowed' },
+            { 
+              success: false, 
+              error: ERROR_MESSAGES.FILE_TOO_LARGE,
+            },
             { status: 400 }
           )
         }
@@ -56,11 +59,14 @@ export async function POST(request: Request) {
           cloudinary.uploader
             .upload_stream(
               {
-                folder: 'wishbloom',
+                folder: CLOUDINARY_CONFIG.FOLDER,
                 transformation: [
-                  { width: 1200, crop: 'limit' },
-                  { quality: 'auto' },
-                  { fetch_format: 'auto' },
+                  { 
+                    width: CLOUDINARY_CONFIG.TRANSFORMATION.width, 
+                    crop: CLOUDINARY_CONFIG.TRANSFORMATION.crop 
+                  },
+                  { quality: CLOUDINARY_CONFIG.TRANSFORMATION.quality },
+                  { fetch_format: CLOUDINARY_CONFIG.TRANSFORMATION.fetch_format },
                 ],
               },
               (error, result) => {

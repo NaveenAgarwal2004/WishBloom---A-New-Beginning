@@ -12,6 +12,7 @@ import { VALIDATION_LIMITS, MEMORY_TYPES, MEMORY_TAGS } from '@/config/constants
 import type { IMemory } from '@/models/WishBloom'
 import type { z } from 'zod'
 
+// ✅ ROOT FIX: Properly infer the type from Zod schema
 type MemoryFormData = z.infer<typeof MemorySchema>
 
 export default function Step2Memories() {

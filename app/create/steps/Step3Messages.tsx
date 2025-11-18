@@ -10,6 +10,7 @@ import { VALIDATION_LIMITS, MESSAGE_TYPES } from '@/config/constants'
 import type { IMessage } from '@/models/WishBloom'
 import type { z } from 'zod'
 
+// ✅ ROOT FIX: Properly infer the type from Zod schema
 type MessageFormData = z.infer<typeof MessageSchema>
 
 export default function Step3Messages() {
@@ -21,7 +22,6 @@ export default function Step3Messages() {
     formState: { errors },
     reset,
     watch,
-    setValue,
   } = useForm<MessageFormData>({
     resolver: zodResolver(MessageSchema),
     mode: 'onBlur',

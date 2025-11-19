@@ -10,15 +10,15 @@ import {
   DEFAULT_VALUES,
 } from '@/config/constants'
 
-// Contributor Schema
+//  Contributor Schema with required name
 export const ContributorSchema = z.object({
   id: z.string().optional(),
-  name: z.string().optional().default('Anonymous'),
+  name: z.string().min(1, 'Contributor name is required'), // REQUIRED
   email: z.string().email(ERROR_MESSAGES.INVALID_EMAIL).or(z.literal('')).optional(),
-  contributionCount: z.number().int().min(0).default(DEFAULT_VALUES.CONTRIBUTOR_COUNT),
+  contributionCount: z.number().int().min(1).default(1), // REQUIRED with default
 })
 
-// Memory Schema
+//  Memory Schema with required type field
 export const MemorySchema = z.object({
   id: z.string().optional(),
   title: z
@@ -30,18 +30,19 @@ export const MemorySchema = z.object({
     .min(VALIDATION_LIMITS.MEMORY_DESCRIPTION_MIN, ERROR_MESSAGES.REQUIRED_FIELD)
     .max(VALIDATION_LIMITS.MEMORY_DESCRIPTION_MAX),
   date: z.string().regex(PATTERNS.DATE_FORMAT, ERROR_MESSAGES.INVALID_DATE),
-  contributor: ContributorSchema,
+  type: z.enum(MEMORY_TYPES).default(DEFAULT_VALUES.MEMORY_TYPE), // ✅ REQUIRED field with default
+  contributor: ContributorSchema, // Uses schema with required name
   imageUrl: z.string().url(ERROR_MESSAGES.INVALID_URL).optional(),
-  type: z.enum(MEMORY_TYPES).default(DEFAULT_VALUES.MEMORY_TYPE),
   tags: z.array(z.enum(MEMORY_TAGS)).default([]),
   rotation: z.number().min(-10).max(10).default(DEFAULT_VALUES.MEMORY_ROTATION),
   createdAt: z.string().datetime().optional(),
 })
 
-// Message Schema
+//  Message Schema with required signature and date
 export const MessageSchema = z.object({
   id: z.string().optional(),
   type: z.enum(MESSAGE_TYPES),
+  date: z.string().regex(PATTERNS.DATE_FORMAT, ERROR_MESSAGES.INVALID_DATE), // ✅ REQUIRED
   greeting: z.string().max(VALIDATION_LIMITS.MESSAGE_GREETING_MAX).optional(),
   content: z
     .string()
@@ -50,12 +51,11 @@ export const MessageSchema = z.object({
   closing: z.string().max(VALIDATION_LIMITS.MESSAGE_CLOSING_MAX).optional(),
   signature: z
     .string()
-    .min(1, ERROR_MESSAGES.REQUIRED_FIELD)
+    .min(1, ERROR_MESSAGES.REQUIRED_FIELD) // REQUIRED
     .max(VALIDATION_LIMITS.MESSAGE_SIGNATURE_MAX),
   title: z.string().max(VALIDATION_LIMITS.MESSAGE_TITLE_MAX).optional(),
   postscript: z.string().max(VALIDATION_LIMITS.MESSAGE_POSTSCRIPT_MAX).optional(),
-  contributor: ContributorSchema,
-  date: z.string().regex(PATTERNS.DATE_FORMAT, ERROR_MESSAGES.INVALID_DATE),
+  contributor: ContributorSchema, // Uses schema with required name
   createdAt: z.string().datetime().optional(),
 })
 
@@ -113,7 +113,7 @@ export const SendEmailSchema = z.object({
   customMessage: z.string().max(VALIDATION_LIMITS.EMAIL_CUSTOM_MESSAGE_MAX).optional(),
 })
 
-// Image Upload Schema - Fixed to use FILE_LIMITS correctly
+// Image Upload Schema
 export const ImageUploadSchema = z.object({
   file: z
     .instanceof(File)

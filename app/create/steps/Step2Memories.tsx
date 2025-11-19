@@ -12,8 +12,8 @@ import { VALIDATION_LIMITS, MEMORY_TYPES, MEMORY_TAGS } from '@/config/constants
 import type { IMemory } from '@/models/WishBloom'
 import type { z } from 'zod'
 
-// ✅ ROOT FIX: Properly infer the exact type from the schema
-type MemoryFormData = z.infer<typeof MemorySchema>
+// Infer exact type from schema, then make type required
+type MemoryFormData = z.infer<typeof MemorySchema> & { type: 'standard' | 'featured' | 'quote' }
 
 export default function Step2Memories() {
   const store = useWishBloomStore()

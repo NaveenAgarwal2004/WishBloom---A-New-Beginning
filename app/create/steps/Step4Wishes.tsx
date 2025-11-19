@@ -7,7 +7,7 @@ import { ArrowRight, ArrowLeft, Plus, Trash2 } from 'lucide-react'
 import useWishBloomStore from '@/store/useWishBloomStore'
 import { VALIDATION_LIMITS } from '@/config/constants'
 
-// ✅ Zod schema for Step 4
+//  Define schema inline to avoid path inference issues
 const step4Schema = z.object({
   celebrationWishPhrases: z
     .array(
@@ -37,7 +37,8 @@ export default function Step4Wishes() {
     },
   })
 
-  const { fields, append, remove } = useFieldArray({
+  // Explicitly type useFieldArray with the correct path
+  const { fields, append, remove } = useFieldArray<Step4FormData, 'celebrationWishPhrases', 'id'>({
     control,
     name: 'celebrationWishPhrases',
   })
@@ -68,7 +69,7 @@ export default function Step4Wishes() {
             <div key={field.id} className="flex gap-3 items-start">
               <div className="flex-1">
                 <input
-                  {...register(`celebrationWishPhrases.${index}`)}
+                  {...register(`celebrationWishPhrases.${index}` as const)}
                   type="text"
                   maxLength={VALIDATION_LIMITS.CELEBRATION_PHRASE_MAX_LENGTH}
                   className="w-full bg-warmCream-50 border-2 border-warmCream-300 focus:border-fadedGold rounded-lg px-4 py-3 text-body font-body outline-none"

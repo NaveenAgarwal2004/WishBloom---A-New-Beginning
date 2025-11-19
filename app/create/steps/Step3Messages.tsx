@@ -10,8 +10,11 @@ import { VALIDATION_LIMITS, MESSAGE_TYPES } from '@/config/constants'
 import type { IMessage } from '@/models/WishBloom'
 import type { z } from 'zod'
 
-// ✅ ROOT FIX: Properly infer the exact type from the schema
-type MessageFormData = z.infer<typeof MessageSchema>
+// Infer exact type from schema, then make required fields explicit
+type MessageFormData = z.infer<typeof MessageSchema> & { 
+  signature: string // Required
+  date: string // Required
+}
 
 export default function Step3Messages() {
   const store = useWishBloomStore()
@@ -30,7 +33,7 @@ export default function Step3Messages() {
       greeting: '',
       content: '',
       closing: '',
-      signature: '',
+      signature: '', // Now properly typed as required
       title: '',
       postscript: '',
       contributor: { 
@@ -39,7 +42,7 @@ export default function Step3Messages() {
         email: '',
         contributionCount: 1
       },
-      date: new Date().toISOString().split('T')[0],
+      date: new Date().toISOString().split('T')[0], // Now properly typed as required
     },
   })
 

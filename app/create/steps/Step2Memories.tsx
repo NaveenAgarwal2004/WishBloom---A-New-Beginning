@@ -12,7 +12,7 @@ import { VALIDATION_LIMITS, MEMORY_TYPES, MEMORY_TAGS } from '@/config/constants
 import type { IMemory } from '@/models/WishBloom'
 import type { z } from 'zod'
 
-// ✅ ROOT FIX: Properly infer the type from Zod schema
+// ✅ ROOT FIX: Properly infer the exact type from the schema
 type MemoryFormData = z.infer<typeof MemorySchema>
 
 export default function Step2Memories() {
@@ -36,7 +36,12 @@ export default function Step2Memories() {
       imageUrl: undefined,
       type: 'standard',
       tags: [],
-      contributor: { name: '', email: '' },
+      contributor: { 
+        id: undefined,
+        name: '', 
+        email: '',
+        contributionCount: 1 
+      },
     },
   })
 
@@ -47,9 +52,10 @@ export default function Step2Memories() {
       ...data,
       id: editingMemoryId || nanoid(8),
       contributor: {
-        ...data.contributor,
-        id: nanoid(8),
-        contributionCount: 1,
+        id: data.contributor.id || nanoid(8),
+        name: data.contributor.name || 'Anonymous',
+        email: data.contributor.email || undefined,
+        contributionCount: data.contributor.contributionCount || 1,
       },
       rotation: 0,
       createdAt: new Date(),

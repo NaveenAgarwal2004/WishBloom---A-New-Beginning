@@ -10,7 +10,7 @@ import { VALIDATION_LIMITS, MESSAGE_TYPES } from '@/config/constants'
 import type { IMessage } from '@/models/WishBloom'
 import type { z } from 'zod'
 
-// ✅ ROOT FIX: Properly infer the type from Zod schema
+// ✅ ROOT FIX: Properly infer the exact type from the schema
 type MessageFormData = z.infer<typeof MessageSchema>
 
 export default function Step3Messages() {
@@ -33,7 +33,12 @@ export default function Step3Messages() {
       signature: '',
       title: '',
       postscript: '',
-      contributor: { name: '', email: '' },
+      contributor: { 
+        id: undefined,
+        name: '', 
+        email: '',
+        contributionCount: 1
+      },
       date: new Date().toISOString().split('T')[0],
     },
   })
@@ -46,9 +51,10 @@ export default function Step3Messages() {
       ...data,
       id: nanoid(8),
       contributor: {
-        ...data.contributor,
-        id: nanoid(8),
-        contributionCount: 1,
+        id: data.contributor.id || nanoid(8),
+        name: data.contributor.name || 'Anonymous',
+        email: data.contributor.email || undefined,
+        contributionCount: data.contributor.contributionCount || 1,
       },
       createdAt: new Date(),
     }

@@ -10,22 +10,21 @@ import ImageUploader from '@/components/ImageUploader'
 import { MemorySchema } from '@/schemas/wishbloom.schema'
 import { VALIDATION_LIMITS, MEMORY_TYPES, MEMORY_TAGS } from '@/config/constants'
 import type { IMemory } from '@/models/WishBloom'
-import type { z } from 'zod'
 
-// ✅ ROOT FIX: Explicitly define form data type matching the schema
+// ✅ ROOT FIX: Match Zod schema's inferred type exactly
 type MemoryFormData = {
   title: string
   description: string
   date: string
-  type: 'standard' | 'featured' | 'quote' // ✅ REQUIRED, not optional
+  type: 'standard' | 'featured' | 'quote'
   contributor: {
     id?: string
     name: string
     email?: string
-    contributionCount: number // ✅ REQUIRED
+    contributionCount: number
   }
   imageUrl?: string
-  tags: Array<'love' | 'milestone' | 'nostalgic' | 'celebration' | 'funny'>
+  tags: Array<'love' | 'milestone' | 'nostalgic' | 'celebration' | 'funny'> // ✅ Required array, not optional
   rotation?: number
   createdAt?: string
 }
@@ -49,12 +48,12 @@ export default function Step2Memories() {
       description: '',
       date: '',
       imageUrl: undefined,
-      type: 'standard', // ✅ Explicitly set default
-      tags: [],
+      type: 'standard',
+      tags: [], // ✅ Initialize as empty array, not undefined
       contributor: { 
         name: '', 
         email: '',
-        contributionCount: 1 // ✅ Set default
+        contributionCount: 1
       },
     },
   })
@@ -62,11 +61,10 @@ export default function Step2Memories() {
   const canProceed = store.memories.length >= VALIDATION_LIMITS.MEMORIES_MIN_REQUIRED
 
   const onSubmit = (data: MemoryFormData) => {
-    // ✅ Ensure all required fields are present
     const memory: IMemory = {
       ...data,
       id: editingMemoryId || nanoid(8),
-      type: data.type || 'standard', // Fallback
+      type: data.type || 'standard',
       contributor: {
         id: data.contributor.id || nanoid(8),
         name: data.contributor.name || 'Anonymous',
@@ -90,7 +88,7 @@ export default function Step2Memories() {
       date: '',
       imageUrl: undefined,
       type: 'standard',
-      tags: [],
+      tags: [], // ✅ Reset to empty array
       contributor: { 
         name: '', 
         email: '',
@@ -106,7 +104,7 @@ export default function Step2Memories() {
     setValue('date', memory.date)
     setValue('imageUrl', memory.imageUrl)
     setValue('type', memory.type)
-    setValue('tags', memory.tags as any)
+    setValue('tags', (memory.tags || []) as any) // ✅ Ensure it's an array
     setValue('contributor.name', memory.contributor.name)
     setValue('contributor.email', memory.contributor.email || '')
     setValue('contributor.contributionCount', memory.contributor.contributionCount)
@@ -121,7 +119,6 @@ export default function Step2Memories() {
         Share at least {VALIDATION_LIMITS.MEMORIES_MIN_REQUIRED} memorable moments
       </p>
 
-      {/* Memory Form */}
       <form onSubmit={handleSubmit(onSubmit)} className="bg-warmCream-50 rounded-xl p-8 border-2 border-warmCream-300 mb-8">
         <div className="space-y-6">
           <div className="grid md:grid-cols-2 gap-6">
@@ -266,7 +263,6 @@ export default function Step2Memories() {
         </div>
       </form>
 
-      {/* Memories List */}
       {store.memories.length > 0 && (
         <div className="mb-8">
           <h3 className="text-h5 font-heading font-semibold text-sepiaInk mb-4">

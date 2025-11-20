@@ -8,12 +8,31 @@ import { nanoid } from 'nanoid'
 import { z } from 'zod'
 import useWishBloomStore from '@/store/useWishBloomStore'
 import ImageUploader from '@/components/ImageUploader'
-import { MemorySchema } from '@/schemas/wishbloom.schema'
-import { VALIDATION_LIMITS, MEMORY_TYPES, MEMORY_TAGS } from '@/config/constants'
+import { ContributorSchema } from '@/schemas/wishbloom.schema'
+import { VALIDATION_LIMITS, MEMORY_TYPES, MEMORY_TAGS, ERROR_MESSAGES, PATTERNS } from '@/config/constants'
 import type { IMemory } from '@/models/WishBloom'
 
-//  Use Zod's inferred type directly for perfect alignment
-type MemoryFormData = z.infer<typeof MemorySchema>
+// ✅ ROOT FIX: Define local schema for form to avoid .default() type inference issues
+const MemoryFormSchema = z.object({
+  id: z.string().optional(),
+  title: z
+    .string()
+    .min(VALIDATION_LIMITS.MEMORY_DESCRIPTION_MIN, ERROR_MESSAGES.REQUIRED_FIELD)
+    .max(VALIDATION_LIMITS.MEMORY_TITLE_MAX),
+  description: z
+    .string()
+    .min(VALIDATION_LIMITS.MEMORY_DESCRIPTION_MIN, ERROR_MESSAGES.REQUIRED_FIELD)
+    .max(VALIDATION_LIMITS.MEMORY_DESCRIPTION_MAX),
+  date: z.string().regex(PATTERNS.DATE_FORMAT, ERROR_MESSAGES.INVALID_DATE),
+  type: z.enum(MEMORY_TYPES),
+  contributor: ContributorSchema,
+  imageUrl: z.string().url(ERROR_MESSAGES.INVALID_URL).optional(),
+  tags: z.array(z.enum(MEMORY_TAGS)), // ✅ No .default() - makes it truly required
+  rotation: z.number().min(-10).max(10),
+  createdAt: z.string().datetime().optional(),
+})
+
+type MemoryFormData = z.infer<typeof MemoryFormSchema>
 
 export default function Step2Memories() {
   const store = useWishBloomStore()
@@ -27,7 +46,7 @@ export default function Step2Memories() {
     setValue,
     watch,
   } = useForm<MemoryFormData>({
-    resolver: zodResolver(MemorySchema),
+    resolver: zodResolver(MemoryFormSchema),
     mode: 'onBlur',
     defaultValues: {
       title: '',
@@ -35,12 +54,13 @@ export default function Step2Memories() {
       date: '',
       imageUrl: undefined,
       type: 'standard',
-      tags: [], //  Initialize as empty array, not undefined
+      tags: [],
       contributor: { 
         name: '', 
         email: '',
         contributionCount: 1
       },
+      rotation: 0,
     },
   })
 
@@ -74,12 +94,13 @@ export default function Step2Memories() {
       date: '',
       imageUrl: undefined,
       type: 'standard',
-      tags: [], // Reset to empty array
+      tags: [],
       contributor: { 
         name: '', 
         email: '',
         contributionCount: 1
       },
+      rotation: 0,
     })
   }
 

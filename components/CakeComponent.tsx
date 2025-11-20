@@ -143,13 +143,13 @@ export default function CakeComponent({
                       <motion.ellipse
                         cx={0}
                         cy={-12}
-                        rx={6}
-                        ry={14}
+                        rx="6"
+                        ry="14"
                         fill="url(#flameGradient)"
                         animate={{
-                          ry: [14, 16, 12, 15, 14],
+                          scaleY: [1, 1.14, 0.86, 1.07, 1],
                           opacity: [1, 0.9, 1, 0.95, 1],
-                          rx: [6, 6.5, 5.5, 6.2, 6]
+                          scaleX: [1, 1.08, 0.92, 1.03, 1]
                         }}
                         transition={{
                           duration: 0.8 + randomFlicker,
@@ -161,12 +161,12 @@ export default function CakeComponent({
                       <motion.ellipse
                         cx={0}
                         cy={-10}
-                        rx={3}
-                        ry={6}
+                        rx="3"
+                        ry="6"
                         fill="#FFFACD"
                         opacity={0.8}
                         animate={{
-                          ry: [6, 7, 5, 6.5, 6],
+                          scaleY: [1, 1.17, 0.83, 1.08, 1],
                           opacity: [0.8, 1, 0.7, 0.9, 0.8]
                         }}
                         transition={{

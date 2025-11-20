@@ -10,15 +10,15 @@ import {
   DEFAULT_VALUES,
 } from '@/config/constants'
 
-//  Contributor Schema with required name
+// ✅ ROOT FIX: Contributor Schema with EXPLICIT required fields
 export const ContributorSchema = z.object({
   id: z.string().optional(),
-  name: z.string().min(1, 'Contributor name is required'), // REQUIRED
+  name: z.string().min(1, 'Contributor name is required'),
   email: z.string().email(ERROR_MESSAGES.INVALID_EMAIL).or(z.literal('')).optional(),
-  contributionCount: z.number().int().min(1).default(1), // REQUIRED with default
+  contributionCount: z.number().int().min(1), // ✅ REMOVED .default() - make it truly required
 })
 
-//  Memory Schema with required type field
+// ✅ ROOT FIX: Memory Schema with REQUIRED type field (no optional, no undefined)
 export const MemorySchema = z.object({
   id: z.string().optional(),
   title: z
@@ -30,19 +30,19 @@ export const MemorySchema = z.object({
     .min(VALIDATION_LIMITS.MEMORY_DESCRIPTION_MIN, ERROR_MESSAGES.REQUIRED_FIELD)
     .max(VALIDATION_LIMITS.MEMORY_DESCRIPTION_MAX),
   date: z.string().regex(PATTERNS.DATE_FORMAT, ERROR_MESSAGES.INVALID_DATE),
-  type: z.enum(MEMORY_TYPES).default(DEFAULT_VALUES.MEMORY_TYPE),
-  contributor: ContributorSchema, // Uses schema with required name
+  type: z.enum(MEMORY_TYPES), // ✅ REMOVED .default() - make it required
+  contributor: ContributorSchema,
   imageUrl: z.string().url(ERROR_MESSAGES.INVALID_URL).optional(),
   tags: z.array(z.enum(MEMORY_TAGS)).default([]),
   rotation: z.number().min(-10).max(10).default(DEFAULT_VALUES.MEMORY_ROTATION),
   createdAt: z.string().datetime().optional(),
 })
 
-//  Message Schema with required signature and date
+// ✅ ROOT FIX: Message Schema with REQUIRED fields
 export const MessageSchema = z.object({
   id: z.string().optional(),
   type: z.enum(MESSAGE_TYPES),
-  date: z.string().regex(PATTERNS.DATE_FORMAT, ERROR_MESSAGES.INVALID_DATE), // ✅ REQUIRED
+  date: z.string().regex(PATTERNS.DATE_FORMAT, ERROR_MESSAGES.INVALID_DATE),
   greeting: z.string().max(VALIDATION_LIMITS.MESSAGE_GREETING_MAX).optional(),
   content: z
     .string()
@@ -51,11 +51,11 @@ export const MessageSchema = z.object({
   closing: z.string().max(VALIDATION_LIMITS.MESSAGE_CLOSING_MAX).optional(),
   signature: z
     .string()
-    .min(1, ERROR_MESSAGES.REQUIRED_FIELD) // REQUIRED
+    .min(1, ERROR_MESSAGES.REQUIRED_FIELD)
     .max(VALIDATION_LIMITS.MESSAGE_SIGNATURE_MAX),
   title: z.string().max(VALIDATION_LIMITS.MESSAGE_TITLE_MAX).optional(),
   postscript: z.string().max(VALIDATION_LIMITS.MESSAGE_POSTSCRIPT_MAX).optional(),
-  contributor: ContributorSchema, // Uses schema with required name
+  contributor: ContributorSchema,
   createdAt: z.string().datetime().optional(),
 })
 
@@ -127,7 +127,7 @@ export const ImageUploadSchema = z.object({
     ),
 })
 
-// Type exports
+// Export type with required fields properly inferred
 export type Contributor = z.infer<typeof ContributorSchema>
 export type Memory = z.infer<typeof MemorySchema>
 export type Message = z.infer<typeof MessageSchema>

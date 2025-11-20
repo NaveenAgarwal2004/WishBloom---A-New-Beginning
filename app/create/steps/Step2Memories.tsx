@@ -12,7 +12,23 @@ import { VALIDATION_LIMITS, MEMORY_TYPES, MEMORY_TAGS } from '@/config/constants
 import type { IMemory } from '@/models/WishBloom'
 import type { z } from 'zod'
 
-type MemoryFormData = z.infer<typeof MemorySchema>
+// ✅ ROOT FIX: Explicitly define form data type matching the schema
+type MemoryFormData = {
+  title: string
+  description: string
+  date: string
+  type: 'standard' | 'featured' | 'quote' // ✅ REQUIRED, not optional
+  contributor: {
+    id?: string
+    name: string
+    email?: string
+    contributionCount: number // ✅ REQUIRED
+  }
+  imageUrl?: string
+  tags: Array<'love' | 'milestone' | 'nostalgic' | 'celebration' | 'funny'>
+  rotation?: number
+  createdAt?: string
+}
 
 export default function Step2Memories() {
   const store = useWishBloomStore()
@@ -36,10 +52,9 @@ export default function Step2Memories() {
       type: 'standard', // ✅ Explicitly set default
       tags: [],
       contributor: { 
-        id: undefined,
         name: '', 
         email: '',
-        contributionCount: 1 
+        contributionCount: 1 // ✅ Set default
       },
     },
   })
@@ -47,18 +62,18 @@ export default function Step2Memories() {
   const canProceed = store.memories.length >= VALIDATION_LIMITS.MEMORIES_MIN_REQUIRED
 
   const onSubmit = (data: MemoryFormData) => {
-    // ✅ Ensure type is always set
+    // ✅ Ensure all required fields are present
     const memory: IMemory = {
       ...data,
       id: editingMemoryId || nanoid(8),
-      type: data.type || 'standard', // Fallback to standard
+      type: data.type || 'standard', // Fallback
       contributor: {
         id: data.contributor.id || nanoid(8),
         name: data.contributor.name || 'Anonymous',
         email: data.contributor.email || undefined,
         contributionCount: data.contributor.contributionCount || 1,
       },
-      rotation: 0,
+      rotation: data.rotation || 0,
       createdAt: new Date(),
     }
 
@@ -69,7 +84,19 @@ export default function Step2Memories() {
       store.addMemory(memory)
     }
 
-    reset()
+    reset({
+      title: '',
+      description: '',
+      date: '',
+      imageUrl: undefined,
+      type: 'standard',
+      tags: [],
+      contributor: { 
+        name: '', 
+        email: '',
+        contributionCount: 1
+      },
+    })
   }
 
   const handleEdit = (memory: IMemory) => {
@@ -82,6 +109,7 @@ export default function Step2Memories() {
     setValue('tags', memory.tags as any)
     setValue('contributor.name', memory.contributor.name)
     setValue('contributor.email', memory.contributor.email || '')
+    setValue('contributor.contributionCount', memory.contributor.contributionCount)
   }
 
   const selectedTags = watch('tags') || []

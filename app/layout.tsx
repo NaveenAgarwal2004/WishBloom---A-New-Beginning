@@ -5,6 +5,9 @@ import { AudioProvider } from '@/context/AudioContext'
 import type { Metadata, Viewport } from 'next'
 import { WebVitals } from './web-vitals'
 import SkipLink from '@/components/SkipLink'
+import { Toaster } from '@/components/ui/toaster'
+import Providers from '@/components/Providers'
+import Navigation from '@/components/Navigation'
 
 // ✅ Self-hosted fonts with Next.js optimization
 const cormorantGaramond = localFont({
@@ -117,10 +120,14 @@ export default function RootLayout({
         className={`${cormorantGaramond.variable} ${spectral.variable} ${ebGaramond.variable} ${ibmPlexMono.variable} antialiased`}
       >
         <SkipLink />
-        {/* ✅ AudioProvider now safely runs client-side */}
-        <AudioProvider>
-          {children}
-        </AudioProvider>
+        <Providers>
+          <Navigation />
+          {/* ✅ AudioProvider now safely runs client-side */}
+          <AudioProvider>
+            {children}
+          </AudioProvider>
+          <Toaster />
+        </Providers>
         <WebVitals />
       </body>
     </html>

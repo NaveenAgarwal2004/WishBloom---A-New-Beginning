@@ -31,7 +31,7 @@ export default function CreatePage() {
   const CurrentStepComponent = steps.find((s) => s.step === currentStep)?.component || Step1Info
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-warmCream-100 to-rosePetal/10 py-16 px-4 md:px-8">
+    <main className="min-h-screen bg-gradient-to-b from-warmCream-100 to-rosePetal/10 py-16 px-4 md:px-8 pt-24">
       {/* Header */}
       <div className="text-center mb-12">
         <h1 className="text-h1 md:text-display font-heading font-bold text-sepiaInk mb-4">

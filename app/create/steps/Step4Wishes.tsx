@@ -7,13 +7,16 @@ import { ArrowRight, ArrowLeft, Plus, Trash2 } from 'lucide-react'
 import useWishBloomStore from '@/store/useWishBloomStore'
 import { VALIDATION_LIMITS } from '@/config/constants'
 
-//  Define schema inline to avoid path inference issues
+//useFieldArray requires arrays of objects, not primitives
+// Transform string[] to array of objects for react-hook-form compatibility
 const step4Schema = z.object({
   celebrationWishPhrases: z
     .array(
-      z.string()
-        .min(1, 'Wish cannot be empty')
-        .max(VALIDATION_LIMITS.CELEBRATION_PHRASE_MAX_LENGTH)
+      z.object({
+        value: z.string()
+          .min(1, 'Wish cannot be empty')
+          .max(VALIDATION_LIMITS.CELEBRATION_PHRASE_MAX_LENGTH)
+      })
     )
     .min(VALIDATION_LIMITS.CELEBRATION_PHRASES_MIN)
     .max(VALIDATION_LIMITS.CELEBRATION_PHRASES_MAX),
@@ -33,24 +36,27 @@ export default function Step4Wishes() {
     resolver: zodResolver(step4Schema),
     mode: 'onBlur',
     defaultValues: {
-      celebrationWishPhrases: store.celebrationWishPhrases,
+      // Transform string[] from store to object array format
+      celebrationWishPhrases: store.celebrationWishPhrases.map(phrase => ({ value: phrase })),
     },
   })
 
-  // ✅ ROOT FIX: Simplified useFieldArray typing - let TypeScript infer from control
+  // ✅ ROOT FIX: Now properly typed - useFieldArray works with object arrays
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'celebrationWishPhrases',
   })
 
   const onSubmit = (data: Step4FormData) => {
-    store.setCelebrationWishPhrases(data.celebrationWishPhrases)
+    // Transform back to string[] for store
+    const phrasesAsStrings = data.celebrationWishPhrases.map(item => item.value)
+    store.setCelebrationWishPhrases(phrasesAsStrings)
     store.nextStep()
   }
 
   const handleAddWish = () => {
     if (fields.length < VALIDATION_LIMITS.CELEBRATION_PHRASES_MAX) {
-      append('')
+      append({ value: '' })
     }
   }
 
@@ -65,19 +71,19 @@ export default function Step4Wishes() {
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="space-y-4 mb-8">
-          {fields.map((field: any, index: number) => (
+          {fields.map((field, index) => (
             <div key={field.id} className="flex gap-3 items-start">
               <div className="flex-1">
                 <input
-                  {...register(`celebrationWishPhrases.${index}` as const)}
+                  {...register(`celebrationWishPhrases.${index}.value` as const)}
                   type="text"
                   maxLength={VALIDATION_LIMITS.CELEBRATION_PHRASE_MAX_LENGTH}
                   className="w-full bg-warmCream-50 border-2 border-warmCream-300 focus:border-fadedGold rounded-lg px-4 py-3 text-body font-body outline-none"
                   placeholder="Add a wish..."
                 />
-                {errors.celebrationWishPhrases?.[index] && (
+                {errors.celebrationWishPhrases?.[index]?.value && (
                   <p className="text-caption text-fadedRose mt-1">
-                    {errors.celebrationWishPhrases[index]?.message}
+                    {errors.celebrationWishPhrases[index]?.value?.message}
                   </p>
                 )}
               </div>

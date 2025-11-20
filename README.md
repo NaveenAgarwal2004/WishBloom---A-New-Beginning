@@ -2,7 +2,7 @@
 
 A sentimental birthday memory web app that creates beautiful, interactive digital scrapbooks with a "pressed flowers" aesthetic.
 
-![WishBloom Preview](https://via.placeholder.com/800x400?text=WishBloom+Preview)
+![WishBloom Preview](https://via.placeholder.com/800x400?text=WishBloom+Preview) 
 
 ## ✨ Features
 

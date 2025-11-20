@@ -37,8 +37,8 @@ export default function Step4Wishes() {
     },
   })
 
-  // Explicitly type useFieldArray with the correct path
-  const { fields, append, remove } = useFieldArray<Step4FormData, 'celebrationWishPhrases', 'id'>({
+  // ✅ ROOT FIX: Simplified useFieldArray typing - let TypeScript infer from control
+  const { fields, append, remove } = useFieldArray({
     control,
     name: 'celebrationWishPhrases',
   })
@@ -65,7 +65,7 @@ export default function Step4Wishes() {
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="space-y-4 mb-8">
-          {fields.map((field, index) => (
+          {fields.map((field: any, index: number) => (
             <div key={field.id} className="flex gap-3 items-start">
               <div className="flex-1">
                 <input

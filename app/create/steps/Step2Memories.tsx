@@ -5,29 +5,15 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { ArrowRight, ArrowLeft, Plus, Trash2, Edit2, Check } from 'lucide-react'
 import { useState } from 'react'
 import { nanoid } from 'nanoid'
+import { z } from 'zod'
 import useWishBloomStore from '@/store/useWishBloomStore'
 import ImageUploader from '@/components/ImageUploader'
 import { MemorySchema } from '@/schemas/wishbloom.schema'
 import { VALIDATION_LIMITS, MEMORY_TYPES, MEMORY_TAGS } from '@/config/constants'
 import type { IMemory } from '@/models/WishBloom'
 
-// ✅ ROOT FIX: Match Zod schema's inferred type exactly
-type MemoryFormData = {
-  title: string
-  description: string
-  date: string
-  type: 'standard' | 'featured' | 'quote'
-  contributor: {
-    id?: string
-    name: string
-    email?: string
-    contributionCount: number
-  }
-  imageUrl?: string
-  tags: Array<'love' | 'milestone' | 'nostalgic' | 'celebration' | 'funny'> // ✅ Required array, not optional
-  rotation?: number
-  createdAt?: string
-}
+//  Use Zod's inferred type directly for perfect alignment
+type MemoryFormData = z.infer<typeof MemorySchema>
 
 export default function Step2Memories() {
   const store = useWishBloomStore()
@@ -49,7 +35,7 @@ export default function Step2Memories() {
       date: '',
       imageUrl: undefined,
       type: 'standard',
-      tags: [], // ✅ Initialize as empty array, not undefined
+      tags: [], //  Initialize as empty array, not undefined
       contributor: { 
         name: '', 
         email: '',
@@ -88,7 +74,7 @@ export default function Step2Memories() {
       date: '',
       imageUrl: undefined,
       type: 'standard',
-      tags: [], // ✅ Reset to empty array
+      tags: [], // Reset to empty array
       contributor: { 
         name: '', 
         email: '',
@@ -104,7 +90,7 @@ export default function Step2Memories() {
     setValue('date', memory.date)
     setValue('imageUrl', memory.imageUrl)
     setValue('type', memory.type)
-    setValue('tags', (memory.tags || []) as any) // ✅ Ensure it's an array
+    setValue('tags', (memory.tags || []) as any) // Ensure it's an array
     setValue('contributor.name', memory.contributor.name)
     setValue('contributor.email', memory.contributor.email || '')
     setValue('contributor.contributionCount', memory.contributor.contributionCount)
@@ -209,9 +195,9 @@ export default function Step2Memories() {
                     onChange={(e) => {
                       const current = selectedTags
                       if (e.target.checked) {
-                        setValue('tags', [...current, tag] as any)
+                        setValue('tags', [...current, tag] as Array<'love' | 'milestone' | 'nostalgic' | 'celebration' | 'funny'>)
                       } else {
-                        setValue('tags', current.filter((t) => t !== tag) as any)
+                        setValue('tags', current.filter((t: string) => t !== tag) as Array<'love' | 'milestone' | 'nostalgic' | 'celebration' | 'funny'>)
                       }
                     }}
                     className="w-5 h-5"

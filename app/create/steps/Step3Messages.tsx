@@ -10,11 +10,7 @@ import { VALIDATION_LIMITS, MESSAGE_TYPES } from '@/config/constants'
 import type { IMessage } from '@/models/WishBloom'
 import type { z } from 'zod'
 
-// Infer exact type from schema, then make required fields explicit
-type MessageFormData = z.infer<typeof MessageSchema> & { 
-  signature: string // Required
-  date: string // Required
-}
+type MessageFormData = z.infer<typeof MessageSchema>
 
 export default function Step3Messages() {
   const store = useWishBloomStore()
@@ -33,7 +29,7 @@ export default function Step3Messages() {
       greeting: '',
       content: '',
       closing: '',
-      signature: '', // Now properly typed as required
+      signature: '', // ✅ Set default
       title: '',
       postscript: '',
       contributor: { 
@@ -42,7 +38,7 @@ export default function Step3Messages() {
         email: '',
         contributionCount: 1
       },
-      date: new Date().toISOString().split('T')[0], // Now properly typed as required
+      date: new Date().toISOString().split('T')[0], // ✅ Set default date
     },
   })
 
@@ -50,9 +46,12 @@ export default function Step3Messages() {
   const canProceed = store.messages.length >= VALIDATION_LIMITS.MESSAGES_MIN_REQUIRED
 
   const onSubmit = (data: MessageFormData) => {
+    // ✅ Ensure all required fields are set
     const message: IMessage = {
       ...data,
       id: nanoid(8),
+      signature: data.signature || 'Anonymous', // Fallback
+      date: data.date || new Date().toISOString().split('T')[0], // Fallback
       contributor: {
         id: data.contributor.id || nanoid(8),
         name: data.contributor.name || 'Anonymous',

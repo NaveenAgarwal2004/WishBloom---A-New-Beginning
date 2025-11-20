@@ -12,8 +12,7 @@ import { VALIDATION_LIMITS, MEMORY_TYPES, MEMORY_TAGS } from '@/config/constants
 import type { IMemory } from '@/models/WishBloom'
 import type { z } from 'zod'
 
-// Infer exact type from schema, then make type required
-type MemoryFormData = z.infer<typeof MemorySchema> & { type: 'standard' | 'featured' | 'quote' }
+type MemoryFormData = z.infer<typeof MemorySchema>
 
 export default function Step2Memories() {
   const store = useWishBloomStore()
@@ -34,7 +33,7 @@ export default function Step2Memories() {
       description: '',
       date: '',
       imageUrl: undefined,
-      type: 'standard',
+      type: 'standard', // ✅ Explicitly set default
       tags: [],
       contributor: { 
         id: undefined,
@@ -48,9 +47,11 @@ export default function Step2Memories() {
   const canProceed = store.memories.length >= VALIDATION_LIMITS.MEMORIES_MIN_REQUIRED
 
   const onSubmit = (data: MemoryFormData) => {
+    // ✅ Ensure type is always set
     const memory: IMemory = {
       ...data,
       id: editingMemoryId || nanoid(8),
+      type: data.type || 'standard', // Fallback to standard
       contributor: {
         id: data.contributor.id || nanoid(8),
         name: data.contributor.name || 'Anonymous',

@@ -30,7 +30,7 @@ export const MemorySchema = z.object({
     .min(VALIDATION_LIMITS.MEMORY_DESCRIPTION_MIN, ERROR_MESSAGES.REQUIRED_FIELD)
     .max(VALIDATION_LIMITS.MEMORY_DESCRIPTION_MAX),
   date: z.string().regex(PATTERNS.DATE_FORMAT, ERROR_MESSAGES.INVALID_DATE),
-  type: z.enum(MEMORY_TYPES).default(DEFAULT_VALUES.MEMORY_TYPE), // ✅ REQUIRED field with default
+  type: z.enum(MEMORY_TYPES).default(DEFAULT_VALUES.MEMORY_TYPE),
   contributor: ContributorSchema, // Uses schema with required name
   imageUrl: z.string().url(ERROR_MESSAGES.INVALID_URL).optional(),
   tags: z.array(z.enum(MEMORY_TAGS)).default([]),

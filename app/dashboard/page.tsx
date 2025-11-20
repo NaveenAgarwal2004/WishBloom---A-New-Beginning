@@ -4,7 +4,6 @@ import { authOptions } from '@/lib/auth'
 import dbConnect from '@/lib/mongodb'
 import WishBloom from '@/models/WishBloom'
 import DashboardClient from './DashboardClient'
-import { IWishBloom } from '@/models/WishBloom'
 
 /**
  * ✅ Part 4: Creator Dashboard

@@ -3,9 +3,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Calendar, Copy, Eye, ExternalLink, Plus } from 'lucide-react'
-// @ts-ignore - shadcn components are .jsx and cause type issues
 import { Button } from '@/components/ui/button'
-// @ts-ignore - shadcn components are .jsx and cause type issues
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useToast } from '@/hooks/use-toast'
 import Link from 'next/link'

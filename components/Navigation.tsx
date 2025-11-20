@@ -2,7 +2,6 @@
 
 import Link from 'next/link'
 import { useSession, signIn, signOut } from 'next-auth/react'
-// @ts-ignore - shadcn components are .jsx and cause type issues
 import { Button } from '@/components/ui/button'
 import { LayoutDashboard, Plus, LogIn, LogOut, User } from 'lucide-react'
 import { APP_CONFIG } from '@/config/constants'

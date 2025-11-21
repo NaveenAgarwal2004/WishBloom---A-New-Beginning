@@ -10,7 +10,7 @@ import {
   DEFAULT_VALUES,
 } from '@/config/constants'
 
-// ✅ ROOT FIX: Contributor Schema with EXPLICIT required fields
+//  Contributor Schema with EXPLICIT required fields
 export const ContributorSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(1, 'Contributor name is required'),
@@ -18,7 +18,7 @@ export const ContributorSchema = z.object({
   contributionCount: z.number().int().min(1), // ✅ REMOVED .default() - make it truly required
 })
 
-// ✅ ROOT FIX: Memory Schema with REQUIRED type field (no optional, no undefined)
+//  Memory Schema with REQUIRED type field (no optional, no undefined)
 export const MemorySchema = z.object({
   id: z.string().optional(),
   title: z

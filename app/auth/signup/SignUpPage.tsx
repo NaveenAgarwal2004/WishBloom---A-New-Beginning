@@ -2,70 +2,97 @@
 
 import { signIn } from 'next-auth/react'
 import { useState } from 'react'
-import { useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { Mail, Lock, Sparkles, ArrowRight } from 'lucide-react'
+import { Mail, Lock, User, Sparkles, ArrowRight, CheckCircle } from 'lucide-react'
 import { APP_CONFIG } from '@/config/constants'
 
 /**
- * 🌸 WishBloom Custom Sign-In Page
- * Beautiful, emotion-driven authentication experience
- * Maintains the pressed-flower aesthetic with soft animations
+ * 🌸 WishBloom Sign-Up Page
+ * Beautiful registration experience with email/password
  */
-export default function SignInPage() {
-  const searchParams = useSearchParams()
-  const callbackUrl = searchParams.get('callbackUrl') || '/dashboard'
-  const error = searchParams.get('error')
-
+export default function SignUpPage() {
+  const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const [localError, setLocalError] = useState('')
+  const [error, setError] = useState('')
+  const [success, setSuccess] = useState(false)
 
-  // Handle credentials sign-in
+  // Handle sign-up submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
-    setLocalError('')
+    setError('')
 
     try {
-      const result = await signIn('credentials', {
-        email,
-        password,
-        callbackUrl,
-        redirect: true,
+      // Call signup API
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password }),
       })
 
-      if (result?.error) {
-        setLocalError('Invalid email or password')
+      const data = await response.json()
+
+      if (!response.ok || !data.success) {
+        setError(data.error || 'Failed to create account')
+        setIsLoading(false)
+        return
       }
+
+      // Account created successfully
+      setSuccess(true)
+
+      // Automatically sign in the user
+      setTimeout(async () => {
+        await signIn('credentials', {
+          email,
+          password,
+          callbackUrl: '/dashboard',
+        })
+      }, 1500)
     } catch (error) {
-      setLocalError('Something went wrong. Please try again.')
-    } finally {
+      setError('Something went wrong. Please try again.')
       setIsLoading(false)
     }
   }
 
-  // Handle Google OAuth sign-in
-  const handleGoogleSignIn = () => {
-    signIn('google', { callbackUrl })
+  // Handle Google OAuth sign-up
+  const handleGoogleSignUp = () => {
+    signIn('google', { callbackUrl: '/dashboard' })
   }
 
-  // Get error message for display
-  const getErrorMessage = () => {
-    if (localError) return localError
-    if (error === 'CredentialsSignin') return 'Invalid email or password'
-    if (error === 'OAuthSignin') return 'Error with social sign-in. Please try again.'
-    if (error === 'OAuthCallback') return 'Error with social sign-in callback.'
-    if (error === 'OAuthCreateAccount') return 'Could not create account.'
-    if (error === 'EmailCreateAccount') return 'Could not create account.'
-    if (error === 'Callback') return 'Error in authentication callback.'
-    if (error) return 'Authentication error. Please try again.'
-    return null
+  // Success state
+  if (success) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-warmCream-50 via-rosePetal/10 to-lavenderMist/20 flex items-center justify-center p-4">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="text-center"
+        >
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 0.2, type: 'spring' }}
+            className="mb-6"
+          >
+            <CheckCircle size={80} className="text-mossGreen mx-auto" />
+          </motion.div>
+          <h2 className="text-h2 font-heading font-bold text-sepiaInk mb-4">
+            Welcome to WishBloom! 🌸
+          </h2>
+          <p className="text-body font-body text-warmCream-700 mb-2">
+            Your account has been created successfully.
+          </p>
+          <p className="text-body-sm font-body text-warmCream-600">
+            Signing you in...
+          </p>
+        </motion.div>
+      </div>
+    )
   }
-
-  const errorMessage = getErrorMessage()
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-warmCream-50 via-rosePetal/10 to-lavenderMist/20 flex items-center justify-center p-4">
@@ -95,33 +122,33 @@ export default function SignInPage() {
               <div className="text-6xl">🌸</div>
             </motion.div>
             <h1 className="text-h3 font-heading font-bold text-sepiaInk mb-2">
-              Welcome to {APP_CONFIG.APP_NAME}
+              Join {APP_CONFIG.APP_NAME}
             </h1>
             <p className="text-body font-body text-warmCream-700">
-              Sign in to create beautiful memories
+              Create an account to start preserving memories
             </p>
           </div>
 
           {/* Error Message */}
-          {errorMessage && (
+          {error && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               className="mx-6 mt-6 p-4 bg-red-50 border border-red-200 rounded-lg"
             >
               <p className="text-body-sm font-body text-red-700 text-center">
-                {errorMessage}
+                {error}
               </p>
             </motion.div>
           )}
 
           {/* Form */}
           <div className="p-8">
-            {/* Google Sign-In */}
+            {/* Google Sign-Up */}
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              onClick={handleGoogleSignIn}
+              onClick={handleGoogleSignUp}
               className="w-full mb-6 p-4 bg-white border-2 border-warmCream-300 rounded-xl 
                        hover:border-fadedGold hover:shadow-lg transition-all duration-300
                        flex items-center justify-center gap-3 font-heading font-semibold text-sepiaInk"
@@ -144,7 +171,7 @@ export default function SignInPage() {
                   d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                 />
               </svg>
-              Continue with Google
+              Sign up with Google
             </motion.button>
 
             {/* Divider */}
@@ -153,12 +180,36 @@ export default function SignInPage() {
                 <div className="w-full border-t border-warmCream-300" />
               </div>
               <div className="relative flex justify-center text-caption">
-                <span className="px-4 bg-white text-warmCream-600 font-body">or sign in with email</span>
+                <span className="px-4 bg-white text-warmCream-600 font-body">or sign up with email</span>
               </div>
             </div>
 
             {/* Email/Password Form */}
             <form onSubmit={handleSubmit} className="space-y-5">
+              {/* Name Field */}
+              <div>
+                <label htmlFor="name" className="block text-body-sm font-heading font-semibold text-sepiaInk mb-2">
+                  Full Name
+                </label>
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 text-warmCream-500" size={18} />
+                  <input
+                    id="name"
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                    disabled={isLoading}
+                    placeholder="Your Name"
+                    className="w-full pl-11 pr-4 py-3 border-2 border-warmCream-300 rounded-xl
+                             focus:border-fadedGold focus:outline-none focus:ring-2 focus:ring-fadedGold/20
+                             disabled:opacity-50 disabled:cursor-not-allowed
+                             font-body text-sepiaInk placeholder-warmCream-400
+                             transition-all duration-200"
+                  />
+                </div>
+              </div>
+
               {/* Email Field */}
               <div>
                 <label htmlFor="email" className="block text-body-sm font-heading font-semibold text-sepiaInk mb-2">
@@ -197,7 +248,8 @@ export default function SignInPage() {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     disabled={isLoading}
-                    placeholder="••••••••"
+                    placeholder="At least 8 characters"
+                    minLength={8}
                     className="w-full pl-11 pr-4 py-3 border-2 border-warmCream-300 rounded-xl
                              focus:border-fadedGold focus:outline-none focus:ring-2 focus:ring-fadedGold/20
                              disabled:opacity-50 disabled:cursor-not-allowed
@@ -205,6 +257,9 @@ export default function SignInPage() {
                              transition-all duration-200"
                   />
                 </div>
+                <p className="text-caption text-warmCream-600 mt-1 font-body">
+                  Must be at least 8 characters long
+                </p>
               </div>
 
               {/* Submit Button */}
@@ -224,11 +279,11 @@ export default function SignInPage() {
                 {isLoading ? (
                   <>
                     <Sparkles className="animate-spin" size={20} />
-                    Signing in...
+                    Creating account...
                   </>
                 ) : (
                   <>
-                    Sign In
+                    Create Account
                     <ArrowRight size={20} />
                   </>
                 )}
@@ -239,12 +294,12 @@ export default function SignInPage() {
           {/* Footer */}
           <div className="bg-warmCream-50 p-6 text-center border-t border-warmCream-200">
             <p className="text-body-sm font-body text-warmCream-700">
-              Don't have an account?{' '}
+              Already have an account?{' '}
               <Link
-                href="/auth/signup"
+                href="/auth/signin"
                 className="text-fadedGold hover:text-fadedGold/80 font-semibold underline transition-colors"
               >
-                Sign up
+                Sign in
               </Link>
             </p>
           </div>

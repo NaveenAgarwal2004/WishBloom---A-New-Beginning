@@ -8,6 +8,7 @@ import SkipLink from '@/components/SkipLink'
 import { Toaster } from '@/components/ui/toaster'
 import Providers from '@/components/Providers'
 import Navigation from '@/components/Navigation'
+import { Analytics } from '@vercel/analytics/next'
 
 // ✅ Self-hosted fonts with Next.js optimization
 const cormorantGaramond = localFont({
@@ -129,6 +130,7 @@ export default function RootLayout({
           <Toaster />
         </Providers>
         <WebVitals />
+        <Analytics />
       </body>
     </html>
   )

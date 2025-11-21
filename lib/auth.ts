@@ -27,7 +27,8 @@ export const authOptions: NextAuthOptions = {
         }
 
         await dbConnect()
-        const user = await User.findOne({ email: credentials.email })
+        // ✅ FIX: Explicitly select hashedPassword field (it has select: false in schema)
+        const user = await User.findOne({ email: credentials.email }).select('+hashedPassword')
 
         if (!user || !user.hashedPassword) {
           throw new Error('Invalid credentials')
@@ -53,7 +54,8 @@ export const authOptions: NextAuthOptions = {
   ],
   session: {
     strategy: 'jwt',
-    maxAge: 30 * 24 * 60 * 60, // 30 days
+    maxAge: 7 * 24 * 60 * 60, // ✅ Part 8: 7 days (more secure than 30)
+    updateAge: 24 * 60 * 60, // ✅ Refresh every 24 hours
   },
   pages: {
     signIn: '/auth/signin',
@@ -107,6 +109,3 @@ export async function requireAdmin() {
   }
   return user
 }
-
-
-

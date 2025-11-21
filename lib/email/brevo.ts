@@ -24,8 +24,27 @@ class BrevoEmailService {
     this.senderName = env.BREVO_SENDER_NAME
   }
 
+  /**
+   * ✅ Part 8: Sanitize email headers to prevent injection attacks
+   * Remove newlines and limit length to prevent header injection
+   */
+  private sanitizeEmailHeader(input: string, maxLength: number = 70): string {
+    return input
+      .replace(/[\r\n]/g, '') // Remove newlines
+      .replace(/[<>]/g, '') // Remove angle brackets
+      .trim()
+      .slice(0, maxLength)
+  }
+
   async sendEmail(params: BrevoEmailParams): Promise<BrevoResponse> {
     try {
+      // ✅ Sanitize all user-provided inputs
+      const sanitizedParams = {
+        to: this.sanitizeEmailHeader(params.to, 254), // RFC 5321 max email length
+        toName: this.sanitizeEmailHeader(params.toName, 100),
+        subject: this.sanitizeEmailHeader(params.subject, 150),
+      }
+
       const response = await fetch(`${this.baseUrl}/smtp/email`, {
         method: 'POST',
         headers: {
@@ -40,11 +59,11 @@ class BrevoEmailService {
           },
           to: [
             {
-              email: params.to,
-              name: params.toName,
+              email: sanitizedParams.to,
+              name: sanitizedParams.toName,
             },
           ],
-          subject: params.subject,
+          subject: sanitizedParams.subject,
           htmlContent: params.htmlContent,
           textContent: params.textContent || this.htmlToText(params.htmlContent),
         }),
@@ -91,6 +110,9 @@ class BrevoEmailService {
     senderName: string
     customMessage?: string
   }): Promise<BrevoResponse> {
+    // ✅ Sanitize sender name for subject line
+    const sanitizedSenderName = this.sanitizeEmailHeader(senderName, 50)
+    
     const htmlContent = this.generateWishBloomEmailHTML({
       recipientName,
       wishbloomUrl,
@@ -101,7 +123,7 @@ class BrevoEmailService {
     return this.sendEmail({
       to: recipientEmail,
       toName: recipientName,
-      subject: `${senderName} has created a WishBloom for you! 🌸`,
+      subject: `${sanitizedSenderName} has created a WishBloom for you! 🌸`,
       htmlContent,
     })
   }

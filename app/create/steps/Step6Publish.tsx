@@ -6,6 +6,7 @@ import { useSession } from 'next-auth/react'
 import { motion } from 'framer-motion'
 import { Loader2, Sparkles } from 'lucide-react'
 import useWishBloomStore from '@/store/useWishBloomStore'
+import FloralLoader from '@/components/FloralLoader'
 
 export default function Step6Publish() {
   const router = useRouter()
@@ -103,37 +104,19 @@ export default function Step6Publish() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Loading State
+  // Loading State - Using FloralLoader (Part 7)
   if (publishing) {
     return (
       <div className="max-w-3xl mx-auto text-center py-20">
-        <motion.div
-          animate={{ rotate: 360, scale: [1, 1.2, 1] }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
-          className="w-32 h-32 mx-auto mb-8"
+        <FloralLoader size={140} message="Creating Your WishBloom..." />
+        <motion.p
+          className="text-body font-body text-warmCream-700 mt-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
         >
-          <svg viewBox="0 0 100 100" className="w-full h-full text-fadedGold">
-            <circle cx="50" cy="50" r="15" fill="currentColor" />
-            {Array.from({ length: 8 }).map((_, i) => (
-              <ellipse
-                key={i}
-                cx="50"
-                cy="25"
-                rx="10"
-                ry="20"
-                fill="currentColor"
-                opacity="0.85"
-                transform={`rotate(${i * 45} 50 50)`}
-              />
-            ))}
-          </svg>
-        </motion.div>
-        <h2 className="text-h2 font-heading font-bold text-sepiaInk mb-4">
-          Creating Your WishBloom...
-        </h2>
-        <p className="text-body font-body text-warmCream-700">
           Pressing the flowers, preserving the memories ✨
-        </p>
+        </motion.p>
       </div>
     )
   }

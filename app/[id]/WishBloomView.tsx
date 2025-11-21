@@ -6,6 +6,7 @@ import MemoryGallery from '@/components/MemoryGallery'
 import MessagesSection from '@/components/MessagesSection'
 import CelebrationSection from '@/components/CelebrationSection'
 import Footer from '@/components/Footer'
+import MusicControl from '@/components/MusicControl'
 import type { IWishBloom, IContributor } from '@/models/WishBloom'
 
 interface WishBloomViewProps {
@@ -53,8 +54,11 @@ export default function WishBloomView({ wishbloom }: WishBloomViewProps) {
   const contributors = Array.from(contributorMap.values())
 
   return (
-    <main className="min-h-screen bg-warmCream-100">
-      <Hero 
+    <>
+      <MusicControl />
+      
+      <main className="min-h-screen bg-warmCream-100">
+        <Hero 
         recipientName={wishbloom.recipientName || 'Friend'}
         age={wishbloom.age}
         creativeAgeDescription={wishbloom.creativeAgeDescription}
@@ -82,6 +86,7 @@ export default function WishBloomView({ wishbloom }: WishBloomViewProps) {
         contributors={contributors}
         createdDate={wishbloom.createdDate?.toString() || new Date().toISOString()}
       />
-    </main>
+      </main>
+    </>
   )
 }

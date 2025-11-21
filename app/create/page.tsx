@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Check } from 'lucide-react'
 import useWishBloomStore from '@/store/useWishBloomStore'
 import SignInBanner from '@/components/SignInBanner'
+import { useIsMobile } from '@/hooks/use-mobile'
+import { Drawer, DrawerContent } from '@/components/ui/drawer'
 import Step1Info from './steps/Step1Info'
 import Step2Memories from './steps/Step2Memories'
 import Step3Messages from './steps/Step3Messages'
@@ -17,6 +19,7 @@ import Step6Publish from './steps/Step6Publish'
  */
 export default function CreatePage() {
   const currentStep = useWishBloomStore((state) => state.currentStep)
+  const isMobile = useIsMobile()
 
   // Step configuration
   const steps = [
@@ -83,18 +86,37 @@ export default function CreatePage() {
         </div>
       )}
 
-      {/* Step Content with Animation */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={currentStep}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          transition={{ duration: 0.3 }}
-        >
-          <CurrentStepComponent />
-        </motion.div>
-      </AnimatePresence>
+      {/* Step Content with Animation - Mobile uses Drawer, Desktop uses inline */}
+      {isMobile && currentStep < 6 ? (
+        <Drawer open={true} modal={false}>
+          <DrawerContent className="max-h-[85vh] overflow-y-auto">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentStep}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+                className="p-4"
+              >
+                <CurrentStepComponent />
+              </motion.div>
+            </AnimatePresence>
+          </DrawerContent>
+        </Drawer>
+      ) : (
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentStep}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+          >
+            <CurrentStepComponent />
+          </motion.div>
+        </AnimatePresence>
+      )}
     </main>
   )
 }

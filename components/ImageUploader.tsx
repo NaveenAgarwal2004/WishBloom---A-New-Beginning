@@ -4,6 +4,7 @@
 import { useState } from 'react'
 import { useDropzone, FileWithPath } from 'react-dropzone'
 import { Upload, X, Loader2 } from 'lucide-react'
+import { Skeleton } from '@/components/ui/skeleton'
 
 interface ImageUploaderProps {
   onUpload?: (url: string | undefined) => void // ✅ Changed from `string | null`
@@ -101,22 +102,25 @@ export default function ImageUploader({ onUpload, existingImage }: ImageUploader
 
   return (
     <div>
-      <div
-        {...getRootProps()}
-        className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-colors ${
-          isDragActive
-            ? 'border-fadedGold bg-fadedGold/10'
-            : 'border-warmCream-400 hover:border-fadedGold'
-        } ${uploading ? 'opacity-50 cursor-not-allowed' : ''}`}
-      >
-        <input {...getInputProps()} />
-        
-        {uploading ? (
-          <div className="flex flex-col items-center gap-3">
-            <Loader2 size={48} className="text-fadedGold animate-spin" />
-            <p className="text-body text-warmCream-700">Uploading...</p>
+      {uploading ? (
+        <div className="space-y-2">
+          <Skeleton className="w-full h-48 rounded-xl" />
+          <div className="flex items-center justify-center gap-2 py-2">
+            <Loader2 size={20} className="text-fadedGold animate-spin" />
+            <p className="text-body-sm text-warmCream-700">Uploading image...</p>
           </div>
-        ) : (
+        </div>
+      ) : (
+        <div
+          {...getRootProps()}
+          className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-colors ${
+            isDragActive
+              ? 'border-fadedGold bg-fadedGold/10'
+              : 'border-warmCream-400 hover:border-fadedGold'
+          }`}
+        >
+          <input {...getInputProps()} />
+          
           <div className="flex flex-col items-center gap-3">
             <Upload size={48} className="text-warmCream-600 mx-auto" />
             <p className="text-body text-warmCream-700">
@@ -124,8 +128,8 @@ export default function ImageUploader({ onUpload, existingImage }: ImageUploader
             </p>
             <p className="text-caption text-warmCream-600">PNG, JPG, WebP up to 5MB</p>
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
       {error && (
         <p className="text-caption text-fadedRose mt-2">{error}</p>

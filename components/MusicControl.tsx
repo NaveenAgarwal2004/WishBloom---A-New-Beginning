@@ -15,6 +15,7 @@ export default function MusicControl() {
       whileTap={{ scale: 0.95 }}
       onClick={toggleMusic}
       title={isMusicPlaying ? 'Music On' : 'Music Off'}
+      aria-label={isMusicPlaying ? 'Pause background music' : 'Play background music'}
     >
       <motion.div
         key={isMusicPlaying ? 'on' : 'off'}

@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server'
 import { nanoid } from 'nanoid'
+import { getServerSession } from 'next-auth/next'
+import { authOptions } from '@/lib/auth'
 import dbConnect from '@/lib/mongodb'
 import WishBloom from '@/models/WishBloom'
 import { CreateWishBloomSchema } from '@/schemas/wishbloom.schema'
@@ -8,6 +10,15 @@ import { withRateLimit, rateLimiters } from '@/lib/rate-limit'
 
 // POST - Create new WishBloom
 export async function POST(request: Request) {
+  // Check if user is authenticated
+  const session = await getServerSession(authOptions)
+  const isAuthenticated = !!session?.user
+
+  // Use appropriate rate limiter based on authentication status
+  const rateLimiter = isAuthenticated
+    ? rateLimiters.wishbloomCreationAuthenticated
+    : rateLimiters.wishbloomCreationAnonymous
+
   // Apply rate limiting
   return withRateLimit(
     request,
@@ -153,7 +164,7 @@ export async function POST(request: Request) {
         )
       }
     },
-    rateLimiters.public
+    rateLimiter
   )
 }
 

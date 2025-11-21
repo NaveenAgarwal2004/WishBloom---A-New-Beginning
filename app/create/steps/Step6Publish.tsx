@@ -2,13 +2,15 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 import { motion } from 'framer-motion'
-import { Loader2 } from 'lucide-react'
+import { Loader2, Sparkles } from 'lucide-react'
 import useWishBloomStore from '@/store/useWishBloomStore'
 
 export default function Step6Publish() {
   const router = useRouter()
   const store = useWishBloomStore()
+  const { data: session } = useSession()
 
   const [publishing, setPublishing] = useState(false)
   const [publishError, setPublishError] = useState<string | null>(null)
@@ -168,6 +170,41 @@ export default function Step6Publish() {
             Your beautiful memory collection is ready to share
           </p>
         </div>
+
+        {/* Sign Up Prompt for Anonymous Users */}
+        {!session && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-gradient-to-r from-fadedGold to-burntSienna text-white rounded-2xl p-8 mb-8 shadow-dramatic"
+          >
+            <div className="flex items-start gap-4">
+              <Sparkles size={32} className="flex-shrink-0 mt-1" />
+              <div className="flex-1">
+                <h3 className="text-h5 font-heading font-bold mb-3">
+                  🎉 Want to save this WishBloom?
+                </h3>
+                <p className="text-body font-body mb-6 text-warmCream-50">
+                  Create a free account to save this WishBloom to your dashboard and access all your creations anytime!
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  <button
+                    onClick={() => router.push('/auth/signup')}
+                    className="px-6 py-3 bg-white text-fadedGold rounded-lg font-heading font-bold hover:shadow-lg transition-all"
+                  >
+                    Create Free Account
+                  </button>
+                  <button
+                    onClick={() => router.push('/api/auth/signin?callbackUrl=/dashboard')}
+                    className="px-6 py-3 bg-transparent border-2 border-white text-white rounded-lg font-heading font-semibold hover:bg-white/10 transition-all"
+                  >
+                    Sign In
+                  </button>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
 
         {/* Published URL */}
         <div className="bg-warmCream-50 rounded-2xl p-8 border-4 border-fadedGold/60 shadow-dramatic mb-8">

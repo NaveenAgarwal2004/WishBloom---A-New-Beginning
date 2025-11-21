@@ -4,6 +4,8 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { ArrowRight } from 'lucide-react'
+import { useSession } from 'next-auth/react'
+import { useEffect } from 'react'
 import useWishBloomStore from '@/store/useWishBloomStore'
 import { VALIDATION_LIMITS } from '@/config/constants'
 
@@ -36,12 +38,14 @@ type Step1FormData = z.infer<typeof step1Schema>
 
 export default function Step1Info() {
   const store = useWishBloomStore()
+  const { data: session } = useSession()
 
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
     watch,
+    setValue,
   } = useForm<Step1FormData>({
     resolver: zodResolver(step1Schema),
     mode: 'onBlur', // ✅ Validate on blur for better UX
@@ -55,15 +59,31 @@ export default function Step1Info() {
     },
   })
 
+  // ✅ Auto-populate creator info from session if logged in
+  useEffect(() => {
+    if (session?.user && !store.createdBy.id) {
+      // Only auto-fill if not already set
+      if (session.user.name && !store.createdBy.name) {
+        setValue('createdByName', session.user.name)
+      }
+      if (session.user.email && !store.createdBy.email) {
+        setValue('createdByEmail', session.user.email)
+      }
+    }
+  }, [session, store.createdBy, setValue])
+
   const onSubmit = (data: Step1FormData) => {
     // ✅ Update store
     store.setRecipientName(data.recipientName)
     store.setAge(data.age ?? null)
     store.setCreativeAgeDescription(data.creativeAgeDescription || '')
     store.setIntroMessage(data.introMessage)
+    
+    // ✅ Set createdBy with session user ID if logged in
     store.setCreatedBy({
-      name: data.createdByName || '',
-      email: data.createdByEmail || '',
+      id: session?.user ? (session.user as any).id : undefined,
+      name: data.createdByName || session?.user?.name || '',
+      email: data.createdByEmail || session?.user?.email || '',
     })
 
     // Navigate to next step

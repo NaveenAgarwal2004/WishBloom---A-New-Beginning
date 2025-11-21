@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { Check } from 'lucide-react'
 import useWishBloomStore from '@/store/useWishBloomStore'
+import SignInBanner from '@/components/SignInBanner'
 import Step1Info from './steps/Step1Info'
 import Step2Memories from './steps/Step2Memories'
 import Step3Messages from './steps/Step3Messages'
@@ -40,6 +41,11 @@ export default function CreatePage() {
         <p className="text-body-lg font-body text-warmCream-700">
           Preserve memories, one bloom at a time
         </p>
+      </div>
+
+      {/* Sign In Banner - Only shows for anonymous users */}
+      <div className="max-w-4xl mx-auto mb-8">
+        <SignInBanner />
       </div>
 
       {/* Progress Stepper */}

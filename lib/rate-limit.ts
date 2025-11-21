@@ -62,14 +62,36 @@ export const rateLimiters = {
       })
     : new MemoryRateLimiter(),
 
-  // Image uploads - very strict
+  // WishBloom creation - production-optimized
+  // Anonymous users: 5 per hour | Authenticated users: 20 per hour
+  wishbloomCreationAnonymous: env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN && !isDev
+    ? new Ratelimit({
+        redis: new Redis({
+          url: env.UPSTASH_REDIS_REST_URL,
+          token: env.UPSTASH_REDIS_REST_TOKEN,
+        }),
+        limiter: Ratelimit.slidingWindow(5, '1 h'), // 5 WishBlooms per hour for anonymous
+      })
+    : new MemoryRateLimiter(),
+
+  wishbloomCreationAuthenticated: env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN && !isDev
+    ? new Ratelimit({
+        redis: new Redis({
+          url: env.UPSTASH_REDIS_REST_URL,
+          token: env.UPSTASH_REDIS_REST_TOKEN,
+        }),
+        limiter: Ratelimit.slidingWindow(20, '1 h'), // 20 WishBlooms per hour for authenticated
+      })
+    : new MemoryRateLimiter(),
+
+  // Image uploads - reasonable limit
   upload: env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN && !isDev
     ? new Ratelimit({
         redis: new Redis({
           url: env.UPSTASH_REDIS_REST_URL,
           token: env.UPSTASH_REDIS_REST_TOKEN,
         }),
-        limiter: Ratelimit.slidingWindow(5, '1 m'), // 5 uploads per minute
+        limiter: Ratelimit.slidingWindow(10, '1 m'), // 10 uploads per minute
       })
     : new MemoryRateLimiter(),
 }

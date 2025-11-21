@@ -3,73 +3,60 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useBreathDetection } from '@/hooks/useBreathDetection'
-import { useAudio } from '@/context/AudioContext'
 
 interface CakeComponentProps {
   candleCount?: number
-  onCandlesBlow?: () => void
+  onBlow: () => void
+  isBlown: boolean
+  isCutting: boolean
 }
 
 export default function CakeComponent({ 
   candleCount = 25, 
-  onCandlesBlow 
+  onBlow,
+  isBlown,
+  isCutting
 }: CakeComponentProps) {  
-  const [flamesLit, setFlamesLit] = useState(true)
-  const [blowCount, setBlowCount] = useState(0)
-  const [isShaking, setIsShaking] = useState(false)
+  const [showFallbackButton, setShowFallbackButton] = useState(false)
   
   const { isBlowing, error, requestPermission, hasPermission, supported, simulateBlow } = useBreathDetection()
-  const { playSound } = useAudio()
 
   // Limit candles to 10 for visual clarity
   const displayCandles = Math.min(candleCount, 10)
   const spacing = 140 / (displayCandles - 1)
 
-  const handleBlow = () => {
-    if (!flamesLit) {
-      // Relight candles
-      setFlamesLit(true)
-      return
+  // Auto-show fallback button after 5 seconds if not blown
+  useEffect(() => {
+    if (!isBlown) {
+      const timer = setTimeout(() => {
+        setShowFallbackButton(true)
+      }, 5000)
+      return () => clearTimeout(timer)
     }
-
-    // Blow out candles
-    setIsShaking(true)
-    setTimeout(() => setIsShaking(false), 300)
-    setFlamesLit(false)
-    setBlowCount(prev => prev + 1)
-
-    // Play sound effect
-    playSound('candle-blow')
-
-    // Call parent callback
-    setTimeout(() => {
-      if (onCandlesBlow) onCandlesBlow()
-    }, 500)
-  }
+  }, [isBlown])
 
   // Handle breath detection
   useEffect(() => {
-    if (isBlowing && flamesLit) {
-      setTimeout(() => handleBlow(), 0)
+    if (isBlowing && !isBlown) {
+      onBlow()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isBlowing, flamesLit])
+  }, [isBlowing, isBlown, onBlow])
 
-  const handleEnableBreathDetection = async () => {
-    // ✅ ROOT FIX: Function kept but no longer uses removed state
-    await requestPermission()
+  const handleManualBlow = () => {
+    if (!isBlown) {
+      onBlow()
+    }
   }
 
   return (
     <div className="relative max-w-2xl mx-auto">
-      {/* Shake animation container */}
+      {/* Cake SVG */}
       <motion.div
-        animate={isShaking ? {
-          x: [-2, 2, -2, 2, 0],
-          transition: { duration: 0.3 }
+        animate={isCutting ? {
+          scale: [1, 0.98, 1],
+          transition: { duration: 0.6 }
         } : {}}
       >
-        {/* Cake SVG */}
         <svg
           viewBox="0 0 600 400"
           className="w-full h-auto drop-shadow-2xl"
@@ -131,13 +118,13 @@ export default function CakeComponent({
                 <line x1="0" y1="0" x2="0" y2="-5" stroke="#4A3F37" strokeWidth="1.5" />
 
                 {/* Flame (if lit) */}
-                {flamesLit && (
+                {!isBlown && (
                   <AnimatePresence>
                     <motion.g
                       initial={{ opacity: 0, scale: 0 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0 }}
-                      transition={{ duration: 0.3, delay: i * 0.12 }}
+                      transition={{ duration: 0.3, delay: i * 0.08 }}
                     >
                       {/* Main flame */}
                       <motion.ellipse
@@ -178,130 +165,179 @@ export default function CakeComponent({
                   </AnimatePresence>
                 )}
 
-                {/* Smoke (if not lit) */}
-                {!flamesLit && (
+                {/* Smoke (if blown) */}
+                {isBlown && (
                   <AnimatePresence>
-                    <motion.path
-                      d="M0,-5 Q3,-20 0,-35 Q-3,-50 0,-65"
-                      stroke="#9B8B7E"
-                      strokeWidth="2"
-                      fill="none"
-                      initial={{ pathLength: 0, opacity: 0 }}
-                      animate={{
-                        pathLength: 1,
-                        opacity: [0, 0.6, 0.4, 0],
-                        y: [0, -20]
-                      }}
-                      transition={{
-                        duration: 2.5,
-                        delay: i * 0.08,
-                        ease: 'easeOut'
-                      }}
-                    />
+                    <motion.g>
+                      {/* Primary smoke trail */}
+                      <motion.path
+                        d="M0,-5 Q3,-20 0,-35 Q-3,-50 0,-65"
+                        stroke="#9B8B7E"
+                        strokeWidth="2.5"
+                        fill="none"
+                        initial={{ pathLength: 0, opacity: 0 }}
+                        animate={{
+                          pathLength: 1,
+                          opacity: [0, 0.7, 0.5, 0],
+                          y: [0, -15]
+                        }}
+                        transition={{
+                          duration: 2.5,
+                          delay: i * 0.08,
+                          ease: 'easeOut'
+                        }}
+                      />
+                      {/* Secondary smoke wisp */}
+                      <motion.path
+                        d="M0,-5 Q-2,-18 1,-32 Q4,-45 0,-58"
+                        stroke="#9B8B7E"
+                        strokeWidth="1.5"
+                        fill="none"
+                        opacity="0.5"
+                        initial={{ pathLength: 0, opacity: 0 }}
+                        animate={{
+                          pathLength: 1,
+                          opacity: [0, 0.5, 0.3, 0],
+                          y: [0, -12]
+                        }}
+                        transition={{
+                          duration: 2.2,
+                          delay: i * 0.08 + 0.15,
+                          ease: 'easeOut'
+                        }}
+                      />
+                    </motion.g>
                   </AnimatePresence>
                 )}
               </g>
             )
           })}
+
+          {/* Cutting line animation */}
+          {isCutting && (
+            <motion.g>
+              {/* Knife/slice line */}
+              <motion.line
+                x1="150"
+                y1="200"
+                x2="450"
+                y2="220"
+                stroke="#7A5C47"
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeDasharray="300"
+                initial={{ strokeDashoffset: 300, opacity: 0 }}
+                animate={{ strokeDashoffset: 0, opacity: [0, 1, 0.8, 0] }}
+                transition={{ duration: 1.5, ease: 'easeInOut' }}
+              />
+              {/* Sparkle effects along cut */}
+              {Array.from({ length: 5 }).map((_, i) => (
+                <motion.circle
+                  key={i}
+                  cx={180 + i * 60}
+                  cy={202 + i * 4}
+                  r="3"
+                  fill="#E6A957"
+                  initial={{ opacity: 0, scale: 0 }}
+                  animate={{ 
+                    opacity: [0, 1, 0],
+                    scale: [0, 1.5, 0]
+                  }}
+                  transition={{ 
+                    duration: 0.6, 
+                    delay: i * 0.15,
+                    ease: 'easeOut'
+                  }}
+                />
+              ))}
+            </motion.g>
+          )}
         </svg>
       </motion.div>
 
-      {/* Blow Button */}
-      <motion.button
-        className={`mt-12 mx-auto block px-16 py-6 rounded-2xl text-h5 font-heading font-bold shadow-dramatic transition-all ${
-          flamesLit
-            ? 'bg-gradient-to-r from-burntSienna to-fadedGold text-warmCream-50'
-            : 'bg-warmCream-300 text-warmCream-700'
-        }`}
-        whileHover={{ y: -4 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={handleBlow}
-      >
-        {flamesLit ? '💨 Blow the Candles' : '🕯️ Relight & Wish Again'}
-      </motion.button>
-
-      {/* Breath Detection Toggle */}
-      {!hasPermission && !error && supported && (
-        <motion.button
-          className="mt-4 mx-auto block px-8 py-3 rounded-xl text-body font-body bg-warmCream-200 text-warmCream-700 hover:bg-warmCream-300 transition-colors"
-          whileHover={{ y: -2 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={handleEnableBreathDetection}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-        >
-          🎤 Enable Breath Detection (Blow Into Mic!)
-        </motion.button>
-      )}
-
-      {/* Breath Detection Status */}
-      {hasPermission && (
-        <motion.p
-          className="text-caption font-body text-fadedGold text-center mt-3 italic"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-        >
-          ✨ Microphone active - Blow to extinguish candles!
-        </motion.p>
-      )}
-
-      {/* Error Message */}
-      {error && (
-        <motion.p
-          className="text-caption font-body text-burntSienna text-center mt-3 max-w-md mx-auto"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-        >
-          {error}
-        </motion.p>
-      )}
-
-      {/* Fallback simulate if mic unsupported */}
-      {!supported && (
-        <motion.button
-          className="mt-4 mx-auto block px-8 py-3 rounded-xl text-body font-body bg-warmCream-200 text-warmCream-700 hover:bg-warmCream-300 transition-colors"
-          whileHover={{ y: -2 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={() => simulateBlow()}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-        >
-          💨 Simulate Blow (No Microphone)
-        </motion.button>
-      )}
-
-      {/* Success Message */}
-      {!flamesLit && (
-        <AnimatePresence>
-          <motion.div
-            className="text-center mt-8"
-            initial={{ opacity: 0, y: 20, scale: 0.8 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            transition={{ duration: 0.6, ease: [0.34, 1.56, 0.64, 1] }}
+      {/* Interactive Controls */}
+      <div className="mt-12 flex flex-col items-center gap-4">
+        {/* Primary Blow Button */}
+        {!isBlown && (
+          <motion.button
+            className="px-16 py-6 rounded-2xl text-h5 font-heading font-bold shadow-dramatic transition-all bg-gradient-to-r from-burntSienna to-fadedGold text-warmCream-50 hover:shadow-colored-gold"
+            whileHover={{ y: -4, scale: 1.02 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={handleManualBlow}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
           >
-            <h3 className="text-h3 font-heading font-bold text-fadedGold mb-2">
-              ✨ Wish Granted! ✨
-            </h3>
-            <p className="text-body-lg font-accent italic text-warmCream-700">
-              May all your dreams bloom
-            </p>
-          </motion.div>
-        </AnimatePresence>
-      )}
+            💨 Blow the Candles
+          </motion.button>
+        )}
 
-      {/* Easter Egg Hint */}
-      {blowCount >= 2 && blowCount < 3 && (
-        <motion.p
-          className="text-caption font-body text-warmCream-600 text-center mt-4 italic"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1 }}
-        >
-          One more blow reveals something special...
-        </motion.p>
-      )}
+        {/* Fallback "Make a Wish" button (appears after 5s) */}
+        {!isBlown && showFallbackButton && (
+          <motion.button
+            className="px-12 py-4 rounded-xl text-body-lg font-accent italic bg-warmCream-200 text-warmCream-700 hover:bg-warmCream-300 transition-all border-2 border-fadedGold/30"
+            whileHover={{ y: -2 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={handleManualBlow}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, ease: [0.34, 1.56, 0.64, 1] }}
+          >
+            ✨ Make a Wish & Continue
+          </motion.button>
+        )}
+
+        {/* Breath Detection Toggle */}
+        {!hasPermission && !error && supported && !isBlown && (
+          <motion.button
+            className="px-8 py-3 rounded-xl text-body font-body bg-warmCream-200 text-warmCream-700 hover:bg-warmCream-300 transition-colors"
+            whileHover={{ y: -2 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={requestPermission}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.8 }}
+          >
+            🎤 Enable Breath Detection (Blow Into Mic!)
+          </motion.button>
+        )}
+
+        {/* Breath Detection Status */}
+        {hasPermission && !isBlown && (
+          <motion.p
+            className="text-caption font-body text-fadedGold text-center italic"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            ✨ Microphone active - Blow to extinguish candles!
+          </motion.p>
+        )}
+
+        {/* Error Message */}
+        {error && (
+          <motion.p
+            className="text-caption font-body text-burntSienna text-center max-w-md"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            {error}
+          </motion.p>
+        )}
+
+        {/* Fallback simulate if mic unsupported */}
+        {!supported && !isBlown && (
+          <motion.button
+            className="px-8 py-3 rounded-xl text-body font-body bg-warmCream-200 text-warmCream-700 hover:bg-warmCream-300 transition-colors"
+            whileHover={{ y: -2 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => simulateBlow()}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            💨 Simulate Blow (No Microphone)
+          </motion.button>
+        )}
+      </div>
     </div>
   )
 }

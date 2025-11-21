@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import CakeComponent from './CakeComponent'
 import Confetti from './Confetti'
@@ -14,37 +14,56 @@ interface CelebrationSectionProps {
   contributors: IContributor[]
 }
 
+type CelebrationStep = 'AWAITING_BLOW' | 'BLOWN' | 'CUTTING' | 'FIREWORKS' | 'REVEALED'
+
 export default function CelebrationSection({ 
   age, 
   celebrationWishPhrases, 
   contributors 
 }: CelebrationSectionProps) {
-  const [showConfetti, setShowConfetti] = useState(false)
-  const [showWishes, setShowWishes] = useState(false)
-  const [showThankYou, setShowThankYou] = useState(false)
+  const [step, setStep] = useState<CelebrationStep>('AWAITING_BLOW')
   const { playSound } = useAudio()
+  
+  // Preload audio on mount
+  const audioPreloadedRef = useRef(false)
+  
+  useEffect(() => {
+    if (!audioPreloadedRef.current) {
+      // Preload audio files for instant playback
+      const candleBlowAudio = new Audio('/audio/candle-blow.wav')
+      const confettiPopAudio = new Audio('/audio/confetti-pop.wav')
+      const successChimeAudio = new Audio('/audio/success-chime.mp3')
+      
+      candleBlowAudio.preload = 'auto'
+      confettiPopAudio.preload = 'auto'
+      successChimeAudio.preload = 'auto'
+      
+      audioPreloadedRef.current = true
+    }
+  }, [])
 
-  const handleCandlesBlow = () => {
-    // Play confetti sound
-    playSound('confetti-pop')
+  // State machine transition handlers
+  const handleBlow = () => {
+    // AWAITING_BLOW → BLOWN
+    playSound('candle-blow')
+    setStep('BLOWN')
     
-    // Show confetti immediately
-    setShowConfetti(true)
-    
-    // Show wishes after 0.5s
-    setTimeout(() => setShowWishes(true), 500)
-    
-    // Show thank you card after 2s and play success chime
+    // BLOWN → CUTTING (after 1s)
     setTimeout(() => {
-      setShowThankYou(true)
-      playSound('success-chime')
-    }, 2000)
+      setStep('CUTTING')
+    }, 1000)
     
-    // Hide confetti after 5s
-    setTimeout(() => setShowConfetti(false), 5000)
-    
-    // Hide wishes after 8s
-    setTimeout(() => setShowWishes(false), 8000)
+    // CUTTING → FIREWORKS (after 1.5s)
+    setTimeout(() => {
+      setStep('FIREWORKS')
+      playSound('confetti-pop')
+    }, 2500)
+  }
+
+  const handleFireworksComplete = () => {
+    // FIREWORKS → REVEALED (after fireworks finish)
+    setStep('REVEALED')
+    playSound('success-chime')
   }
 
   return (
@@ -111,96 +130,154 @@ export default function CelebrationSection({
         </motion.p>
       </div>
 
-      {/* Cake */}
-      <CakeComponent candleCount={age} onCandlesBlow={handleCandlesBlow} />
-
-      {/* Confetti */}
-      <AnimatePresence>
-        {showConfetti && <Confetti particleCount={400} />}
-      </AnimatePresence>
-
-      {/* Wishes floating */}
-      <AnimatePresence>
-        {showWishes && <WishesFloat wishes={celebrationWishPhrases} />}
-      </AnimatePresence>
-
-      {/* Thank You Card */}
-      <motion.div
-        className="max-w-3xl mx-auto mt-16 md:mt-32 px-4 md:px-8"
-        initial={{ opacity: 0, y: 60 }}
-        animate={{
-          opacity: showThankYou ? 1 : 0,
-          y: showThankYou ? 0 : 60,
-        }}
-        transition={{ duration: 1, delay: 2 }}
-      >
-        <article className="relative bg-warmCream-50 border-4 border-fadedGold/70 rounded-3xl p-8 md:p-16 shadow-dramatic text-center">
-          {/* Decorative tape corners */}
-          <div className="absolute -top-5 left-20 w-40 h-12 bg-rosePetal/70 shadow-lg" style={{ transform: 'rotate(-3deg)' }} />
-          <div className="absolute -top-5 right-20 w-40 h-12 bg-lavenderPress/70 shadow-lg" style={{ transform: 'rotate(3deg)' }} />
-
-          <h3 className="text-h2 md:text-h1 font-heading font-bold text-sepiaInk mb-6">
-            From All of Us to You
-          </h3>
-
-          <p className="text-body-xl md:text-body-lg font-body text-warmCream-800 leading-loose max-w-2xl mx-auto mb-6">
-            This collection of memories, messages, and love has been gathered from everyone who holds you dear. Each word written, each moment shared, each wish whispered—they all bloom from hearts that are grateful to know you.
-          </p>
-
-          <p className="text-body-lg font-body text-warmCream-700 italic mb-8">
-            You are loved beyond measure, today and always.
-          </p>
-
-          {/* Contributors */}
-          <div className="pt-8 border-t-2 border-fadedGold/30">
-            <p className="text-caption text-warmCream-600 font-body tracking-wide uppercase mb-4">
-              With Love From
-            </p>
-            <div className="flex flex-wrap items-center justify-center gap-3">
-              {contributors.map((contributor, i) => (
-                <motion.span
-                  key={contributor.id}
-                  className="text-h6 font-accent italic text-fadedGold"
-                  initial={{ opacity: 0, scale: 0 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.4, delay: 2.5 + i * 0.1 }}
-                >
-                  {contributor.name}
-                  {i < contributors.length - 1 && (
-                    <span className="mx-2 text-fadedGold/50">•</span>
-                  )}
-                </motion.span>
-              ))}
-            </div>
-          </div>
-
-          {/* Large decorative flower */}
-          <motion.svg
-            className="mx-auto mt-12 w-24 h-24 text-fadedGold"
-            viewBox="0 0 100 100"
-            initial={{ scale: 0, rotate: -30 }}
-            animate={{ scale: 1, rotate: 0 }}
-            transition={{ duration: 1, delay: 3, ease: [0.34, 1.56, 0.64, 1] }}
+      {/* State Machine Flow */}
+      <AnimatePresence mode="wait">
+        {/* AWAITING_BLOW & BLOWN & CUTTING States - Show Cake */}
+        {(step === 'AWAITING_BLOW' || step === 'BLOWN' || step === 'CUTTING') && (
+          <motion.div
+            key="cake-section"
+            initial={{ opacity: 1, scale: 1 }}
+            exit={{ 
+              opacity: 0, 
+              scale: 0.8,
+              transition: { duration: 0.6, ease: 'easeInOut' }
+            }}
           >
-            <circle cx="50" cy="50" r="12" fill="currentColor" />
-            {Array.from({ length: 8 }).map((_, i) => {
-              const angle = (i * 360) / 8
-              return (
-                <ellipse
-                  key={i}
-                  cx="50"
-                  cy="30"
-                  rx="8"
-                  ry="18"
-                  fill="currentColor"
-                  opacity="0.85"
-                  transform={`rotate(${angle} 50 50)`}
-                />
-              )
-            })}
-          </motion.svg>
-        </article>
-      </motion.div>
+            <CakeComponent 
+              candleCount={age} 
+              onBlow={handleBlow}
+              isBlown={step !== 'AWAITING_BLOW'}
+              isCutting={step === 'CUTTING'}
+            />
+          </motion.div>
+        )}
+
+        {/* FIREWORKS State - Show Fireworks Confetti */}
+        {step === 'FIREWORKS' && (
+          <motion.div
+            key="fireworks-section"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Confetti 
+              mode="fireworks" 
+              duration={3500}
+              particleCount={500}
+              onComplete={handleFireworksComplete}
+            />
+            
+            {/* Fireworks message */}
+            <motion.div
+              className="text-center"
+              initial={{ opacity: 0, scale: 0.8, y: 50 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3, ease: [0.34, 1.56, 0.64, 1] }}
+            >
+              <h3 className="text-h2 md:text-h1 font-heading font-bold text-fadedGold mb-4 drop-shadow-lg">
+                ✨ Wish Granted! ✨
+              </h3>
+              <p className="text-body-xl font-accent italic text-warmCream-700">
+                May all your dreams bloom
+              </p>
+            </motion.div>
+          </motion.div>
+        )}
+
+        {/* REVEALED State - Show Wishes & Thank You Card */}
+        {step === 'REVEALED' && (
+          <motion.div
+            key="revealed-section"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1 }}
+          >
+            {/* Wishes floating */}
+            <WishesFloat wishes={celebrationWishPhrases} />
+
+            {/* Thank You Card */}
+            <motion.div
+              className="max-w-3xl mx-auto mt-16 md:mt-32 px-4 md:px-8"
+              initial={{ opacity: 0, y: 60 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 1 }}
+            >
+              <article className="relative bg-warmCream-50 border-4 border-fadedGold/70 rounded-3xl p-8 md:p-16 shadow-dramatic text-center">
+                {/* Decorative tape corners */}
+                <div className="absolute -top-5 left-20 w-40 h-12 bg-rosePetal/70 shadow-lg" style={{ transform: 'rotate(-3deg)' }} />
+                <div className="absolute -top-5 right-20 w-40 h-12 bg-lavenderPress/70 shadow-lg" style={{ transform: 'rotate(3deg)' }} />
+
+                <h3 className="text-h2 md:text-h1 font-heading font-bold text-sepiaInk mb-6">
+                  From All of Us to You
+                </h3>
+
+                <p className="text-body-xl md:text-body-lg font-body text-warmCream-800 leading-loose max-w-2xl mx-auto mb-6">
+                  This collection of memories, messages, and love has been gathered from everyone who holds you dear. Each word written, each moment shared, each wish whispered—they all bloom from hearts that are grateful to know you.
+                </p>
+
+                <p className="text-body-lg font-body text-warmCream-700 italic mb-8">
+                  You are loved beyond measure, today and always.
+                </p>
+
+                {/* Contributors */}
+                <div className="pt-8 border-t-2 border-fadedGold/30">
+                  <p className="text-caption text-warmCream-600 font-body tracking-wide uppercase mb-4">
+                    With Love From
+                  </p>
+                  <div className="flex flex-wrap items-center justify-center gap-3">
+                    {contributors.map((contributor, i) => (
+                      <motion.span
+                        key={contributor.id}
+                        className="text-h6 font-accent italic text-fadedGold"
+                        initial={{ opacity: 0, scale: 0 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.4, delay: 1.5 + i * 0.1 }}
+                      >
+                        {contributor.name}
+                        {i < contributors.length - 1 && (
+                          <span className="mx-2 text-fadedGold/50">•</span>
+                        )}
+                      </motion.span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Large decorative flower */}
+                <motion.svg
+                  className="mx-auto mt-12 w-24 h-24 text-fadedGold"
+                  viewBox="0 0 100 100"
+                  initial={{ scale: 0, rotate: -30 }}
+                  animate={{ scale: 1, rotate: 0 }}
+                  transition={{ duration: 1, delay: 2, ease: [0.34, 1.56, 0.64, 1] }}
+                >
+                  <circle cx="50" cy="50" r="12" fill="currentColor" />
+                  {Array.from({ length: 8 }).map((_, i) => {
+                    const angle = (i * 360) / 8
+                    return (
+                      <ellipse
+                        key={i}
+                        cx="50"
+                        cy="30"
+                        rx="8"
+                        ry="18"
+                        fill="currentColor"
+                        opacity="0.85"
+                        transform={`rotate(${angle} 50 50)`}
+                      />
+                    )
+                  })}
+                </motion.svg>
+              </article>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Initial celebration confetti (gentle burst when candles are blown) */}
+      {step === 'BLOWN' && (
+        <Confetti mode="celebration" duration={3000} particleCount={300} />
+      )}
     </section>
   )
 }

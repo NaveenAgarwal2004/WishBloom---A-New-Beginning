@@ -67,6 +67,11 @@ jobs:
           files: ./coverage/lcov.info
           flags: unittests
           name: codecov-umbrella
+      
+      # ✅ Part 8: Security Audit - Check for vulnerable dependencies
+      - name: Security Audit
+        run: npm audit --audit-level=high
+        continue-on-error: false
 
   # ---------------- Build ----------------
   build:

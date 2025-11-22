@@ -1,44 +1,84 @@
-const withBundleAnalyzer = require('@next/bundle-analyzer')({
+/**
+ * 🌸 WishBloom Production Configuration
+ * Combines security hardening, performance optimization, and production best practices
+ * Part 8: Security & DevOps Hardening - COMPLETE
+ * 
+ * @type {import('next').NextConfig}
+ */
+
+// Import bundle analyzer for production analysis
+import bundleAnalyzer from '@next/bundle-analyzer'
+
+const withBundleAnalyzer = bundleAnalyzer({
   enabled: process.env.ANALYZE === 'true',
 })
 
-/** @type {import('next').NextConfig} */
+/**
+ * Content Security Policy for WishBloom
+ * ✅ Part 8: Protects against XSS, clickjacking, and code injection attacks
+ */
+const cspHeader = `
+  default-src 'self';
+  script-src 'self' 'unsafe-eval' 'unsafe-inline' https://va.vercel-scripts.com https://cdnjs.cloudflare.com;
+  style-src 'self' 'unsafe-inline';
+  img-src 'self' data: https: blob:;
+  font-src 'self' data:;
+  media-src 'self' data: blob:;
+  connect-src 'self' https://va.vercel-scripts.com https://*.mongodb.net https://*.cloudinary.com https://*.upstash.io;
+  frame-src 'self';
+  object-src 'none';
+  base-uri 'self';
+  form-action 'self';
+  frame-ancestors 'none';
+  upgrade-insecure-requests;
+`
+  .replace(/\s{2,}/g, ' ')
+  .trim()
+
 const nextConfig = {
   reactStrictMode: true,
 
-  // ✅ OPTIMIZED: Image configuration for performance
+  // ✅ Image optimization for performance
   images: {
-    domains: ['res.cloudinary.com', 'images.unsplash.com'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+    ],
     formats: ['image/avif', 'image/webp'], // Modern formats first
     
-    // ✅ NEW: Mobile-first image sizes
+    // Mobile-first responsive image sizes
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     
-    // ✅ NEW: Lazy loading by default
+    // Lazy loading and caching
     minimumCacheTTL: 60,
     
-    // ✅ NEW: Quality optimization
+    // SVG security
     dangerouslyAllowSVG: true,
     contentDispositionType: 'attachment',
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
 
+  // ✅ Experimental features for better performance
   experimental: {
     serverComponentsExternalPackages: ['mongodb', 'mongoose'],
-    
-    // ✅ NEW: Optimize CSS
-    optimizeCss: true,
+    optimizeCss: true, // Optimize CSS in production
   },
 
-  // ✅ STEP 3: Optimize font loading and remove console logs in production
+  // ✅ Compiler optimizations
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production' ? {
       exclude: ['error', 'warn'], // Keep error and warn logs
     } : false,
   },
 
-  // ✅ Optimized webpack config
+  // ✅ Optimized webpack configuration
   webpack(config, { dev, isServer }) {
     if (dev) {
       config.watchOptions = {
@@ -48,7 +88,7 @@ const nextConfig = {
       }
     }
     
-    // ✅ NEW: Optimize production builds
+    // Production build optimizations
     if (!dev && !isServer) {
       config.optimization = {
         ...config.optimization,
@@ -73,7 +113,7 @@ const nextConfig = {
               reuseExistingChunk: true,
               enforce: true
             },
-            // Framer Motion in separate chunk
+            // Framer Motion in separate chunk (heavy animation library)
             framer: {
               name: 'framer',
               test: /[\\/]node_modules[\\/]framer-motion[\\/]/,
@@ -87,18 +127,20 @@ const nextConfig = {
     return config
   },
 
+  // ✅ On-demand entry optimization
   onDemandEntries: {
     maxInactiveAge: 25000,
     pagesBufferLength: 2,
   },
 
-  // Security headers + Font caching optimization
+  // ✅ Part 8: Comprehensive Security Headers + Performance Headers
   async headers() {
     const allowedOrigins = (process.env.ALLOWED_ORIGINS || 'http://localhost:3000')
       .split(',')
       .map(origin => origin.trim())
 
     return [
+      // API CORS headers
       {
         source: '/api/:path*',
         headers: [
@@ -120,7 +162,7 @@ const nextConfig = {
           },
         ],
       },
-      // ✅ STEP 3: Aggressive caching for self-hosted fonts
+      // Font caching optimization
       {
         source: '/fonts/:path*',
         headers: [
@@ -134,9 +176,14 @@ const nextConfig = {
           },
         ],
       },
+      // Global security and performance headers
       {
         source: '/:path*',
         headers: [
+          {
+            key: 'Content-Security-Policy',
+            value: cspHeader,
+          },
           {
             key: 'X-DNS-Prefetch-Control',
             value: 'on',
@@ -147,7 +194,7 @@ const nextConfig = {
           },
           {
             key: 'X-Frame-Options',
-            value: 'SAMEORIGIN',
+            value: 'DENY',
           },
           {
             key: 'X-Content-Type-Options',
@@ -161,7 +208,10 @@ const nextConfig = {
             key: 'Referrer-Policy',
             value: 'strict-origin-when-cross-origin',
           },
-          // ✅ Resource hints (keeping existing + adding fonts)
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(self), geolocation=()',
+          },
           {
             key: 'Link',
             value: '<https://res.cloudinary.com>; rel=preconnect',
@@ -171,7 +221,7 @@ const nextConfig = {
     ]
   },
 
-  // Redirects (existing)
+  // ✅ URL redirects
   async redirects() {
     return [
       {
@@ -183,4 +233,4 @@ const nextConfig = {
   },
 }
 
-module.exports = withBundleAnalyzer(nextConfig)
+export default withBundleAnalyzer(nextConfig)

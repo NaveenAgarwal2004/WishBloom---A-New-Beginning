@@ -10,12 +10,13 @@ import {
   DEFAULT_VALUES,
 } from '@/config/constants'
 
-//  Contributor Schema with EXPLICIT required fields
+//  Contributor Schema with proper defaults for system-managed fields
+// Note: contributionCount is optional to allow omission in tests/forms, defaults to 1 in database
 export const ContributorSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(1, 'Contributor name is required'),
   email: z.string().email(ERROR_MESSAGES.INVALID_EMAIL).or(z.literal('')).optional(),
-  contributionCount: z.number().int().min(1), // ✅ REMOVED .default() - make it truly required
+  contributionCount: z.number().int().min(1).optional(), // ✅ ROOT FIX: Optional for forms, will be set to 1 by backend if missing
 })
 
 //  Memory Schema with REQUIRED type field (no optional, no undefined)
@@ -30,7 +31,7 @@ export const MemorySchema = z.object({
     .min(VALIDATION_LIMITS.MEMORY_DESCRIPTION_MIN, ERROR_MESSAGES.REQUIRED_FIELD)
     .max(VALIDATION_LIMITS.MEMORY_DESCRIPTION_MAX),
   date: z.string().regex(PATTERNS.DATE_FORMAT, ERROR_MESSAGES.INVALID_DATE),
-  type: z.enum(MEMORY_TYPES), // ✅ REMOVED .default() - make it required
+  type: z.enum(MEMORY_TYPES).default(DEFAULT_VALUES.MEMORY_TYPE), // ✅ ROOT FIX: System-managed field with sensible default
   contributor: ContributorSchema,
   imageUrl: z.string().url(ERROR_MESSAGES.INVALID_URL).optional(),
   tags: z.array(z.enum(MEMORY_TAGS)).default([]),

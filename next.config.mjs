@@ -1,7 +1,7 @@
 /**
  * 🌸 WishBloom Production Configuration
  * Combines security hardening, performance optimization, and production best practices
- * Part 8: Security & DevOps Hardening - COMPLETE
+ * Security & DevOps Hardening - COMPLETE
  * 
  * @type {import('next').NextConfig}
  */
@@ -37,6 +37,11 @@ const cspHeader = `
 
 const nextConfig = {
   reactStrictMode: true,
+
+  // ✅ ESLint flat config support - Disable during builds, run separately via npm run lint
+  eslint: {
+    ignoreDuringBuilds: true, // Use standalone 'npm run lint' instead to avoid ESLint 9 compatibility issues with Next.js build
+  },
 
   // ✅ Image optimization for performance
   images: {

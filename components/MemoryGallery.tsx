@@ -35,7 +35,7 @@ export default function MemoryGallery({ memories }: MemoryGalleryProps) {
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          Moments We've Pressed & Preserved
+          Moments We&apos;ve Pressed & Preserved
         </motion.h2>
 
         {/* Decorative underline */}

@@ -59,7 +59,7 @@ export default function Error({
             </h1>
 
             <p className="text-body-lg font-body text-warmCream-700 leading-loose mb-8">
-              The pages of our memory book got a bit tangled. Let's try to smooth them out.
+              The pages of our memory book got a bit tangled. Let&apos;s try to smooth them out.
             </p>
 
             <div className="flex gap-4 justify-center">

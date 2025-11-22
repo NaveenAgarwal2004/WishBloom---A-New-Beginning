@@ -79,7 +79,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
             </h1>
 
             <p className="text-body-lg font-body text-warmCream-700 leading-loose mb-8">
-              A petal has fallen from our collection. We're working to press it back into place.
+              A petal has fallen from our collection. We&apos;re working to press it back into place.
             </p>
 
             {process.env.NODE_ENV === 'development' && this.state.error && (

@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { useDropzone, FileWithPath } from 'react-dropzone'
 import { Upload, X, Loader2 } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
+import Image from 'next/image'
 
 interface ImageUploaderProps {
   onUpload?: (url: string | undefined) => void // ✅ Changed from `string | null`
@@ -84,11 +85,14 @@ export default function ImageUploader({ onUpload, existingImage }: ImageUploader
   if (imageUrl) {
     return (
       <div className="relative">
-        <img
-          src={imageUrl}
-          alt="Uploaded"
-          className="w-full h-48 object-cover rounded-lg shadow-medium"
-        />
+        <div className="relative w-full h-48">
+          <Image
+            src={imageUrl}
+            alt="Uploaded"
+            fill
+            className="object-cover rounded-lg shadow-medium"
+          />
+        </div>
         <button
           onClick={handleRemove}
           className="absolute top-2 right-2 p-2 bg-warmCream-800/80 text-warmCream-50 rounded-full hover:bg-fadedRose transition-colors"

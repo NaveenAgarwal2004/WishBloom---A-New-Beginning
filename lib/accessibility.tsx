@@ -3,18 +3,18 @@
  * Helpers for keyboard navigation, focus management, and screen readers
  */
 
-import { useEffect, useRef } from 'react'
-import React from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 // Hook to detect if user prefers reduced motion
 export function usePrefersReducedMotion(): boolean {
-  if (typeof window === 'undefined') return false
-
-  const [prefersReducedMotion, setPrefersReducedMotion] = React.useState(
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  )
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  })
 
   useEffect(() => {
+    if (typeof window === 'undefined') return
+    
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
     
     const handleChange = (event: MediaQueryListEvent) => {

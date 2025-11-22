@@ -74,7 +74,7 @@ function LetterCard({ message, index }: MessageCardProps) {
           </p>
         )}
         <p className="text-h6 font-accent italic text-sepiaInk">
-          — {message.signature}
+          &mdash; {message.signature}
         </p>
       </div>
 
@@ -116,7 +116,7 @@ function PoemCard({ message, index }: MessageCardProps) {
     >
       {/* Giant decorative quote */}
       <span className="absolute -top-12 -left-8 text-lavenderPress/20 font-heading font-bold leading-none pointer-events-none" style={{ fontSize: '180px' }}>
-        "
+        &ldquo;
       </span>
 
       {/* Poem title */}
@@ -144,7 +144,7 @@ function PoemCard({ message, index }: MessageCardProps) {
 
       {/* Attribution */}
       <p className="text-body-lg font-accent italic text-fadedGold text-center">
-        — {message.signature}
+        &mdash; {message.signature}
       </p>
 
       {/* Decorative line ornament */}

@@ -89,7 +89,7 @@ export default function CelebrationSection({
           transition={{ duration: 0.8, delay: 0.2 }}
           animate={{ scale: [1, 1.02, 1] }}
         >
-          Let's Celebrate!
+          Let&apos;s Celebrate!
         </motion.h2>
 
         {/* Decorative underlines */}

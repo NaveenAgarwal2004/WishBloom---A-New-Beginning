@@ -14,7 +14,9 @@ export default function IntroMessage({ message }: IntroMessageProps) {
   const [isClient, setIsClient] = useState(false)
   
   useEffect(() => {
-    setIsClient(true)
+    // Only set to true after mount to avoid hydration issues
+    const timer = setTimeout(() => setIsClient(true), 0)
+    return () => clearTimeout(timer)
   }, [])
 
   if (!message) return null

@@ -45,7 +45,7 @@ export default function MessagesSection({ messages }: MessagesSectionProps) {
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          Words We've Saved For You
+          Words We&apos;ve Saved For You
         </motion.h2>
 
         {/* Subtitle */}

@@ -239,7 +239,7 @@ export default function SignInPage() {
           {/* Footer */}
           <div className="bg-warmCream-50 p-6 text-center border-t border-warmCream-200">
             <p className="text-body-sm font-body text-warmCream-700">
-              Don't have an account?{' '}
+              Don&apos;t have an account?{' '}
               <Link
                 href="/auth/signup"
                 className="text-fadedGold hover:text-fadedGold/80 font-semibold underline transition-colors"

@@ -1,6 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import Image from 'next/image'
 import type { IMemory } from '@/models/WishBloom'
 
 // Type for tag colors
@@ -91,12 +92,15 @@ function StandardMemoryCard({ memory, rotation, index }: MemoryCardComponentProp
       {/* Image if present */}
       {memory.imageUrl && (
         <div className="relative mb-6 -mx-6 md:-mx-10">
-          <img
-            src={memory.imageUrl}
-            alt={memory.title}
-            className="w-full h-64 object-cover shadow-medium"
-            style={{ clipPath: 'polygon(3% 2%, 98% 0%, 97% 98%, 1% 97%)' }}
-          />
+          <div className="relative w-full h-64">
+            <Image
+              src={memory.imageUrl}
+              alt={memory.title}
+              fill
+              className="object-cover shadow-medium"
+              style={{ clipPath: 'polygon(3% 2%, 98% 0%, 97% 98%, 1% 97%)' }}
+            />
+          </div>
           {/* Photo corner tapes */}
           <div className="absolute top-2 left-2 w-16 h-8 bg-sunsetAmber/60 shadow-sm" style={{ transform: 'rotate(-45deg)' }} />
           <div className="absolute top-2 right-2 w-16 h-8 bg-rosePetal/60 shadow-sm" style={{ transform: 'rotate(45deg)' }} />
@@ -133,7 +137,7 @@ function StandardMemoryCard({ memory, rotation, index }: MemoryCardComponentProp
       {/* Footer */}
       <div className="border-t-2 border-warmCream-300 pt-4 flex justify-between items-center">
         <span className="font-accent italic text-fadedGold text-body-sm">
-          — {memory.contributor.name}
+          &mdash; {memory.contributor.name}
         </span>
       </div>
 
@@ -193,12 +197,15 @@ function FeaturedMemoryCard({ memory, rotation, index }: MemoryCardComponentProp
       {/* Image first */}
       {memory.imageUrl && (
         <div className="relative mb-8">
-          <img
-            src={memory.imageUrl}
-            alt={memory.title}
-            className="w-full h-96 object-cover rounded-2xl shadow-high"
-            style={{ clipPath: 'polygon(2% 1%, 99% 0%, 98% 99%, 1% 98%)' }}
-          />
+          <div className="relative w-full h-96">
+            <Image
+              src={memory.imageUrl}
+              alt={memory.title}
+              fill
+              className="object-cover rounded-2xl shadow-high"
+              style={{ clipPath: 'polygon(2% 1%, 99% 0%, 98% 99%, 1% 98%)' }}
+            />
+          </div>
           {/* 4 photo corners */}
           <div className="absolute top-0 left-0 w-24 h-12 bg-rosePetal/80 shadow-md" style={{ transform: 'rotate(-45deg)', transformOrigin: 'top left' }} />
           <div className="absolute top-0 right-0 w-24 h-12 bg-sunsetAmber/80 shadow-md" style={{ transform: 'rotate(45deg)', transformOrigin: 'top right' }} />
@@ -247,7 +254,7 @@ function FeaturedMemoryCard({ memory, rotation, index }: MemoryCardComponentProp
       {/* Footer */}
       <div className="border-t-2 border-fadedGold/30 pt-6">
         <span className="font-accent italic text-fadedGold text-body-lg">
-          — {memory.contributor.name}
+          &mdash; {memory.contributor.name}
         </span>
       </div>
     </motion.article>
@@ -275,7 +282,7 @@ function QuoteMemoryCard({ memory, rotation, index }: MemoryCardComponentProps) 
     >
       {/* HUGE opening quote mark */}
       <span className="absolute -top-8 -left-8 text-lavenderPress/30 font-heading font-bold leading-none" style={{ fontSize: '160px' }}>
-        "
+        &ldquo;
       </span>
 
       {/* Quote text */}
@@ -286,7 +293,7 @@ function QuoteMemoryCard({ memory, rotation, index }: MemoryCardComponentProps) 
 
         {/* Attribution */}
         <p className="text-body font-accent italic text-fadedGold text-center">
-          — {memory.contributor.name}
+          &mdash; {memory.contributor.name}
         </p>
       </div>
 

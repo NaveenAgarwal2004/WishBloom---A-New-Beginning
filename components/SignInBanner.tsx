@@ -41,7 +41,7 @@ export default function SignInBanner() {
             💡 Save Your WishBlooms
           </h3>
           <p className="text-body-sm font-body text-warmCream-700 mb-4">
-            You're creating as a guest. Sign in or create an account to save this WishBloom to your dashboard and access it anytime!
+            You&apos;re creating as a guest. Sign in or create an account to save this WishBloom to your dashboard and access it anytime!
           </p>
           <div className="flex flex-wrap gap-3">
             <Button

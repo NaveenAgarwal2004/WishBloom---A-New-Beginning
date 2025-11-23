@@ -89,7 +89,7 @@ export default function CreatePage() {
       {/* Step Content with Animation - Mobile uses Drawer, Desktop uses inline */}
       {isMobile && currentStep < 6 ? (
         <Drawer open={true} modal={false}>
-          <DrawerContent className="max-h-[85vh] overflow-y-auto">
+          <DrawerContent className="max-h-dvh overflow-y-auto pb-safe">
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentStep}
@@ -97,7 +97,7 @@ export default function CreatePage() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.3 }}
-                className="p-4"
+                className="px-4 pb-8 pt-4"
               >
                 <CurrentStepComponent />
               </motion.div>

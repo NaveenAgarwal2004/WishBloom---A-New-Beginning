@@ -19,13 +19,13 @@ const withBundleAnalyzer = bundleAnalyzer({
  */
 const cspHeader = `
   default-src 'self';
-  script-src 'self' 'unsafe-eval' 'unsafe-inline' https://va.vercel-scripts.com https://cdnjs.cloudflare.com;
+  script-src 'self' 'unsafe-eval' 'unsafe-inline' https://va.vercel-scripts.com https://vercel.live https://cdnjs.cloudflare.com;
   style-src 'self' 'unsafe-inline';
   img-src 'self' data: https: blob:;
   font-src 'self' data:;
   media-src 'self' data: blob:;
-  connect-src 'self' https://va.vercel-scripts.com https://*.mongodb.net https://*.cloudinary.com https://*.upstash.io;
-  frame-src 'self';
+  connect-src 'self' https://va.vercel-scripts.com https://vercel.live https://*.mongodb.net https://*.cloudinary.com https://*.upstash.io;
+  frame-src 'self' https://vercel.live;
   object-src 'none';
   base-uri 'self';
   form-action 'self';

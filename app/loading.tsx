@@ -6,7 +6,7 @@ import FloralLoader from '@/components/FloralLoader'
  */
 export default function Loading() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-warmCream-100 to-rosePetal/10 flex items-center justify-center">
+    <div className="min-h-screen bg-gradient-to-b from-warmCream-100 to-rosePetal/10 flex items-center justify-center animate-pulse">
       <FloralLoader size={140} message="Loading your WishBloom..." />
     </div>
   )

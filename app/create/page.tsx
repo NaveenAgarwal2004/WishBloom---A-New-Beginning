@@ -5,7 +5,8 @@ import { Check } from 'lucide-react'
 import useWishBloomStore from '@/store/useWishBloomStore'
 import SignInBanner from '@/components/SignInBanner'
 import { useIsMobile } from '@/hooks/use-mobile'
-import { Drawer, DrawerContent } from '@/components/ui/drawer'
+import { Drawer, DrawerContent, DrawerTitle, DrawerDescription } from '@/components/ui/drawer'
+import { VisuallyHidden } from '@/components/ui/visually-hidden'
 import Step1Info from './steps/Step1Info'
 import Step2Memories from './steps/Step2Memories'
 import Step3Messages from './steps/Step3Messages'
@@ -89,7 +90,13 @@ export default function CreatePage() {
       {/* Step Content with Animation - Mobile uses Drawer, Desktop uses inline */}
       {isMobile && currentStep < 6 ? (
         <Drawer open={true} modal={false}>
-          <DrawerContent className="max-h-dvh overflow-y-auto pb-safe">
+          <DrawerContent className="max-h-dvh overflow-y-auto pb-safe" aria-describedby="drawer-description">
+            <VisuallyHidden>
+              <DrawerTitle>Create WishBloom - Step {currentStep}</DrawerTitle>
+              <DrawerDescription id="drawer-description">
+                Fill out the form to create your personalized WishBloom memory collection
+              </DrawerDescription>
+            </VisuallyHidden>
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentStep}

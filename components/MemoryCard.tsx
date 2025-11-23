@@ -97,6 +97,7 @@ function StandardMemoryCard({ memory, rotation, index }: MemoryCardComponentProp
               src={memory.imageUrl}
               alt={memory.title}
               fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               className="object-cover shadow-medium"
               style={{ clipPath: 'polygon(3% 2%, 98% 0%, 97% 98%, 1% 97%)' }}
             />
@@ -202,6 +203,7 @@ function FeaturedMemoryCard({ memory, rotation, index }: MemoryCardComponentProp
               src={memory.imageUrl}
               alt={memory.title}
               fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 66vw"
               className="object-cover rounded-2xl shadow-high"
               style={{ clipPath: 'polygon(2% 1%, 99% 0%, 98% 99%, 1% 98%)' }}
             />

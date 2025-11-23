@@ -6,7 +6,6 @@ import useWishBloomStore from '@/store/useWishBloomStore'
 import SignInBanner from '@/components/SignInBanner'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { Drawer, DrawerContent, DrawerTitle, DrawerDescription } from '@/components/ui/drawer'
-import { VisuallyHidden } from '@/components/ui/visually-hidden'
 import Step1Info from './steps/Step1Info'
 import Step2Memories from './steps/Step2Memories'
 import Step3Messages from './steps/Step3Messages'
@@ -90,13 +89,13 @@ export default function CreatePage() {
       {/* Step Content with Animation - Mobile uses Drawer, Desktop uses inline */}
       {isMobile && currentStep < 6 ? (
         <Drawer open={true} modal={false}>
-          <DrawerContent className="max-h-dvh overflow-y-auto pb-safe" aria-describedby="drawer-description">
-            <VisuallyHidden>
-              <DrawerTitle>Create WishBloom - Step {currentStep}</DrawerTitle>
-              <DrawerDescription id="drawer-description">
-                Fill out the form to create your personalized WishBloom memory collection
-              </DrawerDescription>
-            </VisuallyHidden>
+          <DrawerContent className="max-h-[85vh] overflow-y-auto">
+            <DrawerTitle className="sr-only">
+              Create WishBloom - Step {currentStep}
+            </DrawerTitle>
+            <DrawerDescription className="sr-only">
+              Fill out the form to create your personalized WishBloom memory collection. Step {currentStep} of 5.
+            </DrawerDescription>
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentStep}
@@ -104,7 +103,7 @@ export default function CreatePage() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.3 }}
-                className="px-4 pb-8 pt-4"
+                className="px-4 pb-8 pt-2"
               >
                 <CurrentStepComponent />
               </motion.div>

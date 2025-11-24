@@ -122,3 +122,13 @@ html {
     border-width: 0;
   }
 }
+
+/* ✅ FIX: Touch action for drawer to prevent scroll conflicts */
+[data-vaul-drawer] {
+  touch-action: none;
+}
+
+[data-vaul-drawer-content] {
+  touch-action: pan-y;
+  overscroll-behavior: contain;
+}

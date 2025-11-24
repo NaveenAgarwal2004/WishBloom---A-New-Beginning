@@ -6,6 +6,7 @@ import useWishBloomStore from '@/store/useWishBloomStore'
 import SignInBanner from '@/components/SignInBanner'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { Drawer, DrawerContent, DrawerTitle, DrawerDescription } from '@/components/ui/drawer'
+import { cn } from '@/lib/utils'
 import Step1Info from './steps/Step1Info'
 import Step2Memories from './steps/Step2Memories'
 import Step3Messages from './steps/Step3Messages'
@@ -15,6 +16,7 @@ import Step6Publish from './steps/Step6Publish'
 
 /**
  * ✅ REFACTORED: Simple orchestrator component
+ * ✅ FIXED: Mobile drawer layout conflicts (Part 9)
  * No form logic, no validation - just renders the correct step
  */
 export default function CreatePage() {
@@ -35,7 +37,15 @@ export default function CreatePage() {
   const CurrentStepComponent = steps.find((s) => s.step === currentStep)?.component || Step1Info
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-warmCream-100 to-rosePetal/10 py-16 px-4 md:px-8 pt-24">
+    <main
+      className={cn(
+        'bg-gradient-to-b from-warmCream-100 to-rosePetal/10 py-16 px-4 md:px-8 pt-24',
+        // ✅ FIX: Conditional layout for mobile drawer
+        isMobile && currentStep < 6
+          ? 'h-screen overflow-hidden' // Prevent background scroll on mobile when drawer is open
+          : 'min-h-screen' // Normal layout for desktop
+      )}
+    >
       {/* Header */}
       <div className="text-center mb-12">
         <h1 className="text-h1 md:text-display font-heading font-bold text-sepiaInk mb-4">
@@ -88,8 +98,8 @@ export default function CreatePage() {
 
       {/* Step Content with Animation - Mobile uses Drawer, Desktop uses inline */}
       {isMobile && currentStep < 6 ? (
-        <Drawer open={true} modal={false}>
-          <DrawerContent className="max-h-[85vh] overflow-y-auto">
+        <Drawer open={true} modal={true}>
+          <DrawerContent className="max-h-[calc(85dvh-env(safe-area-inset-bottom))] overflow-y-auto">
             <DrawerTitle className="sr-only">
               Create WishBloom - Step {currentStep}
             </DrawerTitle>

@@ -132,3 +132,34 @@ html {
   touch-action: pan-y;
   overscroll-behavior: contain;
 }
+
+/* ... existing styles ... */
+
+@layer utilities {
+  /* Dynamic Viewport Height - Solves the "Address Bar" issue */
+  .h-dvh {
+    height: 100dvh;
+  }
+  
+  .min-h-dvh {
+    min-height: 100dvh;
+  }
+
+  /* Safe Area Spacing for iPhone X+ */
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
+  }
+  
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  /* Hide scrollbar but allow scrolling */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}

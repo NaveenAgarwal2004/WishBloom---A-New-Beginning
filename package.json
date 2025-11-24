@@ -1,6 +1,6 @@
 {
   "name": "wishbloom-new-beginning",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -16,7 +16,8 @@
     "test:indexes": "ts-node --project tsconfig.scripts.json scripts/test-indexes.ts",
     "test:e2e": "playwright test",
     "test:a11y": "playwright test --grep 'Accessibility' || echo '⚠️ No accessibility tests found — skipping.'",
-    "lighthouse": "lhci autorun"
+    "lighthouse": "lhci autorun",
+    "generate:icons": "node scripts/generate-icons.js"
   },
   "dependencies": {
     "@auth/mongodb-adapter": "^2.6.0",
@@ -67,6 +68,7 @@
     "nanoid": "^5.1.6",
     "next": "^14.2.29",
     "next-auth": "^4.24.13",
+    "next-pwa": "^5.6.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-dropzone": "^14.3.8",
@@ -105,6 +107,7 @@
     "tailwindcss": "^3.3.5",
     "ts-jest": "^29.4.5",
     "ts-node": "^10.9.2",
-    "typescript": "^5.4.5"
+    "typescript": "^5.4.5",
+    "webpack": "^5.103.0"
   }
 }

@@ -87,6 +87,7 @@ const ibmPlexMono = localFont({
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
+  themeColor: '#FDFBF7',
 }
 
 // ✅ Clean metadata object (no more deprecated viewport key)
@@ -96,6 +97,20 @@ export const metadata: Metadata = {
   description:
     'Create beautiful, interactive birthday memory books. Preserve and share memories with pressed flowers aesthetic.',
   keywords: ['birthday', 'memories', 'gift', 'scrapbook', 'pressed flowers'],
+  
+  // ✅ Part 10: PWA Manifest
+  manifest: '/manifest.json',
+  
+  // ✅ Apple Web App configuration
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'WishBloom',
+  },
+  
+  // ✅ PWA Application Name
+  applicationName: 'WishBloom',
+  
   openGraph: {
     title: 'WishBloom - Pressed Flower Birthday Memories',
     description: "Preserve and share life's most precious moments",
@@ -107,6 +122,17 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+  },
+  
+  // ✅ Part 10: Additional PWA icons
+  icons: {
+    icon: [
+      { url: '/icons/icon-192x192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/icons/icon-512x512.png', sizes: '512x512', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/icons/icon-192x192.png', sizes: '192x192', type: 'image/png' },
+    ],
   },
 }
 

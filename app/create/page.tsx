@@ -10,6 +10,7 @@ import Step4Wishes from './steps/Step4Wishes'
 import Step5Preview from './steps/Step5Preview'
 import Step6Publish from './steps/Step6Publish'
 import { useMobile } from '@/hooks/use-mobile'
+import { useAutoSave } from '@/hooks/useAutoSave'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
@@ -19,6 +20,9 @@ export default function CreatePage() {
   
   const [isMounted, setIsMounted] = useState(false)
   const isMobileView = useMobile()
+  
+  // ✅ Part 10: Auto-save hook
+  const { isAutoSaving, lastSaved } = useAutoSave()
 
   useEffect(() => {
     setIsMounted(true)
@@ -54,9 +58,22 @@ export default function CreatePage() {
               <span className="font-heading font-bold text-lg text-sepiaInk leading-none">
                 Create
               </span>
-              <span className="text-[10px] text-warmCream-600 uppercase tracking-widest mt-1">
-                Step {currentStep} of 6
-              </span>
+              <div className="flex items-center gap-2 mt-1">
+                <span className="text-[10px] text-warmCream-600 uppercase tracking-widest">
+                  Step {currentStep} of 6
+                </span>
+                {/* ✅ Part 10: Auto-save indicator */}
+                {!isAutoSaving && lastSaved && (
+                  <span className="text-[9px] text-mossGreen font-mono">
+                    • Saved
+                  </span>
+                )}
+                {isAutoSaving && (
+                  <span className="text-[9px] text-fadedGold font-mono animate-pulse">
+                    • Saving...
+                  </span>
+                )}
+              </div>
             </div>
             <div className="w-10" /> {/* Balance spacer */}
           </div>
@@ -104,6 +121,19 @@ export default function CreatePage() {
         <p className="text-body-lg font-body text-warmCream-700">
           Preserve memories, one bloom at a time
         </p>
+        {/* ✅ Part 10: Desktop auto-save indicator */}
+        <div className="mt-4 min-h-[20px]">
+          {!isAutoSaving && lastSaved && (
+            <p className="text-caption font-mono text-mossGreen">
+              ✓ Saved
+            </p>
+          )}
+          {isAutoSaving && (
+            <p className="text-caption font-mono text-fadedGold animate-pulse">
+              Saving...
+            </p>
+          )}
+        </div>
       </div>
 
       {/* Steps Progress Bar */}

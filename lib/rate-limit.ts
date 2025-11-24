@@ -5,6 +5,11 @@ import { env, isDev } from './env'
 // In-memory rate limiter for development
 class MemoryRateLimiter {
   private cache = new Map<string, { count: number; reset: number }>()
+  private maxRequests: number
+
+  constructor(maxRequests: number = 100) {
+    this.maxRequests = maxRequests
+  }
 
   async limit(identifier: string, tokens: number = 1) {
     const now = Date.now()
@@ -13,15 +18,15 @@ class MemoryRateLimiter {
 
     if (!data || now > data.reset) {
       this.cache.set(key, { count: tokens, reset: now + 60000 }) // 1 minute window
-      return { success: true, limit: 10, remaining: 10 - tokens, reset: now + 60000 }
+      return { success: true, limit: this.maxRequests, remaining: this.maxRequests - tokens, reset: now + 60000 }
     }
 
-    if (data.count >= 10) {
-      return { success: false, limit: 10, remaining: 0, reset: data.reset }
+    if (data.count >= this.maxRequests) {
+      return { success: false, limit: this.maxRequests, remaining: 0, reset: data.reset }
     }
 
     data.count += tokens
-    return { success: true, limit: 10, remaining: 10 - data.count, reset: data.reset }
+    return { success: true, limit: this.maxRequests, remaining: this.maxRequests - data.count, reset: data.reset }
   }
 }
 
@@ -59,6 +64,17 @@ export const rateLimiters = {
           token: env.UPSTASH_REDIS_REST_TOKEN,
         }),
         limiter: Ratelimit.slidingWindow(30, '1 m'), // 30 requests per minute
+      })
+    : new MemoryRateLimiter(),
+
+  // Analytics/Vitals endpoints - very lenient (internal use)
+  analytics: env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN && !isDev
+    ? new Ratelimit({
+        redis: new Redis({
+          url: env.UPSTASH_REDIS_REST_URL,
+          token: env.UPSTASH_REDIS_REST_TOKEN,
+        }),
+        limiter: Ratelimit.slidingWindow(100, '1 m'), // 100 requests per minute
       })
     : new MemoryRateLimiter(),
 

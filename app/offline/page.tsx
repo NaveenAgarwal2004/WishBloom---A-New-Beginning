@@ -6,12 +6,9 @@
  * Maintains the pressed-flower aesthetic with a gentle, reassuring message
  */
 
-import FloralDecoration from '@/components/FloralDecoration'
+'use client'
 
-export const metadata = {
-  title: 'Offline - WishBloom',
-  description: 'You are currently offline. Your memories are safe.',
-}
+import FloralDecoration from '@/components/FloralDecoration'
 
 export default function OfflinePage() {
   return (

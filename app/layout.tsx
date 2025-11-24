@@ -101,6 +101,11 @@ export const metadata: Metadata = {
   // ✅ Part 10: PWA Manifest
   manifest: '/manifest.json',
   
+  // ✅ Mobile Web App configuration (replaces deprecated apple-mobile-web-app-capable)
+  other: {
+    'mobile-web-app-capable': 'yes',
+  },
+  
   // ✅ Apple Web App configuration
   appleWebApp: {
     capable: true,
@@ -156,7 +161,8 @@ export default function RootLayout({
           <Toaster />
         </Providers>
         <WebVitals />
-        <Analytics />
+        {/* ✅ Only load Vercel Analytics in production */}
+        {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
   )

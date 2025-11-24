@@ -3,6 +3,7 @@ import { logger } from '@/lib/logger'
 import { withRateLimit, rateLimiters } from '@/lib/rate-limit'
 
 export async function POST(request: Request) {
+  // ✅ Use lenient rate limiter for analytics (internal use, not user-facing)
   return withRateLimit(
     request,
     async () => {
@@ -31,6 +32,6 @@ export async function POST(request: Request) {
         )
       }
     },
-    rateLimiters.public
+    rateLimiters.analytics // ← Changed from rateLimiters.public
   )
 }

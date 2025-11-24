@@ -17,7 +17,6 @@ import { useEffect, useState } from 'react'
 export default function CreatePage() {
   const currentStep = useWishBloomStore((state) => state.currentStep)
   
-  // Hydration mismatch fix: Only render mobile logic after mount
   const [isMounted, setIsMounted] = useState(false)
   const isMobileView = useMobile()
 
@@ -36,59 +35,60 @@ export default function CreatePage() {
 
   const CurrentStepComponent = steps.find((s) => s.step === currentStep)?.component || Step1Info
 
-  // Prevent hydration mismatch by returning null or a loader until mounted
   if (!isMounted) return <div className="min-h-screen bg-warmCream-50" />
 
-  // 📱 MOBILE LAYOUT (Fixed Native Mode)
+  // 📱 MOBILE LAYOUT: Standard Flow (Sticky Header)
+  // This relies on native body scrolling, which handles the keyboard perfectly.
   if (isMobileView) {
     return (
-      <div className="fixed inset-0 h-dvh w-full bg-warmCream-50 z-50 flex flex-col">
-        {/* 1. Header (Fixed) */}
-        <header className="flex-none flex items-center justify-between px-4 py-3 bg-white/90 backdrop-blur-sm border-b border-warmCream-200 z-20 pt-safe">
-          <Link href="/">
-            <Button variant="ghost" size="icon" className="-ml-2 text-sepiaInk hover:bg-warmCream-100">
-              <ChevronLeft className="h-6 w-6" />
-            </Button>
-          </Link>
-          <div className="flex flex-col items-center">
-            <span className="font-heading font-bold text-lg text-sepiaInk leading-none">
-              Create
-            </span>
-            <span className="text-[10px] font-body text-warmCream-600 uppercase tracking-widest">
-              Step {currentStep} of 6
-            </span>
+      <div className="min-h-dvh bg-warmCream-50 flex flex-col">
+        {/* 1. Sticky Header */}
+        <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-warmCream-200 px-4 py-3 pt-safe">
+          <div className="flex items-center justify-between">
+            <Link href="/">
+              <Button variant="ghost" size="icon" className="-ml-2 text-sepiaInk">
+                <ChevronLeft className="h-6 w-6" />
+              </Button>
+            </Link>
+            <div className="flex flex-col items-center">
+              <span className="font-heading font-bold text-lg text-sepiaInk leading-none">
+                Create
+              </span>
+              <span className="text-[10px] text-warmCream-600 uppercase tracking-widest mt-1">
+                Step {currentStep} of 6
+              </span>
+            </div>
+            <div className="w-10" /> {/* Balance spacer */}
           </div>
-          <div className="w-10" /> {/* Spacer for balance */}
+          
+          {/* Progress Bar (Integrated into Header) */}
+          <div className="absolute bottom-0 left-0 h-1 w-full bg-warmCream-200">
+            <motion.div 
+              className="h-full bg-burntSienna"
+              initial={{ width: 0 }}
+              animate={{ width: `${(currentStep / 6) * 100}%` }}
+              transition={{ duration: 0.3 }}
+            />
+          </div>
         </header>
 
-        {/* 2. Progress Bar (Fixed) */}
-        <div className="flex-none h-1 w-full bg-warmCream-200">
-          <motion.div 
-            className="h-full bg-burntSienna"
-            initial={{ width: 0 }}
-            animate={{ width: `${(currentStep / 6) * 100}%` }}
-            transition={{ duration: 0.5 }}
-          />
-        </div>
-
-        {/* 3. Scrollable Content (Fluid) 
-            'flex-1' combined with 'overflow-y-auto' is key here.
-            'pb-32' ensures the bottom fields aren't hidden by the keyboard or home bar.
+        {/* 2. Content Area
+            - flex-1: Pushes footer down if content is short
+            - pb-32: Adds huge padding at the bottom so you can always scroll 
+              past the keyboard to see the "Next" button.
         */}
-        <main className="flex-1 overflow-y-auto overflow-x-hidden bg-warmCream-50">
-          <div className="px-5 py-6 pb-40 min-h-full">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={currentStep}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2 }}
-              >
-                <CurrentStepComponent />
-              </motion.div>
-            </AnimatePresence>
-          </div>
+        <main className="flex-1 px-5 py-6 pb-40">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentStep}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+            >
+              <CurrentStepComponent />
+            </motion.div>
+          </AnimatePresence>
         </main>
       </div>
     )
@@ -106,13 +106,14 @@ export default function CreatePage() {
         </p>
       </div>
 
+      {/* Steps Progress Bar */}
       {currentStep < 6 && (
         <div className="max-w-4xl mx-auto mb-16">
           <div className="flex items-center justify-between">
             {steps.slice(0, 5).map((item, index) => (
               <div key={item.step} className="flex items-center flex-1">
                 <div className="flex flex-col items-center">
-                  <div
+                   <div
                     className={`w-12 h-12 md:w-16 md:h-16 rounded-full flex items-center justify-center font-heading font-bold text-h6 transition-all ${
                       currentStep === item.step
                         ? 'bg-fadedGold text-white scale-110'

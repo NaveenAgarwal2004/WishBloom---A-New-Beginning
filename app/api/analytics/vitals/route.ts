@@ -11,7 +11,7 @@ export async function POST(request: Request) {
         const body = await request.json()
         const { name, value, rating, id, timestamp } = body
 
-        // Log the web vital
+        // Log the web vital normally
         logger.info(`Web Vital: ${name}`, {
           value,
           rating,
@@ -19,19 +19,22 @@ export async function POST(request: Request) {
           timestamp,
         })
 
-        // Optional: Store in database for analytics
-        // await dbConnect()
-        // await WebVital.create({ name, value, rating, timestamp })
-
         return NextResponse.json({ success: true })
-      } catch (error) {
+      } catch (error: any) {
+        // 🔕 Ignore harmless aborted requests
+        if (error?.name === 'AbortError' || error?.message === 'aborted') {
+          return NextResponse.json({ success: true, aborted: true }, { status: 204 })
+        }
+
+        // ❗ Log real errors only
         logger.error('Failed to record web vital', error)
+
         return NextResponse.json(
           { success: false, error: 'Failed to record metric' },
           { status: 500 }
         )
       }
     },
-    rateLimiters.analytics // ← Changed from rateLimiters.public
+    rateLimiters.analytics
   )
 }

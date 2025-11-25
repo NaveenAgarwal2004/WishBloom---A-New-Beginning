@@ -1,6 +1,8 @@
 'use client'
 
+import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { ChevronDown } from 'lucide-react'
 import MemoryCard from './MemoryCard'
 import FloralDecoration from './FloralDecoration'
 import type { IMemory } from '@/models/WishBloom'
@@ -9,7 +11,20 @@ interface MemoryGalleryProps {
   memories: IMemory[]
 }
 
+const INITIAL_VISIBLE_COUNT = 12
+const LOAD_MORE_INCREMENT = 12
+
 export default function MemoryGallery({ memories }: MemoryGalleryProps) {
+  const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE_COUNT)
+  
+  // Slice memories to only show visible count
+  const visibleMemories = memories.slice(0, visibleCount)
+  const hasMore = visibleCount < memories.length
+  
+  const handleLoadMore = () => {
+    setVisibleCount((prev) => Math.min(prev + LOAD_MORE_INCREMENT, memories.length))
+  }
+
   return (
     <section className="relative py-16 md:py-32 bg-gradient-to-b from-warmCream-100 via-driedSage/5 to-warmCream-100 px-4 md:px-8">
       {/* Background decorative florals */}
@@ -72,7 +87,7 @@ export default function MemoryGallery({ memories }: MemoryGalleryProps) {
       {/* Masonry grid */}
       <div className="max-w-[1600px] mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 auto-rows-auto">
-          {memories.map((memory, index) => {
+          {visibleMemories.map((memory, index) => {
             // Dynamic styling based on type
             let gridClass = ''
             let marginTop = 0
@@ -101,6 +116,48 @@ export default function MemoryGallery({ memories }: MemoryGalleryProps) {
           })}
         </div>
       </div>
+
+      {/* Load More Button */}
+      {hasMore && (
+        <motion.div 
+          className="flex justify-center mt-16"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          <motion.button
+            onClick={handleLoadMore}
+            className="group px-8 py-4 bg-burntSienna text-warmCream-50 rounded-xl text-body-lg font-heading font-semibold shadow-medium hover:shadow-high transition-all duration-300 flex items-center gap-3"
+            whileHover={{ 
+              scale: 1.05, 
+              y: -4,
+              boxShadow: '0px 16px 48px rgba(160, 82, 45, 0.3)'
+            }}
+            whileTap={{ scale: 0.95 }}
+            data-testid="load-more-memories-button"
+          >
+            <span>Turn the Page</span>
+            <motion.div
+              animate={{ y: [0, 4, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+            >
+              <ChevronDown className="w-5 h-5" />
+            </motion.div>
+          </motion.button>
+        </motion.div>
+      )}
+
+      {/* Showing count indicator */}
+      {memories.length > INITIAL_VISIBLE_COUNT && (
+        <motion.p 
+          className="text-center mt-8 text-caption font-mono text-warmCream-600"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+        >
+          Showing {visibleCount} of {memories.length} memories
+        </motion.p>
+      )}
     </section>
   )
 }

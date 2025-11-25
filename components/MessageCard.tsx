@@ -24,10 +24,10 @@ function LetterCard({ message, index }: MessageCardProps) {
       style={{
         background: 'repeating-linear-gradient(transparent, transparent 31px, rgba(235, 224, 211, 0.5) 31px, rgba(235, 224, 211, 0.5) 33px)'
       }}
-      initial={{ opacity: 0, y: 60, rotate: 2 }}
-      whileInView={{ opacity: 1, y: 0, rotate: 0.5 }}
-      viewport={{ once: true, amount: 0.4 }}
-      transition={{ duration: 0.8, delay: index * 0.15 }}
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px", amount: 0.3 }}
+      transition={{ duration: 0.5, delay: index * 0.1, ease: "easeOut" }}
     >
       {/* Decorative tape at top corners */}
       <div className="absolute -top-4 left-12 w-32 h-10 bg-sunsetAmber/60 shadow-md" style={{ transform: 'rotate(-2deg)' }} />
@@ -109,10 +109,10 @@ function PoemCard({ message, index }: MessageCardProps) {
   return (
     <motion.article
       className="relative bg-gradient-to-br from-lavenderPress/15 to-rosePetal/15 rounded-2xl p-8 md:p-16 shadow-medium border-2 border-lavenderPress/50"
-      initial={{ opacity: 0, scale: 0.9, rotate: -2 }}
-      whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
-      viewport={{ once: true, amount: 0.4 }}
-      transition={{ duration: 1, delay: index * 0.15 }}
+      initial={{ opacity: 0, y: 40, scale: 0.95 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, margin: "-50px", amount: 0.3 }}
+      transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
     >
       {/* Giant decorative quote */}
       <span className="absolute -top-12 -left-8 text-lavenderPress/20 font-heading font-bold leading-none pointer-events-none" style={{ fontSize: '180px' }}>
@@ -135,7 +135,7 @@ function PoemCard({ message, index }: MessageCardProps) {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: i * 0.25 }}
+            transition={{ duration: 0.6, delay: i * 0.2 }}
           >
             {line}
           </motion.p>

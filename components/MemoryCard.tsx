@@ -22,6 +22,9 @@ const TAG_COLORS: Record<TagType, TagColors> = {
   funny: { bg: 'bg-dustyIndigo/20', border: 'border-dustyIndigo/60', text: 'text-dustyIndigo' },
 }
 
+// Sepia-toned blur placeholder (matches warmCream background)
+const BLUR_DATA_URL = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAG0lEQVQIW2P4//8/AxJgYmBg+A8SRxZgQOMDAFa/BAXJvbRDAAAAAElFTkSuQmCC'
+
 /**
  * Calculate deterministic rotation based on ID to avoid hydration mismatch
  */
@@ -53,10 +56,10 @@ function StandardMemoryCard({ memory, rotation, index }: MemoryCardComponentProp
     <motion.article
       className="relative bg-warmCream-200 rounded-xl p-6 md:p-10 shadow-medium border-2 border-warmCream-400 cursor-pointer group"
       style={{ transform: `rotate(${rotation}deg)` }}
-      initial={{ opacity: 0, y: 60, rotate: rotation + 10 }}
+      initial={{ opacity: 0, y: 40, rotate: rotation }}
       whileInView={{ opacity: 1, y: 0, rotate: rotation }}
-      viewport={{ once: true, amount: 0.6 }}
-      transition={{ duration: 0.8, delay: index * 0.1 }}
+      viewport={{ once: true, margin: "-50px", amount: 0.3 }}
+      transition={{ duration: 0.5, delay: index * 0.05, ease: "easeOut" }}
       whileHover={{ 
         y: -12, 
         rotate: 0, 
@@ -100,6 +103,8 @@ function StandardMemoryCard({ memory, rotation, index }: MemoryCardComponentProp
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               className="object-cover shadow-medium"
               style={{ clipPath: 'polygon(3% 2%, 98% 0%, 97% 98%, 1% 97%)' }}
+              placeholder="blur"
+              blurDataURL={BLUR_DATA_URL}
             />
           </div>
           {/* Photo corner tapes */}
@@ -166,12 +171,12 @@ function FeaturedMemoryCard({ memory, rotation, index }: MemoryCardComponentProp
     <motion.article
       className="relative col-span-2 row-span-2 bg-warmCream-50 rounded-2xl p-12 md:p-16 shadow-dramatic border-4 border-fadedGold/60 cursor-pointer group z-20"
       style={{ transform: `rotate(${rotation}deg)` }}
-      initial={{ opacity: 0, scale: 0.8, rotate: rotation + 15 }}
-      whileInView={{ opacity: 1, scale: 1, rotate: rotation }}
-      viewport={{ once: true, amount: 0.3 }}
-      transition={{ duration: 1.2, delay: index * 0.1 }}
+      initial={{ opacity: 0, y: 40, scale: 0.95, rotate: rotation }}
+      whileInView={{ opacity: 1, y: 0, scale: 1, rotate: rotation }}
+      viewport={{ once: true, margin: "-50px", amount: 0.2 }}
+      transition={{ duration: 0.6, delay: index * 0.05, ease: "easeOut" }}
       whileHover={{ 
-        scale: 1.05, 
+        scale: 1.02, 
         rotate: 0, 
         boxShadow: '0px 8px 24px rgba(212, 163, 115, 0.3)'
       }}
@@ -206,6 +211,8 @@ function FeaturedMemoryCard({ memory, rotation, index }: MemoryCardComponentProp
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 66vw"
               className="object-cover rounded-2xl shadow-high"
               style={{ clipPath: 'polygon(2% 1%, 99% 0%, 98% 99%, 1% 98%)' }}
+              placeholder="blur"
+              blurDataURL={BLUR_DATA_URL}
             />
           </div>
           {/* 4 photo corners */}
@@ -271,10 +278,10 @@ function QuoteMemoryCard({ memory, rotation, index }: MemoryCardComponentProps) 
     <motion.article
       className="relative bg-gradient-to-br from-lavenderPress/20 to-rosePetal/20 rounded-xl p-8 md:p-12 shadow-medium border-2 border-lavenderPress/40 cursor-pointer group"
       style={{ transform: `rotate(${rotation}deg)` }}
-      initial={{ opacity: 0, scale: 0.9, rotate: rotation - 5 }}
-      whileInView={{ opacity: 1, scale: 1, rotate: rotation }}
-      viewport={{ once: true, amount: 0.6 }}
-      transition={{ duration: 0.8, delay: index * 0.1 }}
+      initial={{ opacity: 0, y: 40, scale: 0.95, rotate: rotation }}
+      whileInView={{ opacity: 1, y: 0, scale: 1, rotate: rotation }}
+      viewport={{ once: true, margin: "-50px", amount: 0.3 }}
+      transition={{ duration: 0.5, delay: index * 0.05, ease: "easeOut" }}
       whileHover={{ 
         scale: 1.05, 
         rotate: 0, 

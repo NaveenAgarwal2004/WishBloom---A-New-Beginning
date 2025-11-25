@@ -1,6 +1,6 @@
 'use client'
 
-import { motion } from '@/lib/motion'
+import { motion, useScroll, useTransform } from 'framer-motion'
 import FloralDecoration from './FloralDecoration'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -12,21 +12,40 @@ interface HeroProps {
 }
 
 export default function Hero({ recipientName, creativeAgeDescription }: HeroProps) {
-  const router = useRouter()  
+  const router = useRouter()
+  
+  // Parallax effect: Track scroll position
+  const { scrollY } = useScroll()
+  
+  // Create parallax transforms for background elements
+  // Background moves slower (0-150px) while foreground moves normally
+  const yBgRight = useTransform(scrollY, [0, 500], [0, 150])
+  const yBgLeft = useTransform(scrollY, [0, 500], [0, 100])
+  
   return (
     <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-b from-warmCream-100 to-rosePetal/10 overflow-hidden px-4 md:px-8 py-16 md:py-32">
-      <FloralDecoration 
+      {/* Parallax Background Florals */}
+      <motion.div
         className="absolute -top-20 -right-20 md:top-0 md:right-0 opacity-40"
-        size={400}
-        color="#D4859D"
-      />
+        style={{ y: yBgRight }}
+      >
+        <FloralDecoration 
+          size={400}
+          color="#D4859D"
+        />
+      </motion.div>
       
-      <FloralDecoration 
+      <motion.div
         className="absolute top-8 left-8 opacity-25"
-        size={120}
-        color="#A88BC7"
-      />
+        style={{ y: yBgLeft }}
+      >
+        <FloralDecoration 
+          size={120}
+          color="#A88BC7"
+        />
+      </motion.div>
       
+      {/* Paper texture overlay */}
       <div className="absolute inset-0 opacity-20 mix-blend-multiply pointer-events-none">
         <svg width="100%" height="100%">
           <defs>
@@ -39,6 +58,7 @@ export default function Hero({ recipientName, creativeAgeDescription }: HeroProp
         </svg>
       </div>
 
+      {/* Main Content (no parallax - moves with scroll normally) */}
       <div className="relative z-10 text-center max-w-5xl mx-auto">
         <motion.h1
           className="font-heading font-bold text-sepiaInk mb-8"

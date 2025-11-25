@@ -12,6 +12,7 @@
 import { useEffect, useState, useRef } from 'react'
 import useWishBloomStore from '@/store/useWishBloomStore'
 import { useToast } from '@/hooks/use-toast'
+import { useShallow } from 'zustand/shallow'
 
 interface UseAutoSaveReturn {
   isAutoSaving: boolean
@@ -33,18 +34,22 @@ export function useAutoSave(): UseAutoSaveReturn {
   const { toast } = useToast()
   const saveTimeoutRef = useRef<NodeJS.Timeout>()
   
-  // Get store state
+  // Get store state with shallow comparison to prevent infinite re-renders
   const store = useWishBloomStore()
-  const storeState = useWishBloomStore((state) => ({
-    recipientName: state.recipientName,
-    age: state.age,
-    creativeAgeDescription: state.creativeAgeDescription,
-    introMessage: state.introMessage,
-    createdBy: state.createdBy,
-    memories: state.memories,
-    messages: state.messages,
-    celebrationWishPhrases: state.celebrationWishPhrases,
-  }))
+  
+  // ✅ FIX: Use useShallow hook to cache the selector result
+  const storeState = useWishBloomStore(
+    useShallow((state) => ({
+      recipientName: state.recipientName,
+      age: state.age,
+      creativeAgeDescription: state.creativeAgeDescription,
+      introMessage: state.introMessage,
+      createdBy: state.createdBy,
+      memories: state.memories,
+      messages: state.messages,
+      celebrationWishPhrases: state.celebrationWishPhrases,
+    }))
+  )
 
   // Define restoreDraft first so it can be referenced
   const restoreDraft = () => {

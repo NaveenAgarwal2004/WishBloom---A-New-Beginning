@@ -10,13 +10,16 @@
 
 import FloralDecoration from '@/components/FloralDecoration'
 
+// ✅ Force dynamic rendering to prevent static generation timeout
+export const dynamic = 'force-dynamic'
+
 export default function OfflinePage() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-warmCream-50 via-warmCream-100 to-rosePetal/5 flex items-center justify-center px-4 py-16">
       <div className="max-w-2xl w-full text-center">
-        {/* Floral Decoration */}
+        {/* Floral Decoration - No animation to prevent build timeout */}
         <div className="mb-8 opacity-30">
-          <FloralDecoration className="mx-auto" size={180} color="#C8B6A6" />
+          <FloralDecoration className="mx-auto" size={180} color="#C8B6A6" animate={false} />
         </div>
 
         {/* Main Message */}
@@ -54,9 +57,9 @@ export default function OfflinePage() {
           </div>
         </div>
 
-        {/* Bottom Decoration */}
+        {/* Bottom Decoration - No animation to prevent build timeout */}
         <div className="mt-16 opacity-20">
-          <FloralDecoration className="mx-auto" size={150} color="#D4A574" />
+          <FloralDecoration className="mx-auto" size={150} color="#D4A574" animate={false} />
         </div>
 
         {/* Subtle Help Text */}

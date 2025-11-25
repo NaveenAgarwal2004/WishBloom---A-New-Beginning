@@ -1,3 +1,5 @@
+'use client'
+
 import type { IContributor } from '@/models/WishBloom'
 import FooterStats from '@/components/layout/FooterStats'
 import FooterSignatures from '@/components/layout/FooterSignatures'

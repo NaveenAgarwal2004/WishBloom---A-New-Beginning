@@ -49,7 +49,7 @@ export default function CakeComponent({
   }
 
   return (
-    <div className="relative max-w-2xl mx-auto">
+    <div className="relative max-w-2xl mx-auto px-4">
       {/* Cake SVG */}
       <motion.div
         animate={isCutting ? {
@@ -60,6 +60,7 @@ export default function CakeComponent({
         <svg
           viewBox="0 0 600 400"
           className="w-full h-auto drop-shadow-2xl"
+          preserveAspectRatio="xMidYMid meet"
         >
           {/* Flame gradient definition */}
           <defs>
@@ -256,11 +257,11 @@ export default function CakeComponent({
       </motion.div>
 
       {/* Interactive Controls */}
-      <div className="mt-12 flex flex-col items-center gap-4">
+      <div className="mt-12 flex flex-col items-center gap-4 w-full">
         {/* Primary Blow Button */}
         {!isBlown && (
           <motion.button
-            className="px-16 py-6 rounded-2xl text-h5 font-heading font-bold shadow-dramatic transition-all bg-gradient-to-r from-burntSienna to-fadedGold text-warmCream-50 hover:shadow-colored-gold"
+            className="w-full md:w-auto px-8 md:px-16 py-5 md:py-6 rounded-2xl text-body-lg md:text-h5 font-heading font-bold shadow-dramatic transition-all bg-gradient-to-r from-burntSienna to-fadedGold text-warmCream-50 hover:shadow-colored-gold"
             whileHover={{ y: -4, scale: 1.02 }}
             whileTap={{ scale: 0.95 }}
             onClick={handleManualBlow}
@@ -275,7 +276,7 @@ export default function CakeComponent({
         {/* Fallback "Make a Wish" button (appears after 5s) */}
         {!isBlown && showFallbackButton && (
           <motion.button
-            className="px-12 py-4 rounded-xl text-body-lg font-accent italic bg-warmCream-200 text-warmCream-700 hover:bg-warmCream-300 transition-all border-2 border-fadedGold/30"
+            className="w-full md:w-auto px-8 md:px-12 py-4 rounded-xl text-body md:text-body-lg font-accent italic bg-warmCream-200 text-warmCream-700 hover:bg-warmCream-300 transition-all border-2 border-fadedGold/30"
             whileHover={{ y: -2 }}
             whileTap={{ scale: 0.95 }}
             onClick={handleManualBlow}
@@ -290,7 +291,7 @@ export default function CakeComponent({
         {/* Breath Detection Toggle */}
         {!hasPermission && !error && supported && !isBlown && (
           <motion.button
-            className="px-8 py-3 rounded-xl text-body font-body bg-warmCream-200 text-warmCream-700 hover:bg-warmCream-300 transition-colors"
+            className="w-full md:w-auto px-6 md:px-8 py-3 rounded-xl text-body-sm md:text-body font-body bg-warmCream-200 text-warmCream-700 hover:bg-warmCream-300 transition-colors"
             whileHover={{ y: -2 }}
             whileTap={{ scale: 0.95 }}
             onClick={requestPermission}
@@ -327,7 +328,7 @@ export default function CakeComponent({
         {/* Fallback simulate if mic unsupported */}
         {!supported && !isBlown && (
           <motion.button
-            className="px-8 py-3 rounded-xl text-body font-body bg-warmCream-200 text-warmCream-700 hover:bg-warmCream-300 transition-colors"
+            className="w-full md:w-auto px-6 md:px-8 py-3 rounded-xl text-body-sm md:text-body font-body bg-warmCream-200 text-warmCream-700 hover:bg-warmCream-300 transition-colors"
             whileHover={{ y: -2 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => simulateBlow()}

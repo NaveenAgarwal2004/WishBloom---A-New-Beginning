@@ -2,22 +2,27 @@
 
 import Link from 'next/link'
 import { useSession, signIn, signOut } from 'next-auth/react'
+import { usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { LayoutDashboard, Plus, LogIn, LogOut, User } from 'lucide-react'
+import { LayoutDashboard, Plus, LogIn, LogOut, User, Home } from 'lucide-react'
 import { APP_CONFIG } from '@/config/constants'
 
 /**
  * Navigation Header Component
  * Provides access to Dashboard, Create, and Auth
+ * Includes mobile bottom navigation bar
  */
 export default function Navigation() {
   const { data: session, status } = useSession()
   const isLoading = status === 'loading'
+  const pathname = usePathname()
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-warmCream-50/95 backdrop-blur-sm border-b border-warmCream-200">
-      <div className="container mx-auto px-4 py-3">
-        <div className="flex items-center justify-between">
+    <>
+      {/* Top Navigation Bar (Desktop + Mobile) */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-warmCream-50/95 backdrop-blur-sm border-b border-warmCream-200">
+        <div className="container mx-auto px-4 py-3">
+          <div className="flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
             <span className="text-2xl">🌸</span>
@@ -106,8 +111,74 @@ export default function Navigation() {
               </>
             )}
           </div>
+          </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+
+      {/* Bottom Navigation Bar (Mobile Only) */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-warmCream-50/95 backdrop-blur-sm border-t border-warmCream-200 pb-safe">
+        <div className="grid grid-cols-3 gap-1 px-2 py-2">
+          {/* Home */}
+          <Link href="/">
+            <button
+              className={`flex flex-col items-center justify-center gap-1 py-3 px-4 rounded-xl transition-all ${
+                pathname === '/'
+                  ? 'bg-fadedGold/20 text-sepiaInk'
+                  : 'text-warmCream-600 hover:bg-warmCream-200/50'
+              }`}
+              data-testid="bottom-nav-home"
+            >
+              <Home size={22} strokeWidth={pathname === '/' ? 2.5 : 2} />
+              <span className="text-micro font-mono">Home</span>
+            </button>
+          </Link>
+
+          {/* Create */}
+          <Link href="/create">
+            <button
+              className={`flex flex-col items-center justify-center gap-1 py-3 px-4 rounded-xl transition-all ${
+                pathname === '/create'
+                  ? 'bg-fadedGold/20 text-sepiaInk'
+                  : 'text-warmCream-600 hover:bg-warmCream-200/50'
+              }`}
+              data-testid="bottom-nav-create"
+            >
+              <Plus size={22} strokeWidth={pathname === '/create' ? 2.5 : 2} />
+              <span className="text-micro font-mono">Create</span>
+            </button>
+          </Link>
+
+          {/* Dashboard or Sign In */}
+          {!isLoading && (
+            <>
+              {session ? (
+                <Link href="/dashboard">
+                  <button
+                    className={`flex flex-col items-center justify-center gap-1 py-3 px-4 rounded-xl transition-all ${
+                      pathname === '/dashboard'
+                        ? 'bg-fadedGold/20 text-sepiaInk'
+                        : 'text-warmCream-600 hover:bg-warmCream-200/50'
+                    }`}
+                    data-testid="bottom-nav-dashboard"
+                  >
+                    <LayoutDashboard size={22} strokeWidth={pathname === '/dashboard' ? 2.5 : 2} />
+                    <span className="text-micro font-mono">Dashboard</span>
+                  </button>
+                </Link>
+              ) : (
+                <button
+                  onClick={() => signIn()}
+                  className="flex flex-col items-center justify-center gap-1 py-3 px-4 rounded-xl text-warmCream-600 hover:bg-warmCream-200/50 transition-all"
+                  data-testid="bottom-nav-signin"
+                >
+                  <LogIn size={22} strokeWidth={2} />
+                  <span className="text-micro font-mono">Sign In</span>
+                </button>
+              )}
+            </>
+          )}
+        </div>
+      </nav>
+    </>
   )
 }

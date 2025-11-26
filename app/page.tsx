@@ -18,7 +18,7 @@ export default function App() {
     <>
       <MusicControl />
       
-      <main id="main-content" className="min-h-screen bg-warmCream-100 pt-16">
+      <main id="main-content" className="min-h-screen bg-warmCream-100 pt-16 pb-bottom-nav md:pb-0">
         <Hero 
           recipientName={sampleWishBloom.recipientName}
           age={sampleWishBloom.age}

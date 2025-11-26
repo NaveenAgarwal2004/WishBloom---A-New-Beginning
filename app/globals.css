@@ -109,6 +109,11 @@ html {
     min-height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
   }
 
+  /* Bottom Navigation Padding - Prevents content from being hidden by mobile bottom nav */
+  .pb-bottom-nav {
+    padding-bottom: calc(72px + env(safe-area-inset-bottom));
+  }
+
   /* Screen Reader Only - Accessibility */
   .sr-only {
     position: absolute;

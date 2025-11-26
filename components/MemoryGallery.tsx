@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { ChevronDown } from 'lucide-react'
 import MemoryCard from './MemoryCard'
 import FloralDecoration from './FloralDecoration'
+import { useMobile } from '@/hooks/use-mobile'
 import type { IMemory } from '@/models/WishBloom'
 
 interface MemoryGalleryProps {
@@ -16,6 +17,7 @@ const LOAD_MORE_INCREMENT = 12
 
 export default function MemoryGallery({ memories }: MemoryGalleryProps) {
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE_COUNT)
+  const isMobile = useMobile()
   
   // Slice memories to only show visible count
   const visibleMemories = memories.slice(0, visibleCount)
@@ -86,11 +88,10 @@ export default function MemoryGallery({ memories }: MemoryGalleryProps) {
 
       {/* Masonry grid */}
       <div className="max-w-[1600px] mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 auto-rows-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 auto-rows-auto">
           {visibleMemories.map((memory, index) => {
             // Dynamic styling based on type
             let gridClass = ''
-            let marginTop = 0
             
             if (memory.type === 'featured') {
               gridClass = 'md:col-span-2 md:row-span-2'
@@ -100,15 +101,18 @@ export default function MemoryGallery({ memories }: MemoryGalleryProps) {
               gridClass = ''
             }
 
-            // Stagger effect with margin
-            if (index % 3 === 1) marginTop = 40
-            if (index % 3 === 2) marginTop = -20
+            // Stagger effect with margin (desktop only)
+            let marginTop = 0
+            if (!isMobile) {
+              if (index % 3 === 1) marginTop = 40
+              if (index % 3 === 2) marginTop = -20
+            }
 
             return (
               <div 
                 key={memory.id} 
                 className={gridClass}
-                style={{ marginTop: `${marginTop}px` }}
+                style={{ marginTop: !isMobile ? `${marginTop}px` : '0px' }}
               >
                 <MemoryCard memory={memory} index={index} />
               </div>

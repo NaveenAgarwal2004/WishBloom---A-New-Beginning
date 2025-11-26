@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import Image from 'next/image'
+import { useMobile } from '@/hooks/use-mobile'
 import type { IMemory } from '@/models/WishBloom'
 
 // Type for tag colors
@@ -52,12 +53,15 @@ interface MemoryCardComponentProps {
  * Standard Memory Card (60% of cards)
  */
 function StandardMemoryCard({ memory, rotation, index }: MemoryCardComponentProps) {
+  const isMobile = useMobile()
+  const cardRotation = isMobile ? 0 : rotation
+  
   return (
     <motion.article
-      className="relative bg-warmCream-200 rounded-xl p-6 md:p-10 shadow-medium border-2 border-warmCream-400 cursor-pointer group"
-      style={{ transform: `rotate(${rotation}deg)` }}
-      initial={{ opacity: 0, y: 40, rotate: rotation }}
-      whileInView={{ opacity: 1, y: 0, rotate: rotation }}
+      className="relative bg-warmCream-200 rounded-xl p-6 md:p-10 shadow-medium border-2 border-warmCream-400 cursor-pointer group overflow-hidden"
+      style={{ transform: `rotate(${cardRotation}deg)` }}
+      initial={{ opacity: 0, y: 40, rotate: cardRotation }}
+      whileInView={{ opacity: 1, y: 0, rotate: cardRotation }}
       viewport={{ once: true, margin: "-50px", amount: 0.3 }}
       transition={{ duration: 0.5, delay: index * 0.05, ease: "easeOut" }}
       whileHover={{ 
@@ -167,12 +171,15 @@ function StandardMemoryCard({ memory, rotation, index }: MemoryCardComponentProp
  * Featured Memory Card (15% of cards)
  */
 function FeaturedMemoryCard({ memory, rotation, index }: MemoryCardComponentProps) {
+  const isMobile = useMobile()
+  const cardRotation = isMobile ? 0 : rotation
+  
   return (
     <motion.article
-      className="relative col-span-2 row-span-2 bg-warmCream-50 rounded-2xl p-12 md:p-16 shadow-dramatic border-4 border-fadedGold/60 cursor-pointer group z-20"
-      style={{ transform: `rotate(${rotation}deg)` }}
-      initial={{ opacity: 0, y: 40, scale: 0.95, rotate: rotation }}
-      whileInView={{ opacity: 1, y: 0, scale: 1, rotate: rotation }}
+      className="relative col-span-2 row-span-2 bg-warmCream-50 rounded-2xl p-8 md:p-16 shadow-dramatic border-4 border-fadedGold/60 cursor-pointer group z-20 overflow-hidden"
+      style={{ transform: `rotate(${cardRotation}deg)` }}
+      initial={{ opacity: 0, y: 40, scale: 0.95, rotate: cardRotation }}
+      whileInView={{ opacity: 1, y: 0, scale: 1, rotate: cardRotation }}
       viewport={{ once: true, margin: "-50px", amount: 0.2 }}
       transition={{ duration: 0.6, delay: index * 0.05, ease: "easeOut" }}
       whileHover={{ 
@@ -274,12 +281,15 @@ function FeaturedMemoryCard({ memory, rotation, index }: MemoryCardComponentProp
  * Quote Memory Card (10% of cards)
  */
 function QuoteMemoryCard({ memory, rotation, index }: MemoryCardComponentProps) {
+  const isMobile = useMobile()
+  const cardRotation = isMobile ? 0 : rotation
+  
   return (
     <motion.article
-      className="relative bg-gradient-to-br from-lavenderPress/20 to-rosePetal/20 rounded-xl p-8 md:p-12 shadow-medium border-2 border-lavenderPress/40 cursor-pointer group"
-      style={{ transform: `rotate(${rotation}deg)` }}
-      initial={{ opacity: 0, y: 40, scale: 0.95, rotate: rotation }}
-      whileInView={{ opacity: 1, y: 0, scale: 1, rotate: rotation }}
+      className="relative bg-gradient-to-br from-lavenderPress/20 to-rosePetal/20 rounded-xl p-8 md:p-12 shadow-medium border-2 border-lavenderPress/40 cursor-pointer group overflow-hidden"
+      style={{ transform: `rotate(${cardRotation}deg)` }}
+      initial={{ opacity: 0, y: 40, scale: 0.95, rotate: cardRotation }}
+      whileInView={{ opacity: 1, y: 0, scale: 1, rotate: cardRotation }}
       viewport={{ once: true, margin: "-50px", amount: 0.3 }}
       transition={{ duration: 0.5, delay: index * 0.05, ease: "easeOut" }}
       whileHover={{ 

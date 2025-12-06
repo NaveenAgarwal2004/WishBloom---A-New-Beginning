@@ -7,6 +7,7 @@ import WishBloom from '@/models/WishBloom'
 import { CreateWishBloomSchema } from '@/schemas/wishbloom.schema'
 import type { CreateWishBloomInput } from '@/schemas/wishbloom.schema'
 import { withRateLimit, rateLimiters } from '@/lib/rate-limit'
+import { moderateWishBloomContent } from '@/lib/moderation'
 
 // POST - Create new WishBloom
 export async function POST(request: Request) {
@@ -41,6 +42,36 @@ export async function POST(request: Request) {
         }
 
         const data: CreateWishBloomInput = validation.data
+
+        // ✅ Phase 1 Enhancement: Content Moderation
+        const moderationResult = moderateWishBloomContent({
+          recipientName: data.recipientName,
+          introMessage: data.introMessage,
+          memories: data.memories,
+          messages: data.messages,
+          celebrationWishPhrases: data.celebrationWishPhrases,
+        })
+
+        if (!moderationResult.approved) {
+          // Log moderation issues for review
+          console.warn('⚠️ Content moderation flagged issues:', {
+            issues: moderationResult.issues,
+            recipientName: data.recipientName,
+          })
+
+          return NextResponse.json(
+            {
+              success: false,
+              error: 'Content moderation failed',
+              message: 'Your content contains inappropriate material. Please review and update before submitting.',
+              details: moderationResult.issues.map(issue => ({
+                field: issue.field,
+                message: issue.reason,
+              })),
+            },
+            { status: 400 }
+          )
+        }
 
         await dbConnect()
 

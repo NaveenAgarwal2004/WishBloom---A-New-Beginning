@@ -25,12 +25,12 @@ export default function CakeComponent({
   const displayCandles = Math.min(candleCount, 10)
   const spacing = 140 / (displayCandles - 1)
 
-  // Auto-show fallback button after 5 seconds if not blown
+  // Auto-show fallback button after 3 seconds if not blown (reduced from 5s for better UX)
   useEffect(() => {
     if (!isBlown) {
       const timer = setTimeout(() => {
         setShowFallbackButton(true)
-      }, 5000)
+      }, 3000)
       return () => clearTimeout(timer)
     }
   }, [isBlown])
@@ -257,32 +257,36 @@ export default function CakeComponent({
       </motion.div>
 
       {/* Interactive Controls */}
-      <div className="mt-12 flex flex-col items-center gap-4 w-full">
+      <div className="mt-12 flex flex-col items-center gap-4 w-full" role="region" aria-label="Cake interaction controls">
         {/* Primary Blow Button */}
         {!isBlown && (
           <motion.button
-            className="w-full md:w-auto px-8 md:px-16 py-5 md:py-6 rounded-2xl text-body-lg md:text-h5 font-heading font-bold shadow-dramatic transition-all bg-gradient-to-r from-burntSienna to-fadedGold text-warmCream-50 hover:shadow-colored-gold"
+            className="w-full md:w-auto px-8 md:px-16 py-5 md:py-6 rounded-2xl text-body-lg md:text-h5 font-heading font-bold shadow-dramatic transition-all bg-gradient-to-r from-burntSienna to-fadedGold text-warmCream-50 hover:shadow-colored-gold focus:outline-none focus:ring-4 focus:ring-fadedGold/50"
             whileHover={{ y: -4, scale: 1.02 }}
             whileTap={{ scale: 0.95 }}
             onClick={handleManualBlow}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
+            aria-label="Blow out the birthday candles"
+            type="button"
           >
             💨 Blow the Candles
           </motion.button>
         )}
 
-        {/* Fallback "Make a Wish" button (appears after 5s) */}
+        {/* Fallback "Make a Wish" button (appears after 3s for better accessibility) */}
         {!isBlown && showFallbackButton && (
           <motion.button
-            className="w-full md:w-auto px-8 md:px-12 py-4 rounded-xl text-body md:text-body-lg font-accent italic bg-warmCream-200 text-warmCream-700 hover:bg-warmCream-300 transition-all border-2 border-fadedGold/30"
+            className="w-full md:w-auto px-8 md:px-12 py-4 rounded-xl text-body md:text-body-lg font-accent italic bg-warmCream-200 text-warmCream-700 hover:bg-warmCream-300 transition-all border-2 border-fadedGold/30 focus:outline-none focus:ring-4 focus:ring-fadedGold/50"
             whileHover={{ y: -2 }}
             whileTap={{ scale: 0.95 }}
             onClick={handleManualBlow}
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, ease: [0.34, 1.56, 0.64, 1] }}
+            aria-label="Alternative way to blow candles if microphone is unavailable"
+            type="button"
           >
             ✨ Make a Wish & Continue
           </motion.button>
@@ -291,13 +295,15 @@ export default function CakeComponent({
         {/* Breath Detection Toggle */}
         {!hasPermission && !error && supported && !isBlown && (
           <motion.button
-            className="w-full md:w-auto px-6 md:px-8 py-3 rounded-xl text-body-sm md:text-body font-body bg-warmCream-200 text-warmCream-700 hover:bg-warmCream-300 transition-colors"
+            className="w-full md:w-auto px-6 md:px-8 py-3 rounded-xl text-body-sm md:text-body font-body bg-warmCream-200 text-warmCream-700 hover:bg-warmCream-300 transition-colors focus:outline-none focus:ring-4 focus:ring-fadedGold/50"
             whileHover={{ y: -2 }}
             whileTap={{ scale: 0.95 }}
             onClick={requestPermission}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.8 }}
+            aria-label="Enable microphone to blow out candles with your breath"
+            type="button"
           >
             🎤 Enable Breath Detection (Blow Into Mic!)
           </motion.button>
@@ -328,12 +334,14 @@ export default function CakeComponent({
         {/* Fallback simulate if mic unsupported */}
         {!supported && !isBlown && (
           <motion.button
-            className="w-full md:w-auto px-6 md:px-8 py-3 rounded-xl text-body-sm md:text-body font-body bg-warmCream-200 text-warmCream-700 hover:bg-warmCream-300 transition-colors"
+            className="w-full md:w-auto px-6 md:px-8 py-3 rounded-xl text-body-sm md:text-body font-body bg-warmCream-200 text-warmCream-700 hover:bg-warmCream-300 transition-colors focus:outline-none focus:ring-4 focus:ring-fadedGold/50"
             whileHover={{ y: -2 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => simulateBlow()}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
+            aria-label="Simulate blowing candles (microphone not supported on this device)"
+            type="button"
           >
             💨 Simulate Blow (No Microphone)
           </motion.button>

@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server'
 import dbConnect from '@/lib/mongodb'
 import WishBloom from '@/models/WishBloom'
+import { UpdateWishBloomSchema } from '@/schemas/wishbloom.schema'
+import { withRateLimit, rateLimiters } from '@/lib/rate-limit'
 
 interface RouteParams {
   params: {
@@ -47,36 +49,70 @@ export async function GET(_request: Request, { params }: RouteParams) {
 
 // PATCH - Update WishBloom
 export async function PATCH(request: Request, { params }: RouteParams) {
-  try {
-    await dbConnect()
+  // Apply rate limiting to prevent abuse
+  return withRateLimit(
+    request,
+    async () => {
+      try {
+        await dbConnect()
 
-    const { id } = params
-    const body = await request.json()
+        const { id } = params
+        const body = await request.json()
 
-    const wishbloom = await WishBloom.findByIdAndUpdate(
-      id,
-      { $set: body },
-      { new: true, runValidators: true }
-    )
+        // Validate input with Zod schema
+        const validation = UpdateWishBloomSchema.safeParse(body)
 
-    if (!wishbloom) {
-      return NextResponse.json(
-        { success: false, error: 'WishBloom not found' },
-        { status: 404 }
-      )
-    }
+        if (!validation.success) {
+          return NextResponse.json(
+            {
+              success: false,
+              error: 'Validation failed',
+              details: validation.error.flatten().fieldErrors,
+            },
+            { status: 422 }
+          )
+        }
 
-    return NextResponse.json({
-      success: true,
-      wishbloom,
-    })
-  } catch (error) {
-    console.error('Error updating WishBloom:', error)
-    return NextResponse.json(
-      { success: false, error: 'Failed to update WishBloom' },
-      { status: 500 }
-    )
-  }
+        // Validate ID format
+        if (!id || (id.length !== 10 && id.length !== 24)) {
+          return NextResponse.json(
+            { success: false, error: 'Invalid WishBloom ID format' },
+            { status: 400 }
+          )
+        }
+
+        const wishbloom = await WishBloom.findByIdAndUpdate(
+          id,
+          { $set: validation.data },
+          { new: true, runValidators: true }
+        )
+
+        if (!wishbloom) {
+          return NextResponse.json(
+            { success: false, error: 'WishBloom not found' },
+            { status: 404 }
+          )
+        }
+
+        return NextResponse.json({
+          success: true,
+          wishbloom,
+        })
+      } catch (error) {
+        console.error('❌ Error updating WishBloom:', error)
+        
+        const message = error instanceof Error && process.env.NODE_ENV === 'development'
+          ? error.message
+          : 'Failed to update WishBloom'
+        
+        return NextResponse.json(
+          { success: false, error: message },
+          { status: 500 }
+        )
+      }
+    },
+    rateLimiters.authenticated
+  )
 }
 
 // DELETE - Archive WishBloom (soft delete)

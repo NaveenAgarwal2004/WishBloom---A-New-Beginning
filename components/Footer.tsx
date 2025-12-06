@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import type { IContributor } from '@/models/WishBloom'
 import FooterStats from '@/components/layout/FooterStats'
 import FooterSignatures from '@/components/layout/FooterSignatures'
@@ -68,11 +69,25 @@ export default function Footer({ contributors, createdDate }: FooterProps) {
             </div>
           </div>
 
-          {/* Right Column: Copyright */}
+          {/* Right Column: Copyright & Legal */}
           <div className="text-center md:text-right">
-            <p className="text-micro text-warmCream-600/70 font-body mb-2">
+            <p className="text-micro text-warmCream-600/70 font-body mb-3">
               © 2025 WISHBLOOM · MADE WITH 💛
             </p>
+            <div className="flex flex-col gap-2 text-caption font-body">
+              <Link 
+                href="/privacy" 
+                className="text-warmCream-600 hover:text-fadedGold transition-colors underline"
+              >
+                Privacy Policy
+              </Link>
+              <Link 
+                href="/terms" 
+                className="text-warmCream-600 hover:text-fadedGold transition-colors underline"
+              >
+                Terms of Service
+              </Link>
+            </div>
           </div>
         </div>
 

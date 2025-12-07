@@ -1,6 +1,6 @@
 'use client'
 
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion'
 import FloralDecoration from './FloralDecoration'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -13,17 +13,21 @@ interface HeroProps {
 
 export default function Hero({ recipientName, creativeAgeDescription }: HeroProps) {
   const router = useRouter()
+  const shouldReduceMotion = useReducedMotion()
   
   // Parallax effect: Track scroll position
   const { scrollY } = useScroll()
   
-  // Create parallax transforms for background elements
+  // Create parallax transforms for background elements (disabled for reduced motion)
   // Background moves slower (0-150px) while foreground moves normally
-  const yBgRight = useTransform(scrollY, [0, 500], [0, 150])
-  const yBgLeft = useTransform(scrollY, [0, 500], [0, 100])
+  const yBgRight = useTransform(scrollY, [0, 500], shouldReduceMotion ? [0, 0] : [0, 150])
+  const yBgLeft = useTransform(scrollY, [0, 500], shouldReduceMotion ? [0, 0] : [0, 100])
   
   return (
-    <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-b from-warmCream-100 to-rosePetal/10 overflow-hidden px-4 md:px-8 py-16 md:py-32">
+    <section 
+      className="relative min-h-screen flex items-center justify-center bg-gradient-to-b from-warmCream-100 to-rosePetal/10 overflow-hidden px-4 md:px-8 py-16 md:py-32"
+      aria-label="Hero section"
+    >
       {/* Parallax Background Florals */}
       <motion.div
         className="absolute -top-20 -right-20 md:top-0 md:right-0 opacity-40"
@@ -45,16 +49,16 @@ export default function Hero({ recipientName, creativeAgeDescription }: HeroProp
         />
       </motion.div>
       
-      {/* Paper texture overlay */}
-      <div className="absolute inset-0 opacity-20 mix-blend-multiply pointer-events-none">
+      {/* Paper texture overlay - Phase 2 Enhanced */}
+      <div className="absolute inset-0 opacity-25 mix-blend-multiply pointer-events-none" aria-hidden="true">
         <svg width="100%" height="100%">
           <defs>
-            <filter id="paper-texture">
-              <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" />
+            <filter id="paper-texture-hero">
+              <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="4" stitchTiles="stitch" />
               <feColorMatrix type="saturate" values="0" />
             </filter>
           </defs>
-          <rect width="100%" height="100%" filter="url(#paper-texture)" />
+          <rect width="100%" height="100%" filter="url(#paper-texture-hero)" />
         </svg>
       </div>
 
@@ -100,19 +104,20 @@ export default function Hero({ recipientName, creativeAgeDescription }: HeroProp
         )}
 
         <motion.button
-          className="px-12 py-6 bg-burntSienna text-warmCream-50 rounded-xl text-h5 md:text-h4 font-heading font-semibold shadow-dramatic transition-all duration-300"
-          initial={{ opacity: 0, scale: 0.8 }}
+          className="px-12 py-6 bg-burntSienna text-warmCream-50 rounded-xl text-h5 md:text-h4 font-heading font-semibold shadow-dramatic hover:shadow-elevated transition-all duration-300 focus-visible-ring"
+          initial={{ opacity: 0, scale: shouldReduceMotion ? 1 : 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6, delay: 1.5 }}
-          whileHover={{ 
+          transition={{ duration: shouldReduceMotion ? 0.01 : 0.6, delay: shouldReduceMotion ? 0 : 1.5 }}
+          whileHover={shouldReduceMotion ? {} : { 
             scale: 1.05, 
             y: -8, 
             rotate: -1,
             boxShadow: '0px 8px 24px rgba(212, 163, 115, 0.3)'
           }}
-          whileTap={{ scale: 0.95 }}
+          whileTap={shouldReduceMotion ? {} : { scale: 0.95 }}
           data-testid="cta-create-button"
           onClick={() => router.push('/create')}
+          aria-label="Explore your memories and start creating"
         >
           Explore Your Memories ✨
         </motion.button>

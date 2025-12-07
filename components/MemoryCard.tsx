@@ -50,7 +50,7 @@ interface MemoryCardComponentProps {
 }
 
 /**
- * Standard Memory Card (60% of cards)
+ * Standard Memory Card (60% of cards) - Phase 2 Enhanced
  */
 function StandardMemoryCard({ memory, rotation, index }: MemoryCardComponentProps) {
   const isMobile = useMobile()
@@ -58,7 +58,7 @@ function StandardMemoryCard({ memory, rotation, index }: MemoryCardComponentProp
   
   return (
     <motion.article
-      className="relative bg-warmCream-200 rounded-xl p-6 md:p-10 shadow-medium border-2 border-warmCream-400 cursor-pointer group overflow-hidden"
+      className="relative bg-paper-texture-prominent rounded-xl p-6 md:p-10 shadow-natural hover:shadow-elevated border-2 border-warmCream-400 cursor-pointer group overflow-hidden transition-shadow duration-300"
       style={{ transform: `rotate(${cardRotation}deg)` }}
       initial={{ opacity: 0, y: 40, rotate: cardRotation }}
       whileInView={{ opacity: 1, y: 0, rotate: cardRotation }}
@@ -73,13 +73,13 @@ function StandardMemoryCard({ memory, rotation, index }: MemoryCardComponentProp
       }}
       whileTap={{ scale: 0.97 }}
     >
-      {/* Decorative washi tape corner glow */}
-      <div className="absolute -top-3 -right-3 w-20 h-20 bg-gradient-to-br from-rosePetal/50 to-lavenderPress/50 rounded-full blur-xl opacity-60" />
+      {/* Decorative washi tape corner glow - Enhanced */}
+      <div className="absolute -top-3 -right-3 w-24 h-24 bg-gradient-to-br from-rosePetal/60 to-lavenderPress/60 rounded-full blur-xl opacity-70 group-hover:opacity-90 transition-opacity" aria-hidden="true" />
       
-      {/* Paper clip (30% chance) */}
+      {/* Paper clip (30% chance) - More visible */}
       {index % 3 === 0 && (
-        <svg className="absolute -top-4 right-8 w-12 h-12 opacity-40" viewBox="0 0 24 24" fill="none">
-          <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" stroke="#9B8B7E" strokeWidth="2"/>
+        <svg className="absolute -top-4 right-8 w-12 h-12 opacity-50 group-hover:opacity-70 transition-opacity" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" stroke="#7A5C47" strokeWidth="2.5"/>
         </svg>
       )}
 
@@ -96,7 +96,7 @@ function StandardMemoryCard({ memory, rotation, index }: MemoryCardComponentProp
         {new Date(memory.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
       </time>
 
-      {/* Image if present */}
+      {/* Image if present - Phase 2 Enhanced */}
       {memory.imageUrl && (
         <div className="relative mb-6 -mx-6 md:-mx-10">
           <div className="relative w-full h-64">
@@ -105,15 +105,15 @@ function StandardMemoryCard({ memory, rotation, index }: MemoryCardComponentProp
               alt={memory.title}
               fill
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              className="object-cover shadow-medium"
+              className="object-cover shadow-medium group-hover:shadow-elevated transition-shadow duration-300"
               style={{ clipPath: 'polygon(3% 2%, 98% 0%, 97% 98%, 1% 97%)' }}
               placeholder="blur"
               blurDataURL={BLUR_DATA_URL}
             />
           </div>
-          {/* Photo corner tapes */}
-          <div className="absolute top-2 left-2 w-16 h-8 bg-sunsetAmber/60 shadow-sm" style={{ transform: 'rotate(-45deg)' }} />
-          <div className="absolute top-2 right-2 w-16 h-8 bg-rosePetal/60 shadow-sm" style={{ transform: 'rotate(45deg)' }} />
+          {/* Photo corner tapes - More prominent */}
+          <div className="absolute top-2 left-2 w-20 h-10 bg-gradient-to-br from-sunsetAmber/80 to-sunsetAmber/60 shadow-md group-hover:shadow-lg transition-shadow" style={{ transform: 'rotate(-45deg)' }} aria-hidden="true" />
+          <div className="absolute top-2 right-2 w-20 h-10 bg-gradient-to-br from-rosePetal/80 to-rosePetal/60 shadow-md group-hover:shadow-lg transition-shadow" style={{ transform: 'rotate(45deg)' }} aria-hidden="true" />
         </div>
       )}
 

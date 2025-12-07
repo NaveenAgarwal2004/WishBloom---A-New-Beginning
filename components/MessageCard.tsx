@@ -1,6 +1,7 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { useState, useEffect } from 'react'
+import { motion, useReducedMotion } from 'framer-motion'
 import type { IMessage } from '@/models/WishBloom'
 
 interface MessageCardProps {
@@ -9,29 +10,88 @@ interface MessageCardProps {
 }
 
 /**
- * Letter Type Message Card
+ * Typewriter effect hook for text animation
+ */
+function useTypewriter(text: string, speed: number = 30) {
+  const [displayText, setDisplayText] = useState('')
+  const [isComplete, setIsComplete] = useState(false)
+  const shouldReduceMotion = useReducedMotion()
+
+  useEffect(() => {
+    // Skip animation if user prefers reduced motion
+    if (shouldReduceMotion) {
+      setDisplayText(text)
+      setIsComplete(true)
+      return
+    }
+
+    let currentIndex = 0
+    const interval = setInterval(() => {
+      if (currentIndex <= text.length) {
+        setDisplayText(text.slice(0, currentIndex))
+        currentIndex++
+      } else {
+        setIsComplete(true)
+        clearInterval(interval)
+      }
+    }, speed)
+
+    return () => clearInterval(interval)
+  }, [text, speed, shouldReduceMotion])
+
+  return { displayText, isComplete }
+}
+
+/**
+ * Letter Type Message Card with Typewriter Effect
  */
 function LetterCard({ message, index }: MessageCardProps) {
+  const [isInView, setIsInView] = useState(false)
+  const shouldReduceMotion = useReducedMotion()
+  
   // Split content into paragraphs
   const paragraphs = message.content.split('\n\n').filter((p: string) => p.trim())
+  
+  // Typewriter effect for first paragraph only (performance optimization)
+  const firstParagraph = paragraphs[0] || ''
+  const { displayText: typedText, isComplete } = useTypewriter(
+    isInView ? firstParagraph : '', 
+    25
+  )
   
   // Random coffee stain (30% chance)
   const hasCoffeeStain = index % 3 === 0
 
   return (
     <motion.article
-      className="relative bg-warmCream-50 shadow-high p-8 md:p-16 border-l-4 border-rosePetal/60"
+      className="relative bg-paper-texture shadow-elevated p-8 md:p-16 border-l-4 border-rosePetal/60 hover-lift"
       style={{
         background: 'repeating-linear-gradient(transparent, transparent 31px, rgba(235, 224, 211, 0.5) 31px, rgba(235, 224, 211, 0.5) 33px)'
       }}
       initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      whileInView={{ 
+        opacity: 1, 
+        y: 0,
+        transition: { 
+          duration: shouldReduceMotion ? 0.01 : 0.5, 
+          delay: shouldReduceMotion ? 0 : index * 0.1, 
+          ease: "easeOut" 
+        }
+      }}
+      onViewportEnter={() => setIsInView(true)}
       viewport={{ once: true, margin: "-50px", amount: 0.3 }}
-      transition={{ duration: 0.5, delay: index * 0.1, ease: "easeOut" }}
     >
-      {/* Decorative tape at top corners */}
-      <div className="absolute -top-4 left-12 w-32 h-10 bg-sunsetAmber/60 shadow-md" style={{ transform: 'rotate(-2deg)' }} />
-      <div className="absolute -top-4 right-12 w-32 h-10 bg-lavenderPress/60 shadow-md" style={{ transform: 'rotate(2deg)' }} />
+      {/* Decorative tape at top corners - Enhanced visibility */}
+      <div 
+        className="absolute -top-4 left-12 w-32 h-10 bg-gradient-to-br from-sunsetAmber/70 to-sunsetAmber/50 shadow-md" 
+        style={{ transform: 'rotate(-2deg)' }} 
+        aria-hidden="true"
+      />
+      <div 
+        className="absolute -top-4 right-12 w-32 h-10 bg-gradient-to-br from-lavenderPress/70 to-lavenderPress/50 shadow-md" 
+        style={{ transform: 'rotate(2deg)' }} 
+        aria-hidden="true"
+      />
 
       {/* Optional coffee stain */}
       {hasCoffeeStain && (
@@ -50,18 +110,20 @@ function LetterCard({ message, index }: MessageCardProps) {
         </p>
       )}
 
-      {/* Body paragraphs */}
+      {/* Body paragraphs with typewriter effect on first paragraph */}
       <div className="space-y-6 mb-12">
         {paragraphs.map((paragraph: string, i: number) => (
           <motion.p
             key={i}
-            className="text-body-xl font-body text-warmCream-800 leading-loose"
-            initial={{ opacity: 0, x: -20 }}
+            className={`text-body-xl font-body text-warmCream-800 leading-loose ${
+              i === 0 && !isComplete && !shouldReduceMotion ? 'typewriter-cursor' : ''
+            }`}
+            initial={{ opacity: 0, x: shouldReduceMotion ? 0 : -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: i * 0.15 }}
+            transition={{ duration: shouldReduceMotion ? 0.01 : 0.6, delay: shouldReduceMotion ? 0 : i * 0.15 }}
           >
-            {paragraph}
+            {i === 0 && !shouldReduceMotion ? typedText : paragraph}
           </motion.p>
         ))}
       </div>

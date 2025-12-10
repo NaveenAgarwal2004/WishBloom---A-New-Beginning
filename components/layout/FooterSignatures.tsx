@@ -80,7 +80,8 @@ export default function FooterSignatures({ contributors }: FooterSignaturesProps
                   { left: '40%', top: '75%' },
                 ]
                 const position = positions[i % positions.length]
-                const rotation = (Math.random() - 0.5) * 8
+                // Use deterministic rotation based on index instead of Math.random()
+                const rotation = ((i * 37) % 16 - 8) * 0.5 // Pseudo-random but deterministic
 
                 return (
                   <motion.div

@@ -81,10 +81,11 @@ function getServerEnv(): Env {
 }
 
 // Client-side environment (only public variables)
+// Proper typing instead of `as any`
 function getClientEnv(): Env {
   return {
     NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000',
-    NODE_ENV: (process.env.NODE_ENV as any) || 'development',
+    NODE_ENV: (process.env.NODE_ENV as 'development' | 'production' | 'test') || 'development',
   } as Env
 }
 
@@ -105,7 +106,7 @@ export function getEnv(): Env {
 
 export const env = getEnv()
 
-// ✅ NEW: Helper to get base URL safely (works in both client & server)
+// Helper to get base URL safely (works in both client & server)
 export function getBaseUrl(): string {
   if (typeof window !== 'undefined') {
     // Browser: use window.location.origin

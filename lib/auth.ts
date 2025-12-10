@@ -8,6 +8,14 @@ import bcrypt from 'bcryptjs'
 import dbConnect from './mongodb'
 import User from '@/models/User'
 
+// Proper type definitions instead of `any`
+interface ExtendedUser {
+  id: string
+  email: string
+  name: string
+  role?: string
+}
+
 export const authOptions: NextAuthOptions = {
   adapter: MongoDBAdapter(clientPromise),
   providers: [
@@ -63,38 +71,41 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ token, user, trigger, session }) {
-  if (user) {
-    token.id = (user as any).id
-    token.role = (user as any).role || 'user'
-  }
+      if (user) {
+        const extendedUser = user as ExtendedUser
+        token.id = extendedUser.id
+        token.role = extendedUser.role || 'user'
+      }
 
-  if (trigger === 'update' && session) {
-    token.name = session.name
-  }
+      if (trigger === 'update' && session) {
+        token.name = session.name
+      }
 
-  return token
-},
-async session({ session, token }) {
-  if (session.user) {
-    (session.user as any).id = token.id as string
-    ;(session.user as any).role = token.role as string
-  }
-  return session
-},
-
+      return token
+    },
+    async session({ session, token }) {
+      if (session.user) {
+        const extendedSession = session as typeof session & {
+          user: ExtendedUser
+        }
+        extendedSession.user.id = token.id as string
+        extendedSession.user.role = token.role as string
+      }
+      return session
+    },
   },
   secret: env.NEXTAUTH_SECRET,
   debug: env.NODE_ENV === 'development',
 }
 
 // Helper functions
-export async function getCurrentUser() {
+export async function getCurrentUser(): Promise<ExtendedUser | null> {
   // This will be used in API routes later
   // NextAuth session handling for App Router
   return null // Placeholder - implement with headers
 }
 
-export async function requireAuth() {
+export async function requireAuth(): Promise<ExtendedUser> {
   const user = await getCurrentUser()
   if (!user) {
     throw new Error('Unauthorized')
@@ -102,9 +113,9 @@ export async function requireAuth() {
   return user
 }
 
-export async function requireAdmin() {
+export async function requireAdmin(): Promise<ExtendedUser> {
   const user = await requireAuth()
-  if (!user || (user as any).role !== 'admin') {
+  if (!user || user.role !== 'admin') {
     throw new Error('Forbidden - Admin access required')
   }
   return user

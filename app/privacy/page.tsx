@@ -140,7 +140,7 @@ export default function PrivacyPolicyPage() {
 
           {/* Children's Privacy */}
           <section className="bg-white/60 backdrop-blur-sm rounded-2xl p-8 border border-warmCream-200 shadow-soft">
-            <h2 className="text-h3 font-heading text-sepiaInk mb-4">Children's Privacy</h2>
+            <h2 className="text-h3 font-heading text-sepiaInk mb-4">Children&apos;s Privacy</h2>
             <p className="text-body font-body text-warmCream-700">
               WishBloom is not intended for children under 13. We do not knowingly collect personal information from 
               children under 13. If you believe we have collected information from a child under 13, please contact us 

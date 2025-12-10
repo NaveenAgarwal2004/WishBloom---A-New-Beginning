@@ -126,9 +126,10 @@ export function useAutoSave(): UseAutoSaveReturn {
     }
 
     checkForDraft()
-  }, [draftOffered, toast]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [draftOffered, toast])  
 
   // Auto-save on state change (debounced)
+  // Use requestAnimationFrame to schedule setState outside of render cycle
   useEffect(() => {
     if (typeof window === 'undefined') return
 
@@ -142,8 +143,10 @@ export function useAutoSave(): UseAutoSaveReturn {
       return
     }
 
-    // Show saving indicator
-    setIsAutoSaving(true)
+    // Schedule state update for next frame to avoid cascading renders
+    requestAnimationFrame(() => {
+      setIsAutoSaving(true)
+    })
 
     // Debounced save
     saveTimeoutRef.current = setTimeout(() => {

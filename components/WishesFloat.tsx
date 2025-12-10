@@ -1,6 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import { useMemo } from 'react'
 
 interface WishesFloatProps {
   wishes: string[]
@@ -10,19 +11,29 @@ export default function WishesFloat({ wishes }: WishesFloatProps) {
   if (!wishes || wishes.length === 0) return null
 
   const colors = ['#7A5C47', '#D4A373', '#D4859D', '#A88BC7']
+  
+  //  Generate random positions in useMemo to avoid impure render
+  const positions = useMemo(() => {
+    return wishes.map((_, i) => ({
+      left: 5 + (i % 3) * 30 + Math.random() * 15,
+      xOffset: Math.sin(i * 0.5) * 60,
+      xOffset2: Math.sin(i * 0.5 + 2) * -40,
+    }))
+  }, [wishes.length])
 
   return (
     <div className="fixed inset-0 pointer-events-none z-[90]" data-testid="wishes-active">
       {wishes.map((wish, i) => {
         const color = colors[i % colors.length]
         const windowHeight = typeof window !== 'undefined' ? window.innerHeight : 800
+        const position = positions[i]
 
         return (
           <motion.div
             key={i}
             className="absolute whitespace-nowrap"
             style={{
-              left: `${5 + (i % 3) * 30 + Math.random() * 15}%`,
+              left: `${position.left}%`,
               bottom: -100,
               color: color,
               textShadow: '0 2px 8px rgba(0,0,0,0.1)',
@@ -35,7 +46,7 @@ export default function WishesFloat({ wishes }: WishesFloatProps) {
             }}
             animate={{
               y: -windowHeight - 150,
-              x: [0, Math.sin(i * 0.5) * 60, Math.sin(i * 0.5 + 2) * -40, 0],
+              x: [0, position.xOffset, position.xOffset2, 0],
               opacity: [0, 1, 1, 1, 0],
               scale: [0.8, 1, 1.05, 1, 0.9],
               filter: ['blur(4px)', 'blur(0px)', 'blur(0px)', 'blur(0px)', 'blur(2px)'],

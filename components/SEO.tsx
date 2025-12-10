@@ -66,8 +66,22 @@ export default function SEO({
   )
 }
 
+// Proper type definition for WishBloom
+interface WishBloomStructuredData {
+  recipientName: string
+  introMessage: string
+  createdBy: {
+    name: string
+  }
+  createdDate: string
+  memories: Array<{
+    imageUrl: string
+  }>
+  viewCount?: number
+}
+
 // Structured data for rich snippets
-export function generateStructuredData(wishbloom: any) {
+export function generateStructuredData(wishbloom: WishBloomStructuredData) {
   return {
     '@context': 'https://schema.org',
     '@type': 'CreativeWork',

@@ -5,6 +5,8 @@
  * with accessibility support (prefers-reduced-motion)
  */
 
+import React from 'react'
+
 /**
  * Check if user prefers reduced motion
  */
@@ -22,17 +24,21 @@ export function getAnimationDuration(defaultDuration: number): number {
 
 /**
  * Typewriter effect hook for text animation
+ * Hooks now called unconditionally at top level
  */
 export function useTypewriter(text: string, speed: number = 30) {
-  if (typeof window === 'undefined') {
-    return { displayText: text, isComplete: true }
-  }
-
   const [displayText, setDisplayText] = React.useState('')
   const [isComplete, setIsComplete] = React.useState(false)
   const [currentIndex, setCurrentIndex] = React.useState(0)
 
   React.useEffect(() => {
+    // Handle SSR case
+    if (typeof window === 'undefined') {
+      setDisplayText(text)
+      setIsComplete(true)
+      return
+    }
+
     // Skip animation if user prefers reduced motion
     if (prefersReducedMotion()) {
       setDisplayText(text)
@@ -54,8 +60,6 @@ export function useTypewriter(text: string, speed: number = 30) {
 
   return { displayText, isComplete }
 }
-
-import React from 'react'
 
 /**
  * Motion-safe animation variants for Framer Motion
@@ -100,7 +104,7 @@ export const motionSafeVariants = {
 /**
  * Get motion-safe transition configuration
  */
-export function getMotionSafeTransition(transition: any) {
+export function getMotionSafeTransition(transition: Record<string, unknown>) {
   if (prefersReducedMotion()) {
     return {
       duration: 0.01,

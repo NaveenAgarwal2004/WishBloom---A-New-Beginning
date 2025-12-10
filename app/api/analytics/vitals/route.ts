@@ -20,9 +20,13 @@ export async function POST(request: Request) {
         })
 
         return NextResponse.json({ success: true })
-      } catch (error: any) {
+      } catch (error: unknown) {
+        // Proper error type checking
+        const isAbortError = error instanceof Error && 
+          (error.name === 'AbortError' || error.message === 'aborted')
+        
         // 🔕 Ignore harmless aborted requests
-        if (error?.name === 'AbortError' || error?.message === 'aborted') {
+        if (isAbortError) {
           return NextResponse.json({ success: true, aborted: true }, { status: 204 })
         }
 

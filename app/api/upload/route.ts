@@ -54,8 +54,14 @@ export async function POST(request: Request) {
         const bytes = await file.arrayBuffer()
         const buffer = Buffer.from(bytes)
 
+        //  Proper Cloudinary types
+        interface CloudinaryResult {
+          secure_url: string
+          public_id: string
+        }
+
         // Upload to Cloudinary
-        const result = await new Promise<any>((resolve, reject) => {
+        const result = await new Promise<CloudinaryResult>((resolve, reject) => {
           cloudinary.uploader
             .upload_stream(
               {
@@ -71,7 +77,8 @@ export async function POST(request: Request) {
               },
               (error, result) => {
                 if (error) reject(error)
-                else resolve(result)
+                else if (result) resolve(result as CloudinaryResult)
+                else reject(new Error('Upload failed'))
               }
             )
             .end(buffer)

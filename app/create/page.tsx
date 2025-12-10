@@ -13,20 +13,17 @@ import { useMobile } from '@/hooks/use-mobile'
 import { useAutoSave } from '@/hooks/useAutoSave'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 export default function CreatePage() {
   const currentStep = useWishBloomStore((state) => state.currentStep)
   
-  const [isMounted, setIsMounted] = useState(false)
+  // Use initial state instead of useEffect to avoid cascading renders
+  const [isMounted, setIsMounted] = useState(true)
   const isMobileView = useMobile()
   
-  // ✅ Part 10: Auto-save hook
+  // Auto-save hook
   const { isAutoSaving, lastSaved } = useAutoSave()
-
-  useEffect(() => {
-    setIsMounted(true)
-  }, [])
 
   const steps = [
     { step: 1, label: 'Info', component: Step1Info },
@@ -62,7 +59,7 @@ export default function CreatePage() {
                 <span className="text-[10px] text-warmCream-600 uppercase tracking-widest">
                   Step {currentStep} of 6
                 </span>
-                {/* ✅ Part 10: Auto-save indicator */}
+                {/*  Auto-save indicator */}
                 {!isAutoSaving && lastSaved && (
                   <span className="text-[9px] text-mossGreen font-mono">
                     • Saved
@@ -121,7 +118,7 @@ export default function CreatePage() {
         <p className="text-body-lg font-body text-warmCream-700">
           Preserve memories, one bloom at a time
         </p>
-        {/* ✅ Part 10: Desktop auto-save indicator */}
+        {/* Desktop auto-save indicator */}
         <div className="mt-4 min-h-[20px]">
           {!isAutoSaving && lastSaved && (
             <p className="text-caption font-mono text-mossGreen">

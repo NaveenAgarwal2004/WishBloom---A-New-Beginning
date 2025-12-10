@@ -9,14 +9,26 @@ import { useToast } from '@/hooks/use-toast'
 import Link from 'next/link'
 import { APP_CONFIG } from '@/config/constants'
 
+// Proper type definitions
+interface Memory {
+  imageUrl: string
+  caption?: string
+  tags?: string[]
+}
+
+interface Message {
+  type: string
+  text: string
+}
+
 interface DashboardBloom {
   _id: string
   recipientName: string
   uniqueUrl: string
   createdDate: string
   viewCount: number
-  memories: any[]
-  messages: any[]
+  memories: Memory[]
+  messages: Message[]
   isArchived: boolean
 }
 

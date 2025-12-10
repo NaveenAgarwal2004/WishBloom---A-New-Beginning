@@ -2,8 +2,9 @@ import { isDev } from './env'
 
 type LogLevel = 'debug' | 'info' | 'warn' | 'error'
 
+// Proper type definition instead of `any`
 interface LogMetadata {
-  [key: string]: any
+  [key: string]: string | number | boolean | undefined | null | Record<string, unknown>
 }
 
 class Logger {

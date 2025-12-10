@@ -28,8 +28,13 @@ export function useBreathDetection(): UseBreathDetectionReturn {
 
   const requestPermission = useCallback(async () => {
     try {
+      // Proper type for webkit AudioContext
+      interface WindowWithWebkit extends Window {
+        webkitAudioContext?: typeof AudioContext
+      }
+      
       // Check if browser supports AudioContext
-      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext
+      const AudioContextClass = window.AudioContext || (window as WindowWithWebkit).webkitAudioContext
       if (!AudioContextClass) {
         setError('Your browser does not support audio detection')
         setSupported(false)

@@ -4,6 +4,24 @@ import 'dotenv/config'
 import dbConnect from '../lib/mongodb'
 import WishBloom from '../models/WishBloom'
 
+// Type for MongoDB explain result
+interface ExecutionStats {
+  executionStages?: {
+    stage?: string
+    inputStage?: {
+      stage?: string
+    }
+  }
+}
+
+interface ExplainResult {
+  executionStats?: ExecutionStats
+  stages?: Array<{
+    $cursor?: {
+      executionStats?: ExecutionStats
+    }
+  }>
+}
 
 async function testIndexes() {
   await dbConnect()
@@ -12,15 +30,15 @@ async function testIndexes() {
 
   // Test 1: uniqueUrl
   console.time('uniqueUrl query')
-  const uniqueUrlExplain: any = await WishBloom.findOne({ uniqueUrl: 'test' }).explain('executionStats')
+  const uniqueUrlExplain = await WishBloom.findOne({ uniqueUrl: 'test' }).explain('executionStats') as unknown as ExplainResult
   console.timeEnd('uniqueUrl query')
 
   // Test 2: createdDate sort
   console.time('createdDate sort')
-  const createdDateExplain: any = await WishBloom.find({ isArchived: { $ne: true } })
+  const createdDateExplain = await WishBloom.find({ isArchived: { $ne: true } })
     .sort({ createdDate: -1 })
     .limit(10)
-    .explain('executionStats')
+    .explain('executionStats') as unknown as ExplainResult
   console.timeEnd('createdDate sort')
 
   console.log('✅ Indexes working correctly if executionStats show IXSCAN (index scan) instead of COLLSCAN (collection scan).')

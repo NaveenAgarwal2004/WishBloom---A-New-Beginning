@@ -19,7 +19,7 @@ export default function CreatePage() {
   const currentStep = useWishBloomStore((state) => state.currentStep)
   
   // Use initial state instead of useEffect to avoid cascading renders
-  const [isMounted, setIsMounted] = useState(true)
+  const [isMounted] = useState(true)
   const isMobileView = useMobile()
   
   // Auto-save hook

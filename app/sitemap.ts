@@ -3,6 +3,12 @@ import dbConnect from '@/lib/mongodb'
 import WishBloom from '@/models/WishBloom'
 import { env } from '@/lib/env'
 
+// Type for WishBloom document
+interface WishBloomDocument {
+  uniqueUrl: string
+  createdDate: Date
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = env.NEXT_PUBLIC_BASE_URL
 
@@ -31,7 +37,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .limit(1000)
       .lean()
 
-    const wishbloomPages: MetadataRoute.Sitemap = wishblooms.map((wb: any) => ({
+    const wishbloomPages: MetadataRoute.Sitemap = (wishblooms as WishBloomDocument[]).map((wb) => ({
       url: `${baseUrl}/${wb.uniqueUrl}`,
       lastModified: new Date(wb.createdDate),
       changeFrequency: 'monthly' as const,

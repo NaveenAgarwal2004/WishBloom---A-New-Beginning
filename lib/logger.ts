@@ -2,9 +2,18 @@ import { isDev } from './env'
 
 type LogLevel = 'debug' | 'info' | 'warn' | 'error'
 
-// Proper type definition instead of `any`
+// Proper type definition for log metadata
 interface LogMetadata {
   [key: string]: string | number | boolean | undefined | null | Record<string, unknown>
+}
+
+// Extended metadata that allows error objects
+interface ErrorMetadata extends LogMetadata {
+  error?: {
+    message: string
+    stack?: string
+    name: string
+  } | string
 }
 
 class Logger {
@@ -14,7 +23,7 @@ class Logger {
     this.isDev = isDev
   }
 
-  private formatMessage(level: LogLevel, message: string, metadata?: LogMetadata): string {
+  private formatMessage(level: LogLevel, message: string, metadata?: LogMetadata | ErrorMetadata): string {
     const timestamp = new Date().toISOString()
     const prefix = this.getPrefix(level)
     
@@ -58,7 +67,7 @@ class Logger {
   }
 
   error(message: string, error?: Error | unknown, metadata?: LogMetadata): void {
-    const errorData = error instanceof Error
+    const errorData: ErrorMetadata = error instanceof Error
       ? {
           error: {
             message: error.message,
@@ -67,7 +76,7 @@ class Logger {
           },
           ...metadata,
         }
-      : { error, ...metadata }
+      : { error: String(error), ...metadata } as ErrorMetadata
 
     console.error(this.formatMessage('error', message, errorData))
   }

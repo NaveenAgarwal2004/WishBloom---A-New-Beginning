@@ -6,11 +6,15 @@ import { ArrowRight, ArrowLeft, Plus, Trash2, Edit2, Check } from 'lucide-react'
 import { useState } from 'react'
 import { nanoid } from 'nanoid'
 import { z } from 'zod'
+import Image from 'next/image'
 import useWishBloomStore from '@/store/useWishBloomStore'
 import ImageUploader from '@/components/ImageUploader'
 import { ContributorSchema } from '@/schemas/wishbloom.schema'
 import { VALIDATION_LIMITS, MEMORY_TYPES, MEMORY_TAGS, ERROR_MESSAGES, PATTERNS } from '@/config/constants'
 import type { IMemory } from '@/models/WishBloom'
+
+// Type for memory tags
+type MemoryTag = 'love' | 'milestone' | 'nostalgic' | 'celebration' | 'funny'
 
 // ✅ ROOT FIX: Define local schema for form to avoid .default() type inference issues
 const MemoryFormSchema = z.object({
@@ -111,7 +115,7 @@ export default function Step2Memories() {
     setValue('date', memory.date)
     setValue('imageUrl', memory.imageUrl)
     setValue('type', memory.type)
-    setValue('tags', (memory.tags || []) as any) // Ensure it's an array
+    setValue('tags', (memory.tags || []) as MemoryTag[]) // Ensure it's an array
     setValue('contributor.name', memory.contributor.name)
     setValue('contributor.email', memory.contributor.email || '')
     setValue('contributor.contributionCount', memory.contributor.contributionCount)
@@ -216,9 +220,9 @@ export default function Step2Memories() {
                     onChange={(e) => {
                       const current = selectedTags
                       if (e.target.checked) {
-                        setValue('tags', [...current, tag] as Array<'love' | 'milestone' | 'nostalgic' | 'celebration' | 'funny'>)
+                        setValue('tags', [...current, tag] as MemoryTag[])
                       } else {
-                        setValue('tags', current.filter((t: string) => t !== tag) as Array<'love' | 'milestone' | 'nostalgic' | 'celebration' | 'funny'>)
+                        setValue('tags', current.filter((t) => t !== tag) as MemoryTag[])
                       }
                     }}
                     className="w-5 h-5"
@@ -279,7 +283,13 @@ export default function Step2Memories() {
             {store.memories.map((memory) => (
               <div key={memory.id} className="bg-warmCream-50 rounded-lg p-6 border-2 border-warmCream-300">
                 {memory.imageUrl && (
-                  <img src={memory.imageUrl} alt={memory.title} className="w-full h-32 object-cover rounded mb-4" />
+                  <Image 
+                    src={memory.imageUrl} 
+                    alt={memory.title} 
+                    width={400} 
+                    height={128} 
+                    className="w-full h-32 object-cover rounded mb-4" 
+                  />
                 )}
                 <h4 className="text-h6 font-heading font-semibold text-sepiaInk mb-2">{memory.title}</h4>
                 <p className="text-body-sm text-warmCream-700 line-clamp-2 mb-3">{memory.description}</p>

@@ -13,6 +13,7 @@ import { useEffect, useState, useRef } from 'react'
 import useWishBloomStore from '@/store/useWishBloomStore'
 import { useToast } from '@/hooks/use-toast'
 import { useShallow } from 'zustand/shallow'
+import type { IMemory, IMessage } from '@/models/WishBloom'
 
 interface UseAutoSaveReturn {
   isAutoSaving: boolean
@@ -20,6 +21,25 @@ interface UseAutoSaveReturn {
   hasDraft: boolean
   restoreDraft: () => void
   clearDraft: () => void
+}
+
+// Draft data interface with proper types
+interface DraftCreatedBy {
+  id?: string
+  name: string
+  email: string
+  contributionCount?: number
+}
+
+interface DraftData {
+  recipientName: string
+  age: number | null
+  creativeAgeDescription: string
+  introMessage: string
+  createdBy: DraftCreatedBy
+  memories: IMemory[]
+  messages: IMessage[]
+  celebrationWishPhrases: string[]
 }
 
 const DRAFT_KEY = 'wishbloom-draft'
@@ -57,7 +77,7 @@ export function useAutoSave(): UseAutoSaveReturn {
       const stored = localStorage.getItem(DRAFT_KEY)
       if (!stored) return
 
-      const draft = JSON.parse(stored)
+      const draft = JSON.parse(stored) as { timestamp: string; data: DraftData }
       
       // Restore each field individually
       store.setRecipientName(draft.data.recipientName || '')
@@ -66,9 +86,13 @@ export function useAutoSave(): UseAutoSaveReturn {
       store.setIntroMessage(draft.data.introMessage || '')
       store.setCreatedBy(draft.data.createdBy || { id: '', name: '', email: '', contributionCount: 1 })
       
-      // Restore arrays
-      draft.data.memories?.forEach((memory: any) => store.addMemory(memory))
-      draft.data.messages?.forEach((message: any) => store.addMessage(message))
+      // Restore arrays with proper typing
+      if (draft.data.memories && Array.isArray(draft.data.memories)) {
+        draft.data.memories.forEach((memory: IMemory) => store.addMemory(memory))
+      }
+      if (draft.data.messages && Array.isArray(draft.data.messages)) {
+        draft.data.messages.forEach((message: IMessage) => store.addMessage(message))
+      }
       
       if (draft.data.celebrationWishPhrases) {
         store.setCelebrationWishPhrases(draft.data.celebrationWishPhrases)
@@ -98,7 +122,7 @@ export function useAutoSave(): UseAutoSaveReturn {
         const stored = localStorage.getItem(DRAFT_KEY)
         if (!stored) return
 
-        const draft = JSON.parse(stored)
+        const draft = JSON.parse(stored) as { timestamp: string; data: DraftData }
         const draftDate = new Date(draft.timestamp)
         const now = new Date()
         const hoursSinceDraft = (now.getTime() - draftDate.getTime()) / (1000 * 60 * 60)
@@ -126,7 +150,7 @@ export function useAutoSave(): UseAutoSaveReturn {
     }
 
     checkForDraft()
-  }, [draftOffered, toast])  
+  }, [draftOffered, toast])
 
   // Auto-save on state change (debounced)
   // Use requestAnimationFrame to schedule setState outside of render cycle

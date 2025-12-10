@@ -5,6 +5,14 @@ process.env.BREVO_API_KEY = 'test-api-key'
 process.env.BREVO_SENDER_EMAIL = 'test@example.com'
 process.env.BREVO_SENDER_NAME = 'Test Sender'
 
+// Type for test data
+interface TestEmailData {
+  recipientName: string
+  wishbloomUrl: string
+  senderName: string
+  customMessage?: string
+}
+
 describe('Brevo Email Service', () => {
   beforeEach(() => {
     // Clear all mocks before each test
@@ -15,7 +23,7 @@ describe('Brevo Email Service', () => {
     it('should generate valid HTML email template', () => {
       // We can't directly test the private method, but we can verify
       // the structure through the public API
-      const testData = {
+      const testData: TestEmailData = {
         recipientName: 'John Doe',
         wishbloomUrl: 'https://wishbloom.app/test',
         senderName: 'Jane Smith',
@@ -29,12 +37,12 @@ describe('Brevo Email Service', () => {
     })
 
     it('should handle missing custom message', () => {
-      const testData: Record<string, any> = {
-  recipientName: 'John Doe',
-  wishbloomUrl: 'https://wishbloom.app/test',
-  senderName: 'Jane Smith',
-}
-expect(testData.customMessage).toBeUndefined()
+      const testData: TestEmailData = {
+        recipientName: 'John Doe',
+        wishbloomUrl: 'https://wishbloom.app/test',
+        senderName: 'Jane Smith',
+      }
+      expect(testData.customMessage).toBeUndefined()
     })
   })
 

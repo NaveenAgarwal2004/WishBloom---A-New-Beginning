@@ -9,6 +9,14 @@ import { useEffect } from 'react'
 import useWishBloomStore from '@/store/useWishBloomStore'
 import { VALIDATION_LIMITS } from '@/config/constants'
 
+// Type for session user with id
+interface SessionUser {
+  id?: string
+  name?: string | null
+  email?: string | null
+  image?: string | null
+}
+
 // ✅ Zod schema for Step 1
 const step1Schema = z.object({
   recipientName: z
@@ -80,10 +88,11 @@ export default function Step1Info() {
     store.setIntroMessage(data.introMessage)
     
     // ✅ Set createdBy with session user ID if logged in
+    const sessionUser = session?.user as SessionUser | undefined
     store.setCreatedBy({
-      id: session?.user ? (session.user as any).id : undefined,
-      name: data.createdByName || session?.user?.name || '',
-      email: data.createdByEmail || session?.user?.email || '',
+      id: sessionUser?.id || undefined,
+      name: data.createdByName || sessionUser?.name || '',
+      email: data.createdByEmail || sessionUser?.email || '',
     })
 
     // Navigate to next step

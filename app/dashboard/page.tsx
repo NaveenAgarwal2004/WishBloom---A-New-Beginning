@@ -6,6 +6,16 @@ import WishBloom from '@/models/WishBloom'
 import DashboardClient from './DashboardClient'
 
 /**
+ * Type for session user with id
+ */
+interface SessionUser {
+  id?: string
+  name?: string | null
+  email?: string | null
+  image?: string | null
+}
+
+/**
  * ✅ Part 4: Creator Dashboard
  * React Server Component - Fetches user's WishBlooms server-side
  */
@@ -22,8 +32,9 @@ export default async function DashboardPage() {
   await dbConnect()
 
   // Fetch all WishBlooms created by this user
+  const sessionUser = session.user as SessionUser
   const blooms = await WishBloom.find({ 
-    'createdBy.id': (session.user as any).id 
+    'createdBy.id': sessionUser.id 
   })
     .sort({ createdDate: -1 })
     .lean()

@@ -6,8 +6,8 @@
 'use client'
 
 import dynamic from 'next/dynamic'
-import { ComponentType, HTMLAttributes } from 'react'
-import type { HTMLMotionProps } from 'framer-motion'
+import { ComponentType } from 'react'
+import type { HTMLMotionProps, SVGMotionProps } from 'framer-motion'
 
 // Proper type definitions for motion components
 type MotionDivProps = HTMLMotionProps<'div'>
@@ -17,8 +17,9 @@ type MotionButtonProps = HTMLMotionProps<'button'>
 type MotionPProps = HTMLMotionProps<'p'>
 type MotionH1Props = HTMLMotionProps<'h1'>
 type MotionH2Props = HTMLMotionProps<'h2'>
-type MotionSvgProps = HTMLMotionProps<'svg'>
-type MotionPathProps = HTMLMotionProps<'path'>
+// SVG elements use SVGMotionProps
+type MotionSvgProps = SVGMotionProps<SVGSVGElement>
+type MotionPathProps = SVGMotionProps<SVGPathElement>
 
 // ✅ Lazy-load motion components with proper types
 export const motion = {

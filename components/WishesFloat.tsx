@@ -7,19 +7,23 @@ interface WishesFloatProps {
   wishes: string[]
 }
 
-export default function WishesFloat({ wishes }: WishesFloatProps) {
-  if (!wishes || wishes.length === 0) return null
+// Generate stable random-looking positions using index-based deterministic calculations
+function generatePositions(count: number) {
+  return Array.from({ length: count }, (_, i) => ({
+    left: 5 + (i % 3) * 30 + (i * 7.3) % 15, // Deterministic pseudo-random
+    xOffset: Math.sin(i * 0.5) * 60,
+    xOffset2: Math.sin(i * 0.5 + 2) * -40,
+  }))
+}
 
+export default function WishesFloat({ wishes }: WishesFloatProps) {
   const colors = ['#7A5C47', '#D4A373', '#D4859D', '#A88BC7']
   
-  //  Generate random positions in useMemo to avoid impure render
-  const positions = useMemo(() => {
-    return wishes.map((_, i) => ({
-      left: 5 + (i % 3) * 30 + Math.random() * 15,
-      xOffset: Math.sin(i * 0.5) * 60,
-      xOffset2: Math.sin(i * 0.5 + 2) * -40,
-    }))
-  }, [wishes.length])
+  // Generate positions deterministically based on wishes array length
+  // Must be called before early return to comply with React Hooks rules
+  const positions = useMemo(() => generatePositions(wishes.length), [wishes.length])
+  
+  if (!wishes || wishes.length === 0) return null
 
   return (
     <div className="fixed inset-0 pointer-events-none z-[90]" data-testid="wishes-active">

@@ -33,6 +33,15 @@ function getRating(name: string, value: number): 'good' | 'needs-improvement' | 
   return 'poor'
 }
 
+// Type guard for window.gtag
+interface WindowWithGtag extends Window {
+  gtag?: (
+    type: string,
+    action: string,
+    params: Record<string, string | number>
+  ) => void
+}
+
 /**
  * Report Web Vitals to analytics
  */
@@ -48,14 +57,17 @@ export function reportWebVitals(metric: Metric) {
   })
 
   // Send to analytics service (e.g., Google Analytics, Vercel Analytics)
-  if (typeof window !== 'undefined' && (window as any).gtag) {
-    ;(window as any).gtag('event', name, {
-      value: Math.round(value),
-      metric_id: id,
-      metric_value: value,
-      metric_delta: metric.delta,
-      metric_rating: rating,
-    })
+  if (typeof window !== 'undefined') {
+    const windowWithGtag = window as WindowWithGtag
+    if (windowWithGtag.gtag) {
+      windowWithGtag.gtag('event', name, {
+        value: Math.round(value),
+        metric_id: id,
+        metric_value: value,
+        metric_delta: metric.delta,
+        metric_rating: rating,
+      })
+    }
   }
 
   // Send to custom analytics endpoint
@@ -127,25 +139,46 @@ export function getPerformanceMetrics() {
   }
 }
 
+// Type for performance entries with additional properties
+interface LongTaskEntry extends PerformanceEntry {
+  duration: number
+  startTime: number
+}
+
+interface LayoutShiftEntry extends PerformanceEntry {
+  hadRecentInput: boolean
+  value: number
+}
+
+// Type guard for PerformanceObserver
+interface WindowWithPerformanceObserver extends Window {
+  PerformanceObserver?: typeof PerformanceObserver
+}
+
 /**
  * Monitor long tasks (>50ms)
  */
 export function monitorLongTasks() {
-  if (typeof window === 'undefined' || !(window as any).PerformanceObserver) return
+  if (typeof window === 'undefined') return
+  
+  const windowWithObserver = window as WindowWithPerformanceObserver
+  if (!windowWithObserver.PerformanceObserver) return
 
   try {
     const observer = new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) {
+        const longTaskEntry = entry as LongTaskEntry
         logger.warn('Long task detected', {
-          duration: Math.round(entry.duration),
-          startTime: Math.round(entry.startTime),
+          duration: Math.round(longTaskEntry.duration),
+          startTime: Math.round(longTaskEntry.startTime),
         })
       }
     })
 
     observer.observe({ entryTypes: ['longtask'] })
-  } catch (e) {
+  } catch {
     // Long task API not supported
+    console.debug('Long task monitoring not supported')
   }
 }
 
@@ -153,7 +186,10 @@ export function monitorLongTasks() {
  * Monitor layout shifts (CLS)
  */
 export function monitorLayoutShifts() {
-  if (typeof window === 'undefined' || !(window as any).PerformanceObserver) return
+  if (typeof window === 'undefined') return
+  
+  const windowWithObserver = window as WindowWithPerformanceObserver
+  if (!windowWithObserver.PerformanceObserver) return
 
   let clsValue = 0
   let clsEntries: PerformanceEntry[] = []
@@ -161,7 +197,8 @@ export function monitorLayoutShifts() {
   try {
     const observer = new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) {
-        if (!(entry as any).hadRecentInput) {
+        const shiftEntry = entry as LayoutShiftEntry
+        if (!shiftEntry.hadRecentInput) {
           const lastSessionEntry = clsEntries[clsEntries.length - 1]
 
           if (
@@ -169,11 +206,11 @@ export function monitorLayoutShifts() {
             entry.startTime - lastSessionEntry.startTime < 1000
           ) {
             clsEntries.push(entry)
-            clsValue += (entry as any).value
+            clsValue += shiftEntry.value
           } else {
             // New session
             clsEntries = [entry]
-            clsValue = (entry as any).value
+            clsValue = shiftEntry.value
           }
 
           if (clsValue > 0.1) {
@@ -187,8 +224,9 @@ export function monitorLayoutShifts() {
     })
 
     observer.observe({ type: 'layout-shift', buffered: true })
-  } catch (e) {
+  } catch {
     // Layout shift API not supported
+    console.debug('Layout shift monitoring not supported')
   }
 }
 

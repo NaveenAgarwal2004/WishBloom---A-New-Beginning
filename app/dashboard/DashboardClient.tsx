@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useToast } from '@/hooks/use-toast'
 import Link from 'next/link'
 import { APP_CONFIG } from '@/config/constants'
+import DraftsSection from '@/components/dashboard/DraftsSection'
 
 // Proper type definitions
 interface Memory {
@@ -104,6 +105,9 @@ export default function DashboardClient({ blooms, userName }: DashboardClientPro
           </Link>
         </motion.div>
       </div>
+
+      {/* Drafts Section */}
+      <DraftsSection />
 
       {/* Stats Summary */}
       <motion.div

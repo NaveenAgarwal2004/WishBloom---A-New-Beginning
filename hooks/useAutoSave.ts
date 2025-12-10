@@ -1,15 +1,17 @@
 /**
  * 🌸 WishBloom Auto-Save Hook
- * PWA & Reliability
+ * PWA & Reliability - Phase 4 Enhancement
  * 
- * Provides silent auto-save functionality with visual indicator
+ * Provides hybrid auto-save functionality with visual indicator
  * - Monitors Zustand store changes
- * - Saves to localStorage automatically (already handled by persist middleware)
+ * - Saves to localStorage (anonymous users)
+ * - Syncs to MongoDB (authenticated users)
  * - Detects existing drafts on mount
  * - Offers draft restoration via toast
  */
 
 import { useEffect, useState, useRef } from 'react'
+import { useSession } from 'next-auth/react'
 import useWishBloomStore from '@/store/useWishBloomStore'
 import { useToast } from '@/hooks/use-toast'
 import { useShallow } from 'zustand/shallow'
@@ -21,6 +23,7 @@ interface UseAutoSaveReturn {
   hasDraft: boolean
   restoreDraft: () => void
   clearDraft: () => void
+  syncStatus: 'idle' | 'syncing' | 'synced' | 'error'
 }
 
 // Draft data interface with proper types
@@ -50,14 +53,14 @@ export function useAutoSave(): UseAutoSaveReturn {
   const [lastSaved, setLastSaved] = useState<Date | null>(null)
   const [hasDraft, setHasDraft] = useState(false)
   const [draftOffered, setDraftOffered] = useState(false)
+  const [syncStatus, setSyncStatus] = useState<'idle' | 'syncing' | 'synced' | 'error'>('idle')
   
   const { toast } = useToast()
+  const { data: session } = useSession()
   const saveTimeoutRef = useRef<NodeJS.Timeout>()
   
-  // Get store state with shallow comparison to prevent infinite re-renders
   const store = useWishBloomStore()
   
-  // ✅ FIX: Use useShallow hook to cache the selector result
   const storeState = useWishBloomStore(
     useShallow((state) => ({
       recipientName: state.recipientName,
@@ -68,6 +71,7 @@ export function useAutoSave(): UseAutoSaveReturn {
       memories: state.memories,
       messages: state.messages,
       celebrationWishPhrases: state.celebrationWishPhrases,
+      currentStep: state.currentStep,
     }))
   )
 
@@ -153,37 +157,66 @@ export function useAutoSave(): UseAutoSaveReturn {
   }, [draftOffered, toast])
 
   // Auto-save on state change (debounced)
-  // Use requestAnimationFrame to schedule setState outside of render cycle
   useEffect(() => {
     if (typeof window === 'undefined') return
 
-    // Clear previous timeout
     if (saveTimeoutRef.current) {
       clearTimeout(saveTimeoutRef.current)
     }
 
-    // Skip saving if no content
     if (!storeState.recipientName && storeState.memories.length === 0) {
       return
     }
 
-    // Schedule state update for next frame to avoid cascading renders
     requestAnimationFrame(() => {
       setIsAutoSaving(true)
     })
 
-    // Debounced save
-    saveTimeoutRef.current = setTimeout(() => {
+    saveTimeoutRef.current = setTimeout(async () => {
       try {
         const draft = {
           timestamp: new Date().toISOString(),
           data: storeState,
         }
+
         localStorage.setItem(DRAFT_KEY, JSON.stringify(draft))
+
+        if (session?.user) {
+          setSyncStatus('syncing')
+          
+          const totalSteps = 6
+          const completedItems = [
+            storeState.recipientName ? 1 : 0,
+            storeState.introMessage?.length >= 10 ? 1 : 0,
+            storeState.memories.length >= 3 ? 1 : 0,
+            storeState.messages.length >= 1 ? 1 : 0,
+          ].reduce((a, b) => a + b, 0)
+          const progress = Math.round((completedItems / totalSteps) * 100)
+
+          const response = await fetch('/api/drafts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              step: storeState.currentStep,
+              progress,
+              payload: storeState,
+            }),
+          })
+
+          if (response.ok) {
+            setSyncStatus('synced')
+            setTimeout(() => setSyncStatus('idle'), 2000)
+          } else {
+            setSyncStatus('error')
+            console.warn('Backend draft save failed, localStorage backup active')
+          }
+        }
+
         setLastSaved(new Date())
         setIsAutoSaving(false)
       } catch (error) {
         console.error('Error auto-saving draft:', error)
+        setSyncStatus('error')
         setIsAutoSaving(false)
       }
     }, AUTO_SAVE_DEBOUNCE)
@@ -193,7 +226,7 @@ export function useAutoSave(): UseAutoSaveReturn {
         clearTimeout(saveTimeoutRef.current)
       }
     }
-  }, [storeState])
+  }, [storeState, session])
 
   const clearDraft = () => {
     try {
@@ -210,5 +243,6 @@ export function useAutoSave(): UseAutoSaveReturn {
     hasDraft,
     restoreDraft,
     clearDraft,
+    syncStatus,
   }
 }

@@ -97,6 +97,11 @@ export const metadata: Metadata = {
   description:
     'Create beautiful, interactive birthday memory books. Preserve and share memories with pressed flowers aesthetic.',
   keywords: ['birthday', 'memories', 'gift', 'scrapbook', 'pressed flowers'],
+
+  // ✅ Google Search Console Verification
+  verification: {
+    google: 'Oii_nGFCUPfTxOYY2MLI2g9KHQ12O4LDV7BS1JJct9c',
+  },
   
   // ✅ Part 10: PWA Manifest
   manifest: '/manifest.json',

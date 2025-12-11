@@ -72,7 +72,7 @@ export default function Footer({ contributors, createdDate }: FooterProps) {
           {/* Right Column: Copyright & Legal */}
           <div className="text-center md:text-right">
             <p className="text-micro text-warmCream-600/70 font-body mb-3">
-              © 2025 WISHBLOOM · MADE WITH 💛
+              © 2025 WISHBLOOM · MADE WITH 💛 BY NAVEEN AGARWAL
             </p>
             <div className="flex flex-col gap-2 text-caption font-body">
               <Link 

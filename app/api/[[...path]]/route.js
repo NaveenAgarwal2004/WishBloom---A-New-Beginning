@@ -76,7 +76,7 @@ async function handleRoute(request, { params }) {
         .toArray()
 
       // Remove MongoDB's _id field from response
-      const cleanedStatusChecks = statusChecks.map(({ _id, ...rest }) => rest)
+      const cleanedStatusChecks = statusChecks.map(({ _id: _unusedId, ...rest }) => rest)
       
       return handleCORS(NextResponse.json(cleanedStatusChecks))
     }

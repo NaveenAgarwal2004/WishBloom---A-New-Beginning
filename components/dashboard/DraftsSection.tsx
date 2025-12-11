@@ -8,12 +8,29 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useToast } from '@/hooks/use-toast'
 import { useRouter } from 'next/navigation'
 import useWishBloomStore from '@/store/useWishBloomStore'
+import type { IMemory, IMessage } from '@/models/WishBloom'
+
+interface DraftPayload {
+  recipientName?: string
+  age?: number | null
+  creativeAgeDescription?: string
+  introMessage?: string
+  createdBy?: {
+    id?: string
+    name: string
+    email?: string
+    contributionCount?: number
+  }
+  memories?: IMemory[]
+  messages?: IMessage[]
+  celebrationWishPhrases?: string[]
+}
 
 interface Draft {
   id: string
   step: number
   progress: number
-  payload: any
+  payload: DraftPayload
   lastUpdated: string
   expiresAt: string
   createdAt: string
@@ -67,10 +84,10 @@ export default function DraftsSection() {
         store.setCreatedBy(draft.payload.createdBy)
       }
       if (draft.payload.memories && Array.isArray(draft.payload.memories)) {
-        draft.payload.memories.forEach((memory: any) => store.addMemory(memory))
+        draft.payload.memories.forEach((memory: IMemory) => store.addMemory(memory))
       }
       if (draft.payload.messages && Array.isArray(draft.payload.messages)) {
-        draft.payload.messages.forEach((message: any) => store.addMessage(message))
+        draft.payload.messages.forEach((message: IMessage) => store.addMessage(message))
       }
       if (draft.payload.celebrationWishPhrases) {
         store.setCelebrationWishPhrases(draft.payload.celebrationWishPhrases)

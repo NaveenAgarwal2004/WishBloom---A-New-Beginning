@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document, Model } from 'mongoose'
+import type { IMemory, IMessage } from './WishBloom'
 
 export interface IDraft extends Document {
   userId: string
@@ -15,8 +16,8 @@ export interface IDraft extends Document {
       email?: string
       contributionCount?: number
     }
-    memories?: any[]
-    messages?: any[]
+    memories?: IMemory[]
+    messages?: IMessage[]
     celebrationWishPhrases?: string[]
   }
   lastUpdated: Date

@@ -1,8 +1,11 @@
 import { MetadataRoute } from 'next'
-import { env } from '@/lib/env'
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = env.NEXT_PUBLIC_BASE_URL
+  // Use production URL with fallback logic
+  const baseUrl =
+    process.env.NEXT_PUBLIC_BASE_URL ||
+    (process.env.NEXT_PUBLIC_VERCEL_URL ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}` : '') ||
+    'https://wishbloom-a-new-beginning.vercel.app'
 
   return {
     rules: [

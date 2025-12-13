@@ -22,11 +22,12 @@ const publicRoutes = [
   '/robots.txt',
   '/sitemap.xml',
   '/manifest.json',
+  '/create',
 ]
 
 // Define routes that require authentication
 const protectedRoutes = [
-  '/create',
+  
   '/dashboard',
 ]
 

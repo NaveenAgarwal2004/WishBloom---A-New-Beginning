@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+
+# Block APIs and admin routes
+Disallow: /api/
+Disallow: /admin/
+
+# Block Next.js internal bundles
+Disallow: /_next/static/
+Disallow: /_next/webpack-hmr
+
+# Allow Next.js image optimizer (important for Google rendering)
+Allow: /_next/image
+
+Sitemap: https://wishbloom-a-new-beginning.vercel.app/sitemap.xml

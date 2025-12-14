@@ -7,6 +7,7 @@ import { nanoid } from 'nanoid'
 import useWishBloomStore from '@/store/useWishBloomStore'
 import { MessageSchema } from '@/schemas/wishbloom.schema'
 import { VALIDATION_LIMITS, MESSAGE_TYPES } from '@/config/constants'
+import { useSoundEffects } from '@/hooks/useSoundEffects'
 import type { IMessage } from '@/models/WishBloom'
 import type { z } from 'zod'
 
@@ -14,6 +15,7 @@ type MessageFormData = z.infer<typeof MessageSchema>
 
 export default function Step3Messages() {
   const store = useWishBloomStore()
+  const { play } = useSoundEffects()
 
   const {
     register,
@@ -44,6 +46,12 @@ export default function Step3Messages() {
 
   const messageType = watch('type')
   const canProceed = store.messages.length >= VALIDATION_LIMITS.MESSAGES_MIN_REQUIRED
+
+  const handleNext = () => {
+    // 🔊 Play step completion sound
+    play('step-complete')
+    store.nextStep()
+  }
 
   const onSubmit = (data: MessageFormData) => {
     // ✅ Ensure all required fields are set
@@ -276,7 +284,7 @@ export default function Step3Messages() {
           <ArrowLeft size={20} /> Back
         </button>
         <button
-          onClick={() => store.nextStep()}
+          onClick={handleNext}
           disabled={!canProceed}
           type="button"
           className="px-8 py-4 bg-burntSienna text-warmCream-50 rounded-xl text-h6 font-heading font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-colored-gold transition-all flex items-center gap-2"

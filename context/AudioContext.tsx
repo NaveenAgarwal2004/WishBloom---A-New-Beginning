@@ -6,7 +6,7 @@ interface AudioContextType {
   isMusicPlaying: boolean
   volume: number
   toggleMusic: () => void
-  playSound: (soundName: 'candle-blow' | 'confetti-pop' | 'success-chime') => void
+  playSound: (soundName: 'candle-blow' | 'confetti-pop' | 'success-chime' | 'paper-rustle') => void
   setVolume: (volume: number) => void
   audioReady: boolean
 }
@@ -52,14 +52,15 @@ export function AudioProvider({ children }: AudioProviderProps) {
       const soundConfig: Record<string, string> = {
         'candle-blow': 'wav',
         'confetti-pop': 'wav',
-        'success-chime': 'mp3'
+        'success-chime': 'mp3',
+        'paper-rustle': 'mp3', // New sound
       }
 
       const loadedSounds: Record<string, HTMLAudioElement> = {}
       Object.entries(soundConfig).forEach(([name, ext]) => {
         const soundAudio = new Audio(`/audio/${name}.${ext}`)
         soundAudio.preload = 'auto'
-        soundAudio.volume = 0.7
+        soundAudio.volume = name === 'paper-rustle' ? 0.3 : 0.7 // Paper rustle is subtle
         soundAudio.addEventListener('error', () => {
           console.log(`Sound ${name} not available`)
         })
@@ -132,7 +133,7 @@ export function AudioProvider({ children }: AudioProviderProps) {
     }
   }
 
-  const playSound = (soundName: 'candle-blow' | 'confetti-pop' | 'success-chime') => {
+  const playSound = (soundName: 'candle-blow' | 'confetti-pop' | 'success-chime' | 'paper-rustle') => {
     if (!audioReady) return
 
     const preloadedSound = soundsRef.current[soundName]

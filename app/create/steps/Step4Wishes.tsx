@@ -6,6 +6,7 @@ import { z } from 'zod'
 import { ArrowRight, ArrowLeft, Plus, Trash2 } from 'lucide-react'
 import useWishBloomStore from '@/store/useWishBloomStore'
 import { VALIDATION_LIMITS } from '@/config/constants'
+import { useSoundEffects } from '@/hooks/useSoundEffects'
 
 //useFieldArray requires arrays of objects, not primitives
 // Transform string[] to array of objects for react-hook-form compatibility
@@ -26,6 +27,7 @@ type Step4FormData = z.infer<typeof step4Schema>
 
 export default function Step4Wishes() {
   const store = useWishBloomStore()
+  const { play } = useSoundEffects()
 
   const {
     register,
@@ -51,6 +53,10 @@ export default function Step4Wishes() {
     // Transform back to string[] for store
     const phrasesAsStrings = data.celebrationWishPhrases.map(item => item.value)
     store.setCelebrationWishPhrases(phrasesAsStrings)
+    
+    // 🔊 Play step completion sound
+    play('step-complete')
+    
     store.nextStep()
   }
 

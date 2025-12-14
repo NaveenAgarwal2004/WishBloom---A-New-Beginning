@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { useMobile } from '@/hooks/use-mobile'
+import { useSoundEffects } from '@/hooks/useSoundEffects'
 import type { IMemory } from '@/models/WishBloom'
 
 // Type for tag colors
@@ -55,6 +56,7 @@ interface MemoryCardComponentProps {
 function StandardMemoryCard({ memory, rotation, index }: MemoryCardComponentProps) {
   const isMobile = useMobile()
   const cardRotation = isMobile ? 0 : rotation
+  const { play } = useSoundEffects()
   
   return (
     <motion.article
@@ -72,6 +74,7 @@ function StandardMemoryCard({ memory, rotation, index }: MemoryCardComponentProp
         borderColor: '#D4A373'
       }}
       whileTap={{ scale: 0.97 }}
+      onMouseEnter={() => !isMobile && play('paper-rustle')}
     >
       {/* Decorative washi tape corner glow - Enhanced */}
       <div className="absolute -top-3 -right-3 w-24 h-24 bg-gradient-to-br from-rosePetal/60 to-lavenderPress/60 rounded-full blur-xl opacity-70 group-hover:opacity-90 transition-opacity" aria-hidden="true" />
@@ -173,6 +176,7 @@ function StandardMemoryCard({ memory, rotation, index }: MemoryCardComponentProp
 function FeaturedMemoryCard({ memory, rotation, index }: MemoryCardComponentProps) {
   const isMobile = useMobile()
   const cardRotation = isMobile ? 0 : rotation
+  const { play } = useSoundEffects()
   
   return (
     <motion.article
@@ -188,6 +192,7 @@ function FeaturedMemoryCard({ memory, rotation, index }: MemoryCardComponentProp
         boxShadow: '0px 8px 24px rgba(212, 163, 115, 0.3)'
       }}
       whileTap={{ scale: 0.98 }}
+      onMouseEnter={() => !isMobile && play('paper-rustle')}
     >
       {/* Large decorative floral watermark */}
       <svg className="absolute bottom-8 right-8 w-48 h-48 opacity-15" viewBox="0 0 200 200">
@@ -283,6 +288,7 @@ function FeaturedMemoryCard({ memory, rotation, index }: MemoryCardComponentProp
 function QuoteMemoryCard({ memory, rotation, index }: MemoryCardComponentProps) {
   const isMobile = useMobile()
   const cardRotation = isMobile ? 0 : rotation
+  const { play } = useSoundEffects()
   
   return (
     <motion.article
@@ -298,6 +304,7 @@ function QuoteMemoryCard({ memory, rotation, index }: MemoryCardComponentProps) 
         boxShadow: '0px 8px 24px rgba(168, 139, 199, 0.3)'
       }}
       whileTap={{ scale: 0.97 }}
+      onMouseEnter={() => !isMobile && play('paper-rustle')}
     >
       {/* HUGE opening quote mark */}
       <span className="absolute -top-8 -left-8 text-lavenderPress/30 font-heading font-bold leading-none" style={{ fontSize: '160px' }}>

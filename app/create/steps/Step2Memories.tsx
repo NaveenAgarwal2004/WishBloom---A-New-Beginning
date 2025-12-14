@@ -11,6 +11,7 @@ import useWishBloomStore from '@/store/useWishBloomStore'
 import ImageUploader from '@/components/ImageUploader'
 import { ContributorSchema } from '@/schemas/wishbloom.schema'
 import { VALIDATION_LIMITS, MEMORY_TYPES, MEMORY_TAGS, ERROR_MESSAGES, PATTERNS } from '@/config/constants'
+import { useSoundEffects } from '@/hooks/useSoundEffects'
 import type { IMemory } from '@/models/WishBloom'
 
 // Type for memory tags
@@ -41,6 +42,7 @@ type MemoryFormData = z.infer<typeof MemoryFormSchema>
 export default function Step2Memories() {
   const store = useWishBloomStore()
   const [editingMemoryId, setEditingMemoryId] = useState<string | null>(null)
+  const { play } = useSoundEffects()
 
   const {
     register,
@@ -119,6 +121,12 @@ export default function Step2Memories() {
     setValue('contributor.name', memory.contributor.name)
     setValue('contributor.email', memory.contributor.email || '')
     setValue('contributor.contributionCount', memory.contributor.contributionCount)
+  }
+
+  const handleNext = () => {
+    // 🔊 Play step completion sound
+    play('step-complete')
+    store.nextStep()
   }
 
   const selectedTags = watch('tags') || []
@@ -330,7 +338,7 @@ export default function Step2Memories() {
           <ArrowLeft size={20} /> Back
         </button>
         <button
-          onClick={() => store.nextStep()}
+          onClick={handleNext}
           disabled={!canProceed}
           type="button"
           className="px-8 py-4 bg-burntSienna text-warmCream-50 rounded-xl text-h6 font-heading font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-colored-gold transition-all flex items-center gap-2"

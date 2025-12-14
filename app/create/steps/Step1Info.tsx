@@ -8,6 +8,7 @@ import { useSession } from 'next-auth/react'
 import { useEffect } from 'react'
 import useWishBloomStore from '@/store/useWishBloomStore'
 import { VALIDATION_LIMITS } from '@/config/constants'
+import { useSoundEffects } from '@/hooks/useSoundEffects'
 
 // Type for session user with id
 interface SessionUser {
@@ -47,6 +48,7 @@ type Step1FormData = z.infer<typeof step1Schema>
 export default function Step1Info() {
   const store = useWishBloomStore()
   const { data: session } = useSession()
+  const { play } = useSoundEffects()
 
   const {
     register,
@@ -94,6 +96,9 @@ export default function Step1Info() {
       name: data.createdByName || sessionUser?.name || '',
       email: data.createdByEmail || sessionUser?.email || '',
     })
+
+    // 🔊 Play step completion sound
+    play('step-complete')
 
     // Navigate to next step
     store.nextStep()

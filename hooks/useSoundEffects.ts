@@ -24,47 +24,30 @@ export function useSoundEffects() {
   /**
    * Play a sound effect
    * Respects global mute toggle and audio ready state
+   * 
+   * IMPLEMENTATION NOTE: We use AudioContext's playSound directly now
+   * since paper-rustle was added to the AudioContext provider
    */
   const play = useCallback((soundName: SoundEffectName) => {
     if (!audioReady) return
 
     // Map custom sound names to actual audio files
-    const soundMap: Record<SoundEffectName, 'candle-blow' | 'confetti-pop' | 'success-chime' | 'paper-rustle' | 'step-complete'> = {
+    const soundMap: Record<SoundEffectName, 'candle-blow' | 'confetti-pop' | 'success-chime' | 'paper-rustle'> = {
       'paper-rustle': 'paper-rustle',
       'candle-blow': 'candle-blow',
       'confetti-pop': 'confetti-pop',
       'success-chime': 'success-chime',
-      'step-complete': 'success-chime', // Alias for step completion
+      'step-complete': 'success-chime', // Alias for step completion - uses success-chime
     }
 
     const actualSound = soundMap[soundName]
     
-    // Use AudioContext's playSound which handles all the audio logic
-    if (actualSound === 'paper-rustle') {
-      // Paper rustle needs custom handling since it's new
-      playPaperRustle()
-    } else if (actualSound === 'step-complete') {
-      // Step complete is just success-chime at lower volume
-      playSound('success-chime')
-    } else {
-      playSound(actualSound as 'candle-blow' | 'confetti-pop' | 'success-chime')
+    // All sounds now handled by AudioContext's playSound
+    // which properly manages preloading and volume
+    if (actualSound === 'success-chime' || actualSound === 'paper-rustle' || actualSound === 'candle-blow' || actualSound === 'confetti-pop') {
+      playSound(actualSound)
     }
   }, [audioReady, playSound])
-
-  /**
-   * Play paper rustle sound (custom implementation)
-   */
-  const playPaperRustle = useCallback(() => {
-    if (!audioReady) return
-
-    // Create and play paper rustle audio
-    const audio = new Audio('/audio/paper-rustle.mp3')
-    audio.volume = 0.3 // Subtle, ambient sound
-    audio.play().catch(e => {
-      // Silently fail if audio doesn't load
-      console.log('Paper rustle sound not available:', e)
-    })
-  }, [audioReady])
 
   return {
     play,

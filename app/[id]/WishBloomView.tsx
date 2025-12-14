@@ -5,6 +5,7 @@ import IntroMessage from '@/components/IntroMessage'
 import MemoryGallery from '@/components/MemoryGallery'
 import MessagesSection from '@/components/MessagesSection'
 import CelebrationSection from '@/components/CelebrationSection'
+import GuestbookSection from '@/components/GuestbookSection'
 import Footer from '@/components/Footer'
 import MusicControl from '@/components/MusicControl'
 import type { IWishBloom, IContributor } from '@/models/WishBloom'
@@ -81,6 +82,9 @@ export default function WishBloomView({ wishbloom }: WishBloomViewProps) {
         celebrationWishPhrases={wishbloom.celebrationWishPhrases || []}
         contributors={contributors}
       />
+
+      {/* Phase 4.2: Guestbook Section */}
+      <GuestbookSection wishbloomId={wishbloom.uniqueUrl} />
 
       <Footer 
         contributors={contributors}

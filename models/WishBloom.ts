@@ -34,6 +34,15 @@ export interface IMessage {
   createdAt: Date
 }
 
+// Phase 4.2: Guestbook Entry Interface
+export interface IGuestbookEntry {
+  id: string
+  name: string
+  message: string
+  color: 'rosePetal' | 'sunsetAmber' | 'driedSage' | 'lavenderPress'
+  createdAt: Date
+}
+
 export interface IWishBloom extends Document {
   recipientName: string
   age?: number // ✅ Optional (not `number | null`)
@@ -45,6 +54,7 @@ export interface IWishBloom extends Document {
   memories: IMemory[]
   messages: IMessage[]
   celebrationWishPhrases: string[]
+  guestbook: IGuestbookEntry[] // Phase 4.2: Guestbook entries
   createdDate: Date
   viewCount: number
   isArchived: boolean
@@ -87,6 +97,15 @@ const MessageSchema = new Schema<IMessage>({
   createdAt: { type: Date, default: Date.now },
 })
 
+// Phase 4.2: Guestbook Entry Schema
+const GuestbookEntrySchema = new Schema<IGuestbookEntry>({
+  id: { type: String, required: true },
+  name: { type: String, required: true },
+  message: { type: String, required: true },
+  color: { type: String, enum: ['rosePetal', 'sunsetAmber', 'driedSage', 'lavenderPress'], required: true },
+  createdAt: { type: Date, default: Date.now },
+})
+
 const WishBloomSchema = new Schema<IWishBloom>(
   {
     recipientName: { type: String, required: true },
@@ -99,6 +118,7 @@ const WishBloomSchema = new Schema<IWishBloom>(
     memories: [MemorySchema],
     messages: [MessageSchema],
     celebrationWishPhrases: [{ type: String }],
+    guestbook: [GuestbookEntrySchema], // Phase 4.2: Guestbook array
     createdDate: { type: Date, default: Date.now },
     viewCount: { type: Number, default: 0 },
     isArchived: { type: Boolean, default: false },

@@ -15,22 +15,23 @@ export default function IntroMessage({ message }: IntroMessageProps) {
   const [isClient, setIsClient] = useState(false)
   const [shouldAnimate, setShouldAnimate] = useState(false)
   
+  // Parse message data BEFORE any conditional returns
+  const paragraphs = message ? message.split('\n\n').filter(p => p.trim()) : []
+  const firstParagraph = paragraphs[0] || ''
+  const firstLetter = isClient ? firstParagraph.charAt(0) : ''
+  const restOfFirst = isClient ? firstParagraph.slice(1) : firstParagraph
+
+  // CRITICAL: Call hooks BEFORE any conditional returns (React Rules of Hooks)
+  const { displayText: animatedText, isComplete } = useTypewriter(restOfFirst, 35)
+  
   useEffect(() => {
     // Only set to true after mount to avoid hydration issues
     const timer = setTimeout(() => setIsClient(true), 0)
     return () => clearTimeout(timer)
   }, [])
 
+  // Conditional return AFTER all hooks are called
   if (!message) return null
-
-  const paragraphs = message.split('\n\n').filter(p => p.trim())
-  
-  const firstParagraph = paragraphs[0] || ''
-  const firstLetter = isClient ? firstParagraph.charAt(0) : ''
-  const restOfFirst = isClient ? firstParagraph.slice(1) : firstParagraph
-
-  // Use typewriter effect for the first paragraph (after drop cap)
-  const { displayText: animatedText, isComplete } = useTypewriter(restOfFirst, 35)
 
   return (
     <section id="intro-message" className="py-16 md:py-24 px-4 md:px-8">

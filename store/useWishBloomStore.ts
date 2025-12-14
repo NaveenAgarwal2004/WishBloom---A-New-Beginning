@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { persist, createJSONStorage } from 'zustand/middleware'
 import { nanoid } from 'nanoid'
 import type { IContributor, IMemory, IMessage } from '@/models/WishBloom'
 
@@ -76,6 +76,19 @@ const defaultPhrases = [
   'Forever your friend',
   'Cheers! 🥂',
 ]
+
+// Check if storage is available (handles SSR and restricted iframe contexts)
+const isStorageAvailable = (): boolean => {
+  if (typeof window === 'undefined') return false
+  try {
+    const testKey = '__storage_test__'
+    window.localStorage.setItem(testKey, 'test')
+    window.localStorage.removeItem(testKey)
+    return true
+  } catch {
+    return false
+  }
+}
 
 const useWishBloomStore = create<WishBloomStore>()(
   persist(
@@ -240,16 +253,14 @@ const useWishBloomStore = create<WishBloomStore>()(
     }),
     {
       name: 'wishbloom-storage',
-      partialize: (state) => ({
-        recipientName: state.recipientName,
-        age: state.age,
-        creativeAgeDescription: state.creativeAgeDescription,
-        introMessage: state.introMessage,
-        createdBy: state.createdBy,
-        memories: state.memories,
-        messages: state.messages,
-        celebrationWishPhrases: state.celebrationWishPhrases,
-      }),
+      storage: createJSONStorage(() => 
+        isStorageAvailable() ? localStorage : {
+          getItem: () => null,
+          setItem: () => {},
+          removeItem: () => {},
+        }
+      ),
+      skipHydration: typeof window === 'undefined',
     }
   )
 )

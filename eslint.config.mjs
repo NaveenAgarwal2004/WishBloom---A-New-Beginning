@@ -18,7 +18,18 @@ const eslintConfig = defineConfig([
     "coverage/**",
     "playwright-report/**",
     "test-results/**",
+    // PWA generated files
+    "public/sw.js",
+    "public/workbox-*.js",
+    "public/fallback-*.js",
   ]),
+  {
+    rules: {
+      // Suppress React Compiler warnings for react-hook-form's watch() function
+      // This is a known limitation where the library returns functions that can't be safely memoized
+      'react-hooks/incompatible-library': 'off',
+    },
+  },
 ]);
 
 export default eslintConfig;

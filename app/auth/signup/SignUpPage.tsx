@@ -52,7 +52,7 @@ export default function SignUpPage() {
           callbackUrl: '/dashboard',
         })
       }, 1500)
-    } catch (error) {
+    } catch {
       setError('Something went wrong. Please try again.')
       setIsLoading(false)
     }

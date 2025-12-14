@@ -44,7 +44,7 @@ export function AudioProvider({ children }: AudioProviderProps) {
 
       // Handle loading errors gracefully
       const handleError = () => {
-        console.log('Audio not available - continuing without music')
+        // Silently continue without audio (expected in dev/test environments)
       }
       audio.addEventListener('error', handleError)
 
@@ -62,7 +62,7 @@ export function AudioProvider({ children }: AudioProviderProps) {
         soundAudio.preload = 'auto'
         soundAudio.volume = name === 'paper-rustle' ? 0.3 : 0.7 // Paper rustle is subtle
         soundAudio.addEventListener('error', () => {
-          console.log(`Sound ${name} not available`)
+          // Silently continue without this sound (expected in dev/test environments)
         })
         loadedSounds[name] = soundAudio
       })
@@ -127,8 +127,8 @@ export function AudioProvider({ children }: AudioProviderProps) {
       
       audioRef.current.play()
         .then(() => setIsMusicPlaying(true))
-        .catch(e => {
-          console.log('Play failed:', e)
+        .catch(() => {
+          // Silently fail - autoplay is often blocked by browsers
         })
     }
   }
@@ -139,8 +139,8 @@ export function AudioProvider({ children }: AudioProviderProps) {
     const preloadedSound = soundsRef.current[soundName]
     if (preloadedSound && preloadedSound.readyState >= 2) {
       preloadedSound.currentTime = 0
-      preloadedSound.play().catch(e => {
-        console.log('Sound play failed:', e)
+      preloadedSound.play().catch(() => {
+        // Silently fail - sound may be blocked or unavailable
       })
     }
   }

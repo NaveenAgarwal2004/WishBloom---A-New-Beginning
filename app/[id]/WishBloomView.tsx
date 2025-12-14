@@ -8,6 +8,7 @@ import CelebrationSection from '@/components/CelebrationSection'
 import GuestbookSection from '@/components/GuestbookSection'
 import Footer from '@/components/Footer'
 import MusicControl from '@/components/MusicControl'
+import DownloadButton from '@/components/pdf/DownloadButton'
 import type { IWishBloom, IContributor } from '@/models/WishBloom'
 
 interface WishBloomViewProps {
@@ -85,6 +86,25 @@ export default function WishBloomView({ wishbloom }: WishBloomViewProps) {
 
       {/* Phase 4.2: Guestbook Section */}
       <GuestbookSection wishbloomId={wishbloom.uniqueUrl} />
+
+      {/* Phase 4.3: Download as PDF Section */}
+      <section className="py-16 px-4 bg-warmCream-50 border-t-2 border-warmCream-200">
+        <div className="max-w-3xl mx-auto text-center">
+          <h3 className="text-h4 font-heading font-bold text-sepiaInk mb-4">
+            Keep This Memory Forever 🌸
+          </h3>
+          <p className="text-body text-warmCream-700 mb-6">
+            Download this WishBloom as a beautiful PDF to print, share, or keep as a digital heirloom.
+          </p>
+          <DownloadButton
+            wishbloom={wishbloom}
+            variant="default"
+            size="lg"
+            label="Download Heirloom PDF"
+            className="px-8 py-6 bg-gradient-to-r from-burntSienna to-fadedGold text-warmCream-50 text-h6 font-heading font-bold shadow-dramatic hover:shadow-colored-gold transition-all"
+          />
+        </div>
+      </section>
 
       <Footer 
         contributors={contributors}

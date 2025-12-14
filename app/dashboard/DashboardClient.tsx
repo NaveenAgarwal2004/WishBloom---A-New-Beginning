@@ -2,13 +2,16 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Calendar, Copy, Eye, ExternalLink, Plus } from 'lucide-react'
+import { Calendar, Copy, Eye, ExternalLink, Plus, Download, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useToast } from '@/hooks/use-toast'
+import { toast as sonnerToast } from 'sonner'
 import Link from 'next/link'
 import { APP_CONFIG } from '@/config/constants'
 import DraftsSection from '@/components/dashboard/DraftsSection'
+import { pdf } from '@react-pdf/renderer'
+import HeirloomDocument from '@/components/pdf/HeirloomDocument'
 
 // Proper type definitions
 interface Memory {
@@ -45,6 +48,7 @@ interface DashboardClientProps {
 export default function DashboardClient({ blooms, userName }: DashboardClientProps) {
   const { toast } = useToast()
   const [copiedId, setCopiedId] = useState<string | null>(null)
+  const [downloadingId, setDownloadingId] = useState<string | null>(null)
 
   // Copy link to clipboard
   const handleCopyLink = (uniqueUrl: string, id: string) => {
@@ -68,6 +72,47 @@ export default function DashboardClient({ blooms, userName }: DashboardClientPro
       month: 'long',
       day: 'numeric',
     })
+  }
+
+  // Download WishBloom as PDF
+  const handleDownloadPDF = async (uniqueUrl: string, recipientName: string) => {
+    try {
+      setDownloadingId(uniqueUrl)
+      sonnerToast.loading('Generating your heirloom PDF...', { id: 'pdf-generation' })
+
+      // Fetch full WishBloom data
+      const response = await fetch(`/api/wishblooms/${uniqueUrl}`)
+      if (!response.ok) throw new Error('Failed to fetch WishBloom data')
+      
+      const data = await response.json()
+      if (!data.success || !data.wishbloom) throw new Error('Invalid WishBloom data')
+
+      // Generate PDF
+      const blob = await pdf(<HeirloomDocument wishbloom={data.wishbloom} />).toBlob()
+      
+      // Create download link
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      
+      // Format filename
+      const cleanName = recipientName.replace(/[^a-zA-Z0-9]/g, '-')
+      const date = new Date().toISOString().split('T')[0]
+      link.download = `WishBloom-${cleanName}-${date}.pdf`
+      
+      // Trigger download
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      URL.revokeObjectURL(url)
+      
+      sonnerToast.success('PDF downloaded successfully! 🌸', { id: 'pdf-generation' })
+    } catch (error) {
+      console.error('PDF generation failed:', error)
+      sonnerToast.error('Failed to generate PDF. Please try again.', { id: 'pdf-generation' })
+    } finally {
+      setDownloadingId(null)
+    }
   }
 
   return (
@@ -250,6 +295,27 @@ export default function DashboardClient({ blooms, userName }: DashboardClientPro
                           <>
                             <Copy size={16} />
                             Copy Link
+                          </>
+                        )}
+                      </Button>
+
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => handleDownloadPDF(bloom.uniqueUrl, bloom.recipientName)}
+                        disabled={downloadingId === bloom.uniqueUrl}
+                        className="gap-2 font-heading"
+                        data-testid={`download-pdf-${bloom._id}`}
+                      >
+                        {downloadingId === bloom.uniqueUrl ? (
+                          <>
+                            <Loader2 size={16} className="animate-spin" />
+                            Generating...
+                          </>
+                        ) : (
+                          <>
+                            <Download size={16} />
+                            Download PDF
                           </>
                         )}
                       </Button>

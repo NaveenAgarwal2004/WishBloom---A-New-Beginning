@@ -69,7 +69,7 @@ function GuestbookNote({ entry, index }: { entry: IGuestbookEntry; index: number
 
       {/* Message */}
       <p className="text-body-sm font-body text-warmCream-800 leading-relaxed mb-4 font-medium">
-        "{entry.message}"
+        &ldquo;{entry.message}&rdquo;
       </p>
 
       {/* Signature */}
@@ -135,13 +135,13 @@ function SignGuestbookModal({ wishbloomId, onSuccess }: { wishbloomId: string; o
         throw new Error(data.message || data.error || 'Failed to sign guestbook')
       }
 
-      play('soft-chime')
+      play('success-chime')
       toast.success('Your message has been added! 🌸')
       setFormData({ name: '', message: '', color: 'rosePetal' })
       setOpen(false)
       onSuccess()
     } catch (error) {
-      play('error')
+      // Error sound not available, just show toast
       toast.error(error instanceof Error ? error.message : 'Failed to sign guestbook')
     } finally {
       setLoading(false)

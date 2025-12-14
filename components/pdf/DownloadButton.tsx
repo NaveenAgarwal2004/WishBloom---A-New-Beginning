@@ -9,7 +9,7 @@ import HeirloomDocument from './HeirloomDocument'
 import type { IWishBloom } from '@/models/WishBloom'
 
 interface DownloadButtonProps {
-  wishbloom: IWishBloom
+  wishbloom: Omit<IWishBloom, '_id' | 'uniqueUrl' | 'contributors' | 'createdAt' | 'updatedAt'>
   variant?: 'default' | 'secondary' | 'outline' | 'ghost'
   size?: 'default' | 'sm' | 'lg' | 'icon'
   className?: string

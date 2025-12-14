@@ -3,23 +3,45 @@ import { Document, Page, Text, View, Image, StyleSheet, Font } from '@react-pdf/
 import type { IWishBloom } from '@/models/WishBloom'
 
 interface HeirloomDocumentProps {
-  wishbloom: IWishBloom
+  wishbloom: Omit<IWishBloom, '_id' | 'uniqueUrl' | 'contributors' | 'createdAt' | 'updatedAt'>
 }
 
-// Register fonts (using system fonts as fallback)
+// Register fonts with all variants (using Google Fonts)
 Font.register({
   family: 'Cormorant',
   fonts: [
-    { src: 'https://fonts.gstatic.com/s/cormorant/v21/H4c2BXOCl9bbnla_nHIq6pO49.woff2', fontWeight: 400 },
-    { src: 'https://fonts.gstatic.com/s/cormorant/v21/H4c2BXOCl9bbnla_nHIq75O49.woff2', fontWeight: 700 },
+    { 
+      src: 'https://fonts.gstatic.com/s/cormorant/v21/H4c2BXOCl9bbnla_nHIq6pO49.woff2', 
+      fontWeight: 400,
+      fontStyle: 'normal'
+    },
+    { 
+      src: 'https://fonts.gstatic.com/s/cormorant/v21/H4c2BXOCl9bbnla_nHIq75O49.woff2', 
+      fontWeight: 700,
+      fontStyle: 'normal'
+    },
+    // Using normal variant as fallback for italic (react-pdf limitation)
+    { 
+      src: 'https://fonts.gstatic.com/s/cormorant/v21/H4c2BXOCl9bbnla_nHIq75O49.woff2', 
+      fontWeight: 700,
+      fontStyle: 'italic'
+    },
   ],
 })
 
 Font.register({
   family: 'Lora',
   fonts: [
-    { src: 'https://fonts.gstatic.com/s/lora/v35/0QI6MX1D_JOuGQbT0gvTJPa787weuxJBkq0.woff2', fontWeight: 400 },
-    { src: 'https://fonts.gstatic.com/s/lora/v35/0QI6MX1D_JOuGQbT0gvTJPa787z-uxJBkq0.woff2', fontWeight: 400, fontStyle: 'italic' },
+    { 
+      src: 'https://fonts.gstatic.com/s/lora/v35/0QI6MX1D_JOuGQbT0gvTJPa787weuxJBkq0.woff2', 
+      fontWeight: 400,
+      fontStyle: 'normal'
+    },
+    { 
+      src: 'https://fonts.gstatic.com/s/lora/v35/0QI6MX1D_JOuGQbT0gvTJPa787z-uxJBkq0.woff2', 
+      fontWeight: 400, 
+      fontStyle: 'italic' 
+    },
   ],
 })
 
@@ -319,6 +341,7 @@ export default function HeirloomDocument({ wishbloom }: HeirloomDocumentProps) {
                     <Image
                       src={memory.imageUrl}
                       style={styles.memoryImage}
+                      alt={memory.title || 'Memory photo'}
                     />
                   )}
                   <Text style={styles.memoryTitle}>{memory.title}</Text>
@@ -349,6 +372,7 @@ export default function HeirloomDocument({ wishbloom }: HeirloomDocumentProps) {
                           <Image
                             src={memory.imageUrl}
                             style={styles.memoryImage}
+                            alt={memory.title || 'Memory photo'}
                           />
                         )}
                         <Text style={styles.memoryTitle}>{memory.title}</Text>

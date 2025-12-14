@@ -7,12 +7,13 @@ import IntroMessage from '@/components/IntroMessage'
 import MemoryGallery from '@/components/MemoryGallery'
 import MessagesSection from '@/components/MessagesSection'
 import DownloadButton from '@/components/pdf/DownloadButton'
+import type { IWishBloom } from '@/models/WishBloom'
 
 export default function Step5Preview() {
   const store = useWishBloomStore()
 
-  // Create a mock WishBloom object for PDF preview
-  const previewWishBloom = {
+  // Create a mock WishBloom object for PDF preview (omitting Document fields)
+  const previewWishBloom: Omit<IWishBloom, '_id' | 'uniqueUrl' | 'contributors' | 'createdAt' | 'updatedAt'> = {
     recipientName: store.recipientName,
     age: store.age,
     creativeAgeDescription: store.creativeAgeDescription,
@@ -62,7 +63,7 @@ export default function Step5Preview() {
         <div className="flex flex-col sm:flex-row gap-3">
           {/* PDF Download Button */}
           <DownloadButton
-            wishbloom={previewWishBloom as any}
+            wishbloom={previewWishBloom}
             variant="secondary"
             size="lg"
             label="Preview as PDF"

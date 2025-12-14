@@ -140,9 +140,9 @@ const cspHeader = `
   script-src 'self' 'unsafe-eval' 'unsafe-inline' https://va.vercel-scripts.com https://vercel.live https://cdnjs.cloudflare.com;
   style-src 'self' 'unsafe-inline';
   img-src 'self' data: https: blob:;
-  font-src 'self' data:;
+  font-src 'self' data: https://fonts.gstatic.com;
   media-src 'self' data: blob:;
-  connect-src 'self' https://va.vercel-scripts.com https://vercel.live https://*.mongodb.net https://*.cloudinary.com https://*.upstash.io;
+  connect-src 'self' https://va.vercel-scripts.com https://vercel.live https://*.mongodb.net https://*.cloudinary.com https://*.upstash.io https://fonts.gstatic.com;
   frame-src 'self' https://vercel.live;
   object-src 'none';
   base-uri 'self';

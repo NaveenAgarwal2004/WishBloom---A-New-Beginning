@@ -7,15 +7,15 @@ import IntroMessage from '@/components/IntroMessage'
 import MemoryGallery from '@/components/MemoryGallery'
 import MessagesSection from '@/components/MessagesSection'
 import DownloadButton from '@/components/pdf/DownloadButton'
-import type { IWishBloom } from '@/models/WishBloom'
 
 export default function Step5Preview() {
   const store = useWishBloomStore()
 
-  // Create a mock WishBloom object for PDF preview (omitting Document fields)
-  const previewWishBloom: Omit<IWishBloom, '_id' | 'uniqueUrl' | 'contributors' | 'createdAt' | 'updatedAt'> = {
+  // Create a plain data object for PDF preview (DTO without Mongoose Document methods)
+  const previewWishBloom = {
     recipientName: store.recipientName,
-    age: store.age,
+    // ✅ FIX: Coalesce null to undefined for TypeScript optional type compatibility
+    age: store.age ?? undefined,
     creativeAgeDescription: store.creativeAgeDescription,
     introMessage: store.introMessage,
     memories: store.memories,

@@ -1,28 +1,43 @@
 import React from 'react'
 import { Document, Page, Text, View, Image, StyleSheet, Font } from '@react-pdf/renderer'
-import type { IWishBloom } from '@/models/WishBloom'
+import type { IContributor, IMemory, IMessage, IGuestbookEntry } from '@/models/WishBloom'
 
-interface HeirloomDocumentProps {
-  wishbloom: Omit<IWishBloom, '_id' | 'uniqueUrl' | 'contributors' | 'createdAt' | 'updatedAt'>
+// ✅ DTO type for PDF generation (plain data, no Mongoose Document methods)
+interface WishBloomDTO {
+  recipientName: string
+  age?: number
+  creativeAgeDescription?: string
+  introMessage: string
+  createdBy: IContributor
+  memories: IMemory[]
+  messages: IMessage[]
+  celebrationWishPhrases: string[]
+  guestbook: IGuestbookEntry[]
+  createdDate: Date
+  viewCount: number
+  isArchived: boolean
 }
 
-// Register fonts with all variants (using Google Fonts)
+interface HeirloomDocumentProps {
+  wishbloom: WishBloomDTO
+}
+
+// ✅ FIX: Use reliable CDN links (Google Fonts direct links often fail in PDF generation)
 Font.register({
   family: 'Cormorant',
   fonts: [
     { 
-      src: 'https://fonts.gstatic.com/s/cormorant/v21/H4c2BXOCl9bbnla_nHIq6pO49.woff2', 
+      src: 'https://cdn.jsdelivr.net/npm/@fontsource/cormorant-garamond@5.0.3/files/cormorant-garamond-latin-400-normal.woff', 
       fontWeight: 400,
       fontStyle: 'normal'
     },
     { 
-      src: 'https://fonts.gstatic.com/s/cormorant/v21/H4c2BXOCl9bbnla_nHIq75O49.woff2', 
+      src: 'https://cdn.jsdelivr.net/npm/@fontsource/cormorant-garamond@5.0.3/files/cormorant-garamond-latin-700-normal.woff', 
       fontWeight: 700,
       fontStyle: 'normal'
     },
-    // Using normal variant as fallback for italic (react-pdf limitation)
     { 
-      src: 'https://fonts.gstatic.com/s/cormorant/v21/H4c2BXOCl9bbnla_nHIq75O49.woff2', 
+      src: 'https://cdn.jsdelivr.net/npm/@fontsource/cormorant-garamond@5.0.3/files/cormorant-garamond-latin-700-italic.woff', 
       fontWeight: 700,
       fontStyle: 'italic'
     },
@@ -33,12 +48,12 @@ Font.register({
   family: 'Lora',
   fonts: [
     { 
-      src: 'https://fonts.gstatic.com/s/lora/v35/0QI6MX1D_JOuGQbT0gvTJPa787weuxJBkq0.woff2', 
+      src: 'https://cdn.jsdelivr.net/npm/@fontsource/lora@5.0.3/files/lora-latin-400-normal.woff', 
       fontWeight: 400,
       fontStyle: 'normal'
     },
     { 
-      src: 'https://fonts.gstatic.com/s/lora/v35/0QI6MX1D_JOuGQbT0gvTJPa787z-uxJBkq0.woff2', 
+      src: 'https://cdn.jsdelivr.net/npm/@fontsource/lora@5.0.3/files/lora-latin-400-italic.woff', 
       fontWeight: 400, 
       fontStyle: 'italic' 
     },
@@ -267,8 +282,8 @@ export default function HeirloomDocument({ wishbloom }: HeirloomDocumentProps) {
     day: 'numeric',
   })
 
-  // Display age
-  const ageDisplay = creativeAgeDescription || (age ? `${age} Years Young` : '')
+  // ✅ FIX: Ensure this is NULL if empty, never an empty string ""
+  const ageDisplay = creativeAgeDescription || (age ? `${age} Years Young` : null)
 
   return (
     <Document
@@ -341,7 +356,6 @@ export default function HeirloomDocument({ wishbloom }: HeirloomDocumentProps) {
                     <Image
                       src={memory.imageUrl}
                       style={styles.memoryImage}
-                      alt={memory.title || 'Memory photo'}
                     />
                   )}
                   <Text style={styles.memoryTitle}>{memory.title}</Text>
@@ -372,7 +386,6 @@ export default function HeirloomDocument({ wishbloom }: HeirloomDocumentProps) {
                           <Image
                             src={memory.imageUrl}
                             style={styles.memoryImage}
-                            alt={memory.title || 'Memory photo'}
                           />
                         )}
                         <Text style={styles.memoryTitle}>{memory.title}</Text>

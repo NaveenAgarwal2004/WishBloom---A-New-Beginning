@@ -6,10 +6,26 @@ import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
 import { pdf } from '@react-pdf/renderer'
 import HeirloomDocument from './HeirloomDocument'
-import type { IWishBloom } from '@/models/WishBloom'
+import type { IContributor, IMemory, IMessage, IGuestbookEntry } from '@/models/WishBloom'
+
+// ✅ DTO type for PDF generation (plain data, no Mongoose Document methods)
+interface WishBloomDTO {
+  recipientName: string
+  age?: number
+  creativeAgeDescription?: string
+  introMessage: string
+  createdBy: IContributor
+  memories: IMemory[]
+  messages: IMessage[]
+  celebrationWishPhrases: string[]
+  guestbook: IGuestbookEntry[]
+  createdDate: Date
+  viewCount: number
+  isArchived: boolean
+}
 
 interface DownloadButtonProps {
-  wishbloom: Omit<IWishBloom, '_id' | 'uniqueUrl' | 'contributors' | 'createdAt' | 'updatedAt'>
+  wishbloom: WishBloomDTO
   variant?: 'default' | 'secondary' | 'outline' | 'ghost'
   size?: 'default' | 'sm' | 'lg' | 'icon'
   className?: string

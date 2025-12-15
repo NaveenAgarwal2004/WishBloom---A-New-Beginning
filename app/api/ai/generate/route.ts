@@ -3,6 +3,10 @@ import { GoogleGenerativeAI } from '@google/generative-ai'
 import { withRateLimit, rateLimiters } from '@/lib/rate-limit'
 import { AI_CONSTANTS, ERROR_MESSAGES } from '@/config/constants'
 
+// Define explicit types for our constants
+type RelationshipType = typeof AI_CONSTANTS.RELATIONSHIPS[number]
+type VibeType = typeof AI_CONSTANTS.VIBES[number]
+
 // Mock responses for when API key is missing (testing/development)
 const MOCK_RESPONSES: Record<string, Record<string, string>> = {
   Sentimental: {
@@ -62,15 +66,22 @@ export async function POST(request: Request) {
           )
         }
 
-        // Validate against allowed values
-        if (!AI_CONSTANTS.RELATIONSHIPS.includes(relationship as any)) {
+        // Strict Type Guards - ✅ NO 'any' types
+        const isValidRelationship = (r: string): r is RelationshipType => 
+          AI_CONSTANTS.RELATIONSHIPS.includes(r as RelationshipType)
+          
+        const isValidVibe = (v: string): v is VibeType => 
+          AI_CONSTANTS.VIBES.includes(v as VibeType)
+
+        // Validate against allowed values with proper type guards
+        if (!isValidRelationship(relationship)) {
           return NextResponse.json(
             { success: false, error: 'Invalid relationship value' },
             { status: 400 }
           )
         }
 
-        if (!AI_CONSTANTS.VIBES.includes(vibe as any)) {
+        if (!isValidVibe(vibe)) {
           return NextResponse.json(
             { success: false, error: 'Invalid vibe value' },
             { status: 400 }

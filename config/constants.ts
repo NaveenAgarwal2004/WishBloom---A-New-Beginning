@@ -112,9 +112,9 @@ export type MemoryTag = typeof MEMORY_TAGS[number]
 export const AI_CONSTANTS = {
   RELATIONSHIPS: ['Mom', 'Dad', 'Bestie', 'Friend', 'Sibling', 'Partner'] as const,
   VIBES: ['Sentimental', 'Funny', 'Poetic', 'Inspirational'] as const,
-  MAX_TOKENS: 200,
+  MAX_TOKENS: 500,
   TEMPERATURE: 0.8,
-  MODEL: 'gemini-1.5-flash',
+  MODEL: 'gemini-2.5-flash',
   GENERATION_TIMEOUT_MS: 15000, // 15 seconds
 } as const
 

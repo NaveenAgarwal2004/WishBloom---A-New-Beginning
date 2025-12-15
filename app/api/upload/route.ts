@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { v2 as cloudinary } from 'cloudinary'
+import { v2 as cloudinary, UploadApiOptions } from 'cloudinary'
 import { withRateLimit, rateLimiters } from '@/lib/rate-limit'
 import { env } from '@/lib/env'
 import { FILE_LIMITS, CLOUDINARY_CONFIG, ERROR_MESSAGES } from '@/config/constants'
@@ -10,6 +10,12 @@ cloudinary.config({
   api_key: env.CLOUDINARY_API_KEY,
   api_secret: env.CLOUDINARY_API_SECRET,
 })
+
+// ✅ Proper Cloudinary types
+interface CloudinaryResult {
+  secure_url: string
+  public_id: string
+}
 
 export async function POST(request: Request) {
   // Apply strict rate limiting for uploads
@@ -91,15 +97,10 @@ export async function POST(request: Request) {
         const bytes = await file.arrayBuffer()
         const buffer = Buffer.from(bytes)
 
-        //  Proper Cloudinary types
-        interface CloudinaryResult {
-          secure_url: string
-          public_id: string
-        }
-
         // Upload to Cloudinary with resource_type based on file type
         const result = await new Promise<CloudinaryResult>((resolve, reject) => {
-          const uploadOptions: any = {
+          // ✅ Properly typed uploadOptions - NO 'any'
+          const uploadOptions: UploadApiOptions = {
             folder: CLOUDINARY_CONFIG.FOLDER,
             resource_type: isAudio ? 'video' : 'image', // Cloudinary uses 'video' for audio files
           }

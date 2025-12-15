@@ -23,6 +23,9 @@ const envSchema = z.object({
   GOOGLE_CLIENT_ID: z.string().optional().or(z.literal('')),
   GOOGLE_CLIENT_SECRET: z.string().optional().or(z.literal('')),
 
+  // AI Configuration - ✅ CRITICAL: Required for AI message generation
+  GEMINI_API_KEY: z.string().min(1, 'GEMINI_API_KEY is required for AI features').optional(),
+
   // Rate Limiting (optional)
   UPSTASH_REDIS_REST_URL: z.string().url().optional().or(z.literal('')),
   UPSTASH_REDIS_REST_TOKEN: z.string().optional().or(z.literal('')),
@@ -57,6 +60,7 @@ function validateEnv(): Env {
         console.error('- NEXTAUTH_SECRET (must be 32+ characters)')
         console.error('- NEXTAUTH_URL')
         console.error('- NEXT_PUBLIC_BASE_URL ⚠️ CRITICAL FOR PRODUCTION')
+        console.error('- GEMINI_API_KEY (optional - for AI message generation)')
         console.error('\n💡 Copy .env.example to .env.local and fill in your values')
       }
       

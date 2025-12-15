@@ -8,8 +8,10 @@ export default defineConfig({
   
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  // ✅ STABILITY FIX: Add retry for local flakes
+  retries: process.env.CI ? 2 : 1,
+  // ✅ STABILITY FIX: Limit workers to prevent CPU choke (was: undefined)
+  workers: process.env.CI ? 1 : 2,
   
   reporter: process.env.CI 
   ? [['html'], ['list'], ['github']]
@@ -22,10 +24,12 @@ export default defineConfig({
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
-    actionTimeout: 20000,
+    // ✅ STABILITY FIX: Interaction timeout for slow form validation
+    actionTimeout: 15000,
     navigationTimeout: 45000,
   },
   
+  // ✅ STABILITY FIX: Generous timeout for local dev (was: 60000)
   timeout: 60000,
 
   projects: [

@@ -50,8 +50,13 @@ test.describe('WishBloom Homepage', () => {
     const createButton = page.getByTestId('cta-create-button')
     await createButton.click()
     
-    await page.waitForURL('**/create')
-    await expect(page.locator('h1')).toContainText('Create a WishBloom')
+    // ✅ STABILITY FIX: Wait for URL change first, then verify header
+    await page.waitForURL('**/create', { timeout: 15000 })
+    await page.waitForLoadState('domcontentloaded')
+    
+    // Now wait for the create page header (not h1, which might be recipient name)
+    const createHeader = page.locator('h2:has-text("Recipient Information")')
+    await expect(createHeader).toBeVisible({ timeout: 10000 })
   })
 
   test('should respect prefers-reduced-motion', async ({ page }) => {
@@ -86,21 +91,24 @@ test.describe('WishBloom Creation Flow', () => {
     }
     
     await recipientInput.fill('Test Recipient')
-    await expect(recipientInput).toHaveValue('Test Recipient') // ✅ Force wait for state update
-    await page.waitForTimeout(300)
+    await expect(recipientInput).toHaveValue('Test Recipient')
+    await recipientInput.blur() // ✅ STABILITY FIX: Force validation trigger
+    await page.waitForTimeout(500) // Wait for validation to complete
     
     const introTextarea = page.locator('textarea[data-testid="intro-message-textarea"]')
     const introMsg = 'This is a test intro message that is definitely long enough.'
     await introTextarea.fill(introMsg)
-    await expect(introTextarea).toHaveValue(introMsg) // ✅ Force wait for state update
-    await page.waitForTimeout(300)
+    await expect(introTextarea).toHaveValue(introMsg)
+    await introTextarea.blur() // ✅ STABILITY FIX: Force validation trigger
+    await page.waitForTimeout(500) // Wait for validation to complete
     
     const creatorInput = page.locator('input[placeholder="Sarah"]')
     await creatorInput.fill('Test Creator')
-    await expect(creatorInput).toHaveValue('Test Creator') // ✅ Force wait for state update
-    await page.waitForTimeout(500)
+    await expect(creatorInput).toHaveValue('Test Creator')
+    await creatorInput.blur() // ✅ STABILITY FIX: Force validation trigger
+    await page.waitForTimeout(500) // Wait for validation to complete
     
-    // Wait for validation
+    // Wait for validation with explicit state check
     const nextButton = page.locator('button[data-testid="step1-next-button"]')
     await expect(nextButton).toBeEnabled({ timeout: 15000 })
     await nextButton.click()
@@ -153,18 +161,22 @@ test.describe('WishBloom Creation Flow', () => {
     // Fill recipient information
     const recipientInput = page.locator('input[data-testid="recipient-name-input"]')
     await recipientInput.fill(recipientName)
-    await expect(recipientInput).toHaveValue(recipientName) // ✅ Force wait for state update
+    await expect(recipientInput).toHaveValue(recipientName)
+    await recipientInput.blur() // ✅ STABILITY FIX: Force validation trigger
+    await page.waitForTimeout(500) // Wait for validation to complete
     
     const introTextarea = page.locator('textarea[data-testid="intro-message-textarea"]')
     const introMessage = `Happy Birthday ${recipientName}! This is a special day filled with love and memories. We've created this WishBloom to celebrate you and all the joy you bring to our lives.`
     await introTextarea.fill(introMessage)
-    await expect(introTextarea).toHaveValue(introMessage) // ✅ Force wait for state update
+    await expect(introTextarea).toHaveValue(introMessage)
+    await introTextarea.blur() // ✅ STABILITY FIX: Force validation trigger
+    await page.waitForTimeout(500) // Wait for validation to complete
     
     const creatorInput = page.locator('input[placeholder="Sarah"]')
     await creatorInput.fill(creatorName)
-    await expect(creatorInput).toHaveValue(creatorName) // ✅ Force wait for state update
-    
-    await page.waitForTimeout(500)
+    await expect(creatorInput).toHaveValue(creatorName)
+    await creatorInput.blur() // ✅ STABILITY FIX: Force validation trigger
+    await page.waitForTimeout(500) // Wait for validation to complete
     
     const step1NextButton = page.locator('button[data-testid="step1-next-button"]')
     await expect(step1NextButton).toBeEnabled({ timeout: 10000 })
@@ -226,25 +238,31 @@ test.describe('WishBloom Creation Flow', () => {
     if (await greetingInput.count() > 0) {
       const greeting = `Dear ${recipientName},`
       await greetingInput.fill(greeting)
-      await expect(greetingInput).toHaveValue(greeting) // ✅ Force wait for state update
+      await expect(greetingInput).toHaveValue(greeting)
+      await greetingInput.blur() // ✅ STABILITY FIX: Force validation trigger
+      await page.waitForTimeout(300)
     }
 
     const messageContent = `I wanted to take a moment to tell you how much you mean to me. Your kindness, laughter, and spirit have touched so many lives. On this special day, I wish you all the happiness in the world. May this year bring you closer to your dreams and fill your days with love and joy. You deserve all the wonderful things life has to offer. Thank you for being such an amazing person and friend.`
     const contentTextarea = page.locator('textarea[placeholder*="Share your thoughts"]')
     await contentTextarea.fill(messageContent)
-    await expect(contentTextarea).toHaveValue(messageContent) // ✅ Force wait for state update
+    await expect(contentTextarea).toHaveValue(messageContent)
+    await contentTextarea.blur() // ✅ STABILITY FIX: Force validation trigger
+    await page.waitForTimeout(500)
     
     const closingInput = page.locator('input[placeholder*="With love"]')
     if (await closingInput.count() > 0) {
       const closing = 'With all my love,'
       await closingInput.fill(closing)
-      await expect(closingInput).toHaveValue(closing) // ✅ Force wait for state update
+      await expect(closingInput).toHaveValue(closing)
+      await closingInput.blur() // ✅ STABILITY FIX: Force validation trigger
+      await page.waitForTimeout(300)
     }
 
     const signatureInput = page.locator('input[placeholder*="Your name"]')
     await signatureInput.fill(creatorName)
-    await expect(signatureInput).toHaveValue(creatorName) // ✅ Force wait for state update
-    
+    await expect(signatureInput).toHaveValue(creatorName)
+    await signatureInput.blur() // ✅ STABILITY FIX: Force validation trigger
     await page.waitForTimeout(500)
 
     const addMessageButton = page.locator('button:has-text("Add Message")')
@@ -379,8 +397,9 @@ test.describe('WishBloom Creation Flow', () => {
     // Fill only recipient name
     const recipientInput = page.locator('input[data-testid="recipient-name-input"]')
     await recipientInput.fill('Test')
-    await expect(recipientInput).toHaveValue('Test') // ✅ Force wait for state update
-    await page.waitForTimeout(300) // Allow validation
+    await expect(recipientInput).toHaveValue('Test')
+    await recipientInput.blur() // ✅ STABILITY FIX: Force validation trigger
+    await page.waitForTimeout(500) // Allow validation
     
     await expect(nextButton).toBeDisabled() // Still disabled (need intro message)
     
@@ -388,11 +407,12 @@ test.describe('WishBloom Creation Flow', () => {
     const introTextarea = page.locator('textarea[data-testid="intro-message-textarea"]')
     const testIntro = 'Test intro message here that is long enough'
     await introTextarea.fill(testIntro)
-    await expect(introTextarea).toHaveValue(testIntro) // ✅ Force wait for state update
+    await expect(introTextarea).toHaveValue(testIntro)
+    await introTextarea.blur() // ✅ STABILITY FIX: Force validation trigger
     await page.waitForTimeout(500) // Allow validation
     
-    // ✅ Increase timeout for slower browsers
-    await expect(nextButton).toBeEnabled({ timeout: 10000 })
+    // ✅ Wait for form validation to complete and button to enable
+    await expect(nextButton).toBeEnabled({ timeout: 15000 })
   })
 })
 

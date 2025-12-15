@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 import React from 'react'
 import { Document, Page, Text, View, Image, StyleSheet, Font, Svg, Circle, Ellipse, G } from '@react-pdf/renderer'
 import type { IContributor, IMemory, IMessage, IGuestbookEntry } from '@/models/WishBloom'

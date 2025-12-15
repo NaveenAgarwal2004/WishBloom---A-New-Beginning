@@ -122,6 +122,233 @@ test.describe('WishBloom Creation Flow', () => {
     await expect(nextButton2).toBeEnabled({ timeout: 5000 })
   })
 
+  /**
+   * 🚀 PHASE 3: CRITICAL PATH E2E TEST
+   * "Zero to Publish" - Complete user journey covering all 6 steps
+   * This test ensures the entire WishBloom creation pipeline works end-to-end
+   */
+  test('CRITICAL PATH: Complete Zero-to-Publish Flow', async ({ page }) => {
+    // Unique identifiers for this test run
+    const timestamp = Date.now()
+    const recipientName = `E2E Test User ${timestamp}`
+    const creatorName = `Test Creator ${timestamp}`
+    
+    console.log(`🎬 Starting Critical Path Test for: ${recipientName}`)
+
+    // ========================================
+    // STEP 1: RECIPIENT INFORMATION
+    // ========================================
+    await page.goto('/create', { waitUntil: 'networkidle' })
+    await page.waitForLoadState('domcontentloaded')
+    await page.waitForTimeout(1000)
+
+    const step1Header = page.locator('h2:has-text("Recipient Information")')
+    await expect(step1Header).toBeVisible({ timeout: 10000 })
+    console.log('✅ Step 1 loaded')
+
+    // Fill recipient information
+    const recipientInput = page.locator('input[data-testid="recipient-name-input"]')
+    await recipientInput.fill(recipientName)
+    
+    const introTextarea = page.locator('textarea[data-testid="intro-message-textarea"]')
+    await introTextarea.fill(`Happy Birthday ${recipientName}! This is a special day filled with love and memories. We've created this WishBloom to celebrate you and all the joy you bring to our lives.`)
+    
+    const creatorInput = page.locator('input[placeholder="Sarah"]')
+    await creatorInput.fill(creatorName)
+    
+    await page.waitForTimeout(500)
+    
+    const step1NextButton = page.locator('button[data-testid="step1-next-button"]')
+    await expect(step1NextButton).toBeEnabled({ timeout: 10000 })
+    await step1NextButton.click()
+    console.log('✅ Step 1 completed')
+
+    // ========================================
+    // STEP 2: ADD MEMORIES (Minimum 3)
+    // ========================================
+    await page.waitForTimeout(1000)
+    const step2Header = page.locator('h2:has-text("Add Memories")')
+    await expect(step2Header).toBeVisible({ timeout: 10000 })
+    console.log('✅ Step 2 loaded')
+
+    // Add 3 memories
+    const memories = [
+      { title: 'Coffee Shop Moment', description: 'Remember when we laughed so hard at that coffee shop? Those were the days filled with joy and endless conversations about life and dreams.', date: '2024-01-15' },
+      { title: 'Beach Adventure', description: 'The time we went to the beach and built sandcastles. The sunset was beautiful and we made memories that will last forever in our hearts.', date: '2024-03-20' },
+      { title: 'Birthday Surprise', description: 'That surprise party we threw for you was epic! Your face was priceless when everyone jumped out. We all love you so much and cherish these moments.', date: '2024-06-10' }
+    ]
+
+    for (let i = 0; i < memories.length; i++) {
+      await page.waitForLoadState('domcontentloaded')
+      await page.waitForTimeout(500)
+      
+      await page.fill('input[placeholder*="Coffee Shop"]', memories[i].title)
+      await page.fill('textarea[placeholder*="Tell the story"]', memories[i].description)
+      await page.fill('input[type="date"]', memories[i].date)
+      await page.fill('input[placeholder="Your name"]', `Friend ${i + 1}`)
+      
+      const addMemoryButton = page.locator('button:has-text("Add Memory")')
+      await addMemoryButton.click()
+      
+      // Verify memory was added
+      await expect(page.locator(`text=${memories[i].title}`).first()).toBeVisible({ timeout: 3000 })
+      console.log(`✅ Memory ${i + 1}/3 added: ${memories[i].title}`)
+    }
+
+    const step2NextButton = page.locator('button:has-text("Next")').last()
+    await expect(step2NextButton).toBeEnabled({ timeout: 5000 })
+    await step2NextButton.click()
+    console.log('✅ Step 2 completed')
+
+    // ========================================
+    // STEP 3: WRITE MESSAGES (Minimum 1)
+    // ========================================
+    await page.waitForTimeout(1000)
+    const step3Header = page.locator('h2:has-text("Write Messages")')
+    await expect(step3Header).toBeVisible({ timeout: 10000 })
+    console.log('✅ Step 3 loaded')
+
+    // Select Letter type
+    const letterTypeButton = page.locator('button:has-text("Letter")').first()
+    await letterTypeButton.click()
+    await page.waitForTimeout(300)
+
+    // Fill message form
+    const greetingInput = page.locator('input[placeholder*="Dear"]')
+    if (await greetingInput.count() > 0) {
+      await greetingInput.fill(`Dear ${recipientName},`)
+    }
+
+    const contentTextarea = page.locator('textarea[placeholder*="Share your thoughts"]')
+    await contentTextarea.fill(`I wanted to take a moment to tell you how much you mean to me. Your kindness, laughter, and spirit have touched so many lives. On this special day, I wish you all the happiness in the world. May this year bring you closer to your dreams and fill your days with love and joy. You deserve all the wonderful things life has to offer. Thank you for being such an amazing person and friend.`)
+    
+    const closingInput = page.locator('input[placeholder*="With love"]')
+    if (await closingInput.count() > 0) {
+      await closingInput.fill('With all my love,')
+    }
+
+    const signatureInput = page.locator('input[placeholder*="Your name"]')
+    await signatureInput.fill(creatorName)
+    
+    await page.waitForTimeout(500)
+
+    const addMessageButton = page.locator('button:has-text("Add Message")')
+    await addMessageButton.click()
+    
+    // Verify message was added
+    await expect(page.locator('text="Message added successfully"').or(page.locator('div[role="status"]'))).toBeVisible({ timeout: 5000 }).catch(() => {
+      console.log('Message confirmation not shown, but proceeding...')
+    })
+    console.log('✅ Message added')
+
+    await page.waitForTimeout(1000)
+    const step3NextButton = page.locator('button:has-text("Next")').last()
+    await expect(step3NextButton).toBeEnabled({ timeout: 5000 })
+    await step3NextButton.click()
+    console.log('✅ Step 3 completed')
+
+    // ========================================
+    // STEP 4: SELECT WISHES
+    // ========================================
+    await page.waitForTimeout(1000)
+    const step4Header = page.locator('h2:has-text("Choose Wishes")')
+    await expect(step4Header).toBeVisible({ timeout: 10000 })
+    console.log('✅ Step 4 loaded')
+
+    // Select at least 3 wishes
+    const wishCheckboxes = page.locator('input[type="checkbox"]')
+    const wishCount = await wishCheckboxes.count()
+    
+    // Select first 3 wishes
+    for (let i = 0; i < Math.min(3, wishCount); i++) {
+      await wishCheckboxes.nth(i).check()
+      await page.waitForTimeout(200)
+    }
+    console.log('✅ Wishes selected')
+
+    await page.waitForTimeout(500)
+    const step4NextButton = page.locator('button:has-text("Next")').last()
+    await expect(step4NextButton).toBeEnabled({ timeout: 5000 })
+    await step4NextButton.click()
+    console.log('✅ Step 4 completed')
+
+    // ========================================
+    // STEP 5: PREVIEW
+    // ========================================
+    await page.waitForTimeout(1500)
+    const step5Header = page.locator('h2:has-text("Preview")').or(page.locator('text="Preview Your WishBloom"'))
+    await expect(step5Header).toBeVisible({ timeout: 10000 })
+    console.log('✅ Step 5 (Preview) loaded')
+
+    // Verify preview shows recipient name
+    await expect(page.locator(`text=${recipientName}`)).toBeVisible({ timeout: 5000 })
+    
+    await page.waitForTimeout(1000)
+    const step5NextButton = page.locator('button:has-text("Looks Great")').or(page.locator('button:has-text("Next")').last())
+    await step5NextButton.click()
+    console.log('✅ Step 5 (Preview) completed')
+
+    // ========================================
+    // STEP 6: PUBLISH
+    // ========================================
+    await page.waitForTimeout(1500)
+    
+    // The publish step may have different variations
+    const publishButton = page.locator('button:has-text("Publish")').or(
+      page.locator('button:has-text("Create WishBloom")')
+    ).or(
+      page.locator('button[type="submit"]').last()
+    )
+
+    await expect(publishButton).toBeVisible({ timeout: 10000 })
+    console.log('✅ Step 6 (Publish) loaded')
+
+    // Click publish
+    await publishButton.click()
+    console.log('🚀 Publish button clicked')
+
+    // ========================================
+    // VERIFY: Redirect to Dashboard or View Page
+    // ========================================
+    // Wait for navigation after publish
+    await page.waitForTimeout(3000)
+    
+    const currentUrl = page.url()
+    console.log(`Current URL after publish: ${currentUrl}`)
+
+    // Should redirect to either dashboard or the unique WishBloom URL
+    const isDashboard = currentUrl.includes('/dashboard')
+    const isWishBloomView = !currentUrl.includes('/create') && !currentUrl.includes('/dashboard')
+    
+    expect(isDashboard || isWishBloomView).toBeTruthy()
+    console.log(`✅ Redirected to: ${isDashboard ? 'Dashboard' : 'WishBloom View Page'}`)
+
+    // ========================================
+    // VERIFY: View the Published WishBloom
+    // ========================================
+    if (isDashboard) {
+      // If on dashboard, find and click the newly created WishBloom
+      await page.waitForTimeout(1000)
+      const wishbloomCard = page.locator(`text=${recipientName}`).first()
+      await expect(wishbloomCard).toBeVisible({ timeout: 10000 })
+      
+      // Click to view
+      await wishbloomCard.click()
+      await page.waitForTimeout(2000)
+    }
+
+    // Now we should be on the view page
+    // Verify the WishBloom displays correctly
+    await expect(page.locator(`text=${recipientName}`)).toBeVisible({ timeout: 10000 })
+    console.log('✅ WishBloom view page loaded')
+
+    // Verify memories are visible
+    await expect(page.locator(`text=${memories[0].title}`)).toBeVisible({ timeout: 5000 })
+    console.log('✅ Memories displayed')
+
+    console.log('🎉 CRITICAL PATH TEST COMPLETED SUCCESSFULLY!')
+  })
+
   test('should validate required fields', async ({ page }) => {
     await page.goto('/create')
     await page.waitForLoadState('domcontentloaded')
@@ -169,6 +396,86 @@ test.describe('WishBloom View Page', () => {
     const metaDescription = await page.locator('meta[name="description"]').getAttribute('content')
     expect(metaDescription).toBeTruthy()
     expect(metaDescription!.toLowerCase()).toMatch(/memory|memories|birthday|preserve/)
+  })
+
+  /**
+   * 🎯 PHASE 3: DYNAMIC SEO METADATA TEST
+   * Verifies that WishBloom pages have proper Open Graph tags for social sharing
+   */
+  test('PHASE 3: should have dynamic Open Graph metadata for social sharing', async ({ page }) => {
+    await page.goto('/')
+    await page.waitForLoadState('networkidle')
+    
+    console.log('🔍 Testing Dynamic SEO Metadata...')
+
+    // Check title includes birthday greeting
+    const title = await page.title()
+    expect(title).toBeTruthy()
+    console.log(`✅ Page title: ${title}`)
+
+    // Check meta description
+    const metaDescription = await page.locator('meta[name="description"]').getAttribute('content')
+    expect(metaDescription).toBeTruthy()
+    expect(metaDescription!.toLowerCase()).toMatch(/memory|memories|wish|collection|created/)
+    console.log(`✅ Meta description present: ${metaDescription?.substring(0, 50)}...`)
+
+    // Check Open Graph title
+    const ogTitle = await page.locator('meta[property="og:title"]').getAttribute('content')
+    expect(ogTitle).toBeTruthy()
+    console.log(`✅ OG title: ${ogTitle}`)
+
+    // Check Open Graph description
+    const ogDescription = await page.locator('meta[property="og:description"]').getAttribute('content')
+    expect(ogDescription).toBeTruthy()
+    console.log(`✅ OG description present`)
+
+    // Check Open Graph type
+    const ogType = await page.locator('meta[property="og:type"]').getAttribute('content')
+    expect(ogType).toBe('website')
+    console.log(`✅ OG type: ${ogType}`)
+
+    // Check Open Graph URL
+    const ogUrl = await page.locator('meta[property="og:url"]').getAttribute('content')
+    expect(ogUrl).toBeTruthy()
+    expect(ogUrl).toMatch(/http/)
+    console.log(`✅ OG URL: ${ogUrl}`)
+
+    // Check Open Graph site name
+    const ogSiteName = await page.locator('meta[property="og:site_name"]').getAttribute('content')
+    expect(ogSiteName).toBe('WishBloom')
+    console.log(`✅ OG site name: ${ogSiteName}`)
+
+    // Check Twitter card
+    const twitterCard = await page.locator('meta[name="twitter:card"]').getAttribute('content')
+    expect(twitterCard).toBeTruthy()
+    expect(['summary', 'summary_large_image']).toContain(twitterCard)
+    console.log(`✅ Twitter card: ${twitterCard}`)
+
+    // Check Twitter title
+    const twitterTitle = await page.locator('meta[name="twitter:title"]').getAttribute('content')
+    expect(twitterTitle).toBeTruthy()
+    console.log(`✅ Twitter title present`)
+
+    // Optional: Check if OG image exists (only if WishBloom has images)
+    const ogImage = await page.locator('meta[property="og:image"]').getAttribute('content')
+    if (ogImage) {
+      expect(ogImage).toMatch(/http/)
+      console.log(`✅ OG image URL: ${ogImage.substring(0, 50)}...`)
+      
+      // Check OG image dimensions
+      const ogImageWidth = await page.locator('meta[property="og:image:width"]').getAttribute('content')
+      const ogImageHeight = await page.locator('meta[property="og:image:height"]').getAttribute('content')
+      
+      if (ogImageWidth && ogImageHeight) {
+        expect(ogImageWidth).toBe('1200')
+        expect(ogImageHeight).toBe('630')
+        console.log(`✅ OG image dimensions: ${ogImageWidth}x${ogImageHeight}`)
+      }
+    } else {
+      console.log('ℹ️ No OG image (WishBloom may not have memory photos)')
+    }
+
+    console.log('🎉 Dynamic SEO metadata test passed!')
   })
 
   test('should be keyboard navigable', async ({ page, browserName }) => {

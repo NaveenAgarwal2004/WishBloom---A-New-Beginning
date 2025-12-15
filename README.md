@@ -1089,8 +1089,8 @@ This project is licensed under the **MIT License** - see the [LICENSE](./LICENSE
 
 **Naveen Agarwal**  
 - **GitHub:** [@NaveenAgarwal2004](https://github.com/NaveenAgarwal2004)  
-- **Project:** [github.com/NaveenAgarwal2004/WishBloom](https://github.com/NaveenAgarwal2004/WishBloom)  
-- **Issues:** [Report Bug/Feature](https://github.com/NaveenAgarwal2004/WishBloom/issues)
+- **Project:** [github.com/NaveenAgarwal2004/WishBloom](https://github.com/NaveenAgarwal2004/WishBloom---A-New-Beginning)  
+- **Issues:** [Report Bug/Feature](https://github.com/NaveenAgarwal2004/WishBloom---A-New-Beginning/issues)
 
 ---
 

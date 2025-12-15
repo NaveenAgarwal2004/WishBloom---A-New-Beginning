@@ -27,6 +27,13 @@ export const FILE_LIMITS = {
   IMAGE_MAX_SIZE_MB: 5,
   ALLOWED_IMAGE_TYPES: ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'] as const,
   ALLOWED_IMAGE_EXTENSIONS: ['.png', '.jpg', '.jpeg', '.webp'] as const,
+  
+  // Audio file limits (Phase 5)
+  AUDIO_MAX_SIZE_BYTES: 10 * 1024 * 1024, // 10MB in bytes
+  AUDIO_MAX_SIZE_MB: 10,
+  AUDIO_MAX_DURATION_SECONDS: 180, // 3 minutes max
+  ALLOWED_AUDIO_TYPES: ['audio/webm', 'audio/mp4', 'audio/wav', 'audio/mpeg', 'audio/ogg'] as const,
+  ALLOWED_AUDIO_EXTENSIONS: ['.webm', '.mp4', '.wav', '.mp3', '.ogg'] as const,
 } as const
 
 // ========================================
@@ -98,6 +105,21 @@ export const MEMORY_TAGS = ['love', 'milestone', 'nostalgic', 'celebration', 'fu
 export type MemoryType = typeof MEMORY_TYPES[number]
 export type MessageType = typeof MESSAGE_TYPES[number]
 export type MemoryTag = typeof MEMORY_TAGS[number]
+
+// ========================================
+// AI GENERATION (Phase 5)
+// ========================================
+export const AI_CONSTANTS = {
+  RELATIONSHIPS: ['Mom', 'Dad', 'Bestie', 'Friend', 'Sibling', 'Partner'] as const,
+  VIBES: ['Sentimental', 'Funny', 'Poetic', 'Inspirational'] as const,
+  MAX_TOKENS: 200,
+  TEMPERATURE: 0.8,
+  MODEL: 'gemini-1.5-flash',
+  GENERATION_TIMEOUT_MS: 15000, // 15 seconds
+} as const
+
+export type AIRelationship = typeof AI_CONSTANTS.RELATIONSHIPS[number]
+export type AIVibe = typeof AI_CONSTANTS.VIBES[number]
 
 // ========================================
 // DEFAULT VALUES
@@ -202,6 +224,9 @@ export const ERROR_MESSAGES = {
   INVALID_DATE: 'Invalid date format (YYYY-MM-DD)',
   FILE_TOO_LARGE: `File must be less than ${FILE_LIMITS.IMAGE_MAX_SIZE_MB}MB`,
   INVALID_FILE_TYPE: 'Only JPEG, PNG, and WebP images are allowed',
+  AUDIO_FILE_TOO_LARGE: `Audio file must be less than ${FILE_LIMITS.AUDIO_MAX_SIZE_MB}MB`,
+  INVALID_AUDIO_TYPE: 'Only WebM, MP4, WAV, MP3, and OGG audio files are allowed',
+  AUDIO_TOO_LONG: `Audio recording must be less than ${FILE_LIMITS.AUDIO_MAX_DURATION_SECONDS} seconds`,
   MIN_MEMORIES: `At least ${VALIDATION_LIMITS.MEMORIES_MIN_REQUIRED} memories required`,
   MIN_MESSAGES: `At least ${VALIDATION_LIMITS.MESSAGES_MIN_REQUIRED} message required`,
   UNAUTHORIZED: 'Unauthorized',
@@ -209,4 +234,7 @@ export const ERROR_MESSAGES = {
   INTERNAL_SERVER_ERROR: 'Internal server error',
   VALIDATION_FAILED: 'Validation failed',
   NOT_FOUND: 'Not found',
+  AI_GENERATION_FAILED: 'Failed to generate AI message',
+  MICROPHONE_PERMISSION_DENIED: 'Microphone permission denied',
+  MICROPHONE_NOT_SUPPORTED: 'Audio recording is not supported in this browser',
 } as const

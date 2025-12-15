@@ -1,13 +1,16 @@
 'use client'
 
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ArrowRight, ArrowLeft, Plus, Trash2 } from 'lucide-react'
+import { ArrowRight, ArrowLeft, Plus, Trash2, Sparkles, Mic } from 'lucide-react'
 import { nanoid } from 'nanoid'
 import useWishBloomStore from '@/store/useWishBloomStore'
 import { MessageSchema } from '@/schemas/wishbloom.schema'
 import { VALIDATION_LIMITS, MESSAGE_TYPES } from '@/config/constants'
 import { useSoundEffects } from '@/hooks/useSoundEffects'
+import AIPoetModal from '@/components/ai/AIPoetModal'
+import AudioRecorder from '@/components/audio/AudioRecorder'
 import type { IMessage } from '@/models/WishBloom'
 import type { z } from 'zod'
 
@@ -16,6 +19,11 @@ type MessageFormData = z.infer<typeof MessageSchema>
 export default function Step3Messages() {
   const store = useWishBloomStore()
   const { play } = useSoundEffects()
+  
+  // Phase 5: AI and Audio states
+  const [isAIModalOpen, setIsAIModalOpen] = useState(false)
+  const [showAudioRecorder, setShowAudioRecorder] = useState(false)
+  const [currentAudioUrl, setCurrentAudioUrl] = useState<string>('')
 
   const {
     register,
@@ -23,6 +31,7 @@ export default function Step3Messages() {
     formState: { errors },
     reset,
     watch,
+    setValue,
   } = useForm<MessageFormData>({
     resolver: zodResolver(MessageSchema),
     mode: 'onBlur',
@@ -34,6 +43,7 @@ export default function Step3Messages() {
       signature: '', // ✅ Set default
       title: '',
       postscript: '',
+      audioUrl: '', // Phase 5: Audio URL
       contributor: { 
         id: undefined,
         name: '', 
@@ -60,6 +70,7 @@ export default function Step3Messages() {
       id: nanoid(8),
       signature: data.signature || 'Anonymous', // Fallback
       date: data.date || new Date().toISOString().split('T')[0], // Fallback
+      audioUrl: currentAudioUrl || undefined, // Phase 5: Add audio URL
       contributor: {
         id: data.contributor.id || nanoid(8),
         name: data.contributor.name || 'Anonymous',
@@ -71,6 +82,24 @@ export default function Step3Messages() {
 
     store.addMessage(message)
     reset()
+    // Reset Phase 5 states
+    setCurrentAudioUrl('')
+    setShowAudioRecorder(false)
+  }
+
+  // Phase 5: Handle AI text insertion
+  const handleAIInsert = (text: string) => {
+    setValue('content', text)
+  }
+
+  // Phase 5: Handle audio upload
+  const handleAudioUploaded = (url: string) => {
+    setCurrentAudioUrl(url)
+  }
+
+  // Phase 5: Handle audio removal
+  const handleAudioRemoved = () => {
+    setCurrentAudioUrl('')
   }
 
   return (
@@ -129,9 +158,20 @@ export default function Step3Messages() {
           )}
 
           <div>
-            <label className="text-body-sm font-body font-semibold text-sepiaInk mb-2 block">
-              {messageType === 'letter' ? 'Message *' : 'Poem *'}
-            </label>
+            <div className="flex items-center justify-between mb-2">
+              <label className="text-body-sm font-body font-semibold text-sepiaInk">
+                {messageType === 'letter' ? 'Message *' : 'Poem *'}
+              </label>
+              {/* Phase 5: AI Writer Button */}
+              <button
+                type="button"
+                onClick={() => setIsAIModalOpen(true)}
+                className="px-3 py-1.5 bg-gradient-to-r from-lavenderPress to-rosePetal text-warmCream-50 rounded-lg text-caption font-body font-semibold hover:shadow-colored-purple transition-all flex items-center gap-1.5"
+              >
+                <Sparkles className="w-4 h-4" />
+                AI Writer
+              </button>
+            </div>
             <textarea
               {...register('content')}
               maxLength={VALIDATION_LIMITS.MESSAGE_CONTENT_MAX}
@@ -233,6 +273,26 @@ export default function Step3Messages() {
             </div>
           </div>
 
+          {/* Phase 5: Voice Message Section */}
+          <div className="border-t-2 border-warmCream-300 pt-6">
+            <button
+              type="button"
+              onClick={() => setShowAudioRecorder(!showAudioRecorder)}
+              className="px-4 py-2 bg-lavenderPress/20 text-lavenderPress rounded-lg font-body text-body-sm font-semibold hover:bg-lavenderPress/30 transition-all flex items-center gap-2 mb-4"
+            >
+              <Mic className="w-4 h-4" />
+              {showAudioRecorder ? 'Hide' : 'Add'} Voice Message (Optional)
+            </button>
+
+            {showAudioRecorder && (
+              <AudioRecorder
+                onAudioUploaded={handleAudioUploaded}
+                existingAudioUrl={currentAudioUrl}
+                onAudioRemoved={handleAudioRemoved}
+              />
+            )}
+          </div>
+
           <button
             type="submit"
             className="px-6 py-3 bg-mossGreen text-warmCream-50 rounded-lg font-body font-semibold hover:shadow-colored-green transition-all flex items-center gap-2"
@@ -292,6 +352,14 @@ export default function Step3Messages() {
           Next <ArrowRight size={20} />
         </button>
       </div>
+
+      {/* Phase 5: AI Poet Modal */}
+      <AIPoetModal
+        isOpen={isAIModalOpen}
+        onClose={() => setIsAIModalOpen(false)}
+        onInsert={handleAIInsert}
+        recipientName={store.recipientName}
+      />
     </div>
   )
 }

@@ -56,6 +56,7 @@ export const MessageSchema = z.object({
     .max(VALIDATION_LIMITS.MESSAGE_SIGNATURE_MAX),
   title: z.string().max(VALIDATION_LIMITS.MESSAGE_TITLE_MAX).optional(),
   postscript: z.string().max(VALIDATION_LIMITS.MESSAGE_POSTSCRIPT_MAX).optional(),
+  audioUrl: z.string().url(ERROR_MESSAGES.INVALID_URL).optional(), // Phase 5: Voice message
   contributor: ContributorSchema,
   createdAt: z.string().datetime().optional(),
 })

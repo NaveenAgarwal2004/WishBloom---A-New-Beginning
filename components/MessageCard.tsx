@@ -149,6 +149,30 @@ function LetterCard({ message, index }: MessageCardProps) {
         </div>
       )}
 
+      {/* Phase 5: Voice Message */}
+      {message.audioUrl && (
+        <div className="mt-8 pt-6 border-t-2 border-warmCream-300">
+          <div className="flex items-center gap-2 mb-3">
+            <svg className="w-5 h-5 text-lavenderPress" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+            </svg>
+            <p className="text-body-sm font-body font-semibold text-sepiaInk">
+              Voice Message
+            </p>
+          </div>
+          <audio 
+            controls 
+            src={message.audioUrl}
+            className="w-full max-w-md"
+            style={{
+              filter: 'sepia(30%) saturate(90%) hue-rotate(-10deg)',
+            }}
+          >
+            Your browser does not support the audio element.
+          </audio>
+        </div>
+      )}
+
       {/* Small floral accent */}
       <svg className="absolute bottom-4 left-4 w-12 h-12 text-rosePetal opacity-30" viewBox="0 0 48 48">
         <circle cx="24" cy="24" r="6" fill="currentColor" />
@@ -215,6 +239,32 @@ function PoemCard({ message, index }: MessageCardProps) {
         <circle cx="64" cy="12" r="6" fill="#A88BC7" />
         <line x1="78" y1="12" x2="128" y2="12" stroke="#A88BC7" strokeWidth="2" />
       </svg>
+
+      {/* Phase 5: Voice Message */}
+      {message.audioUrl && (
+        <div className="relative z-10 mt-8 pt-6 border-t-2 border-lavenderPress/30">
+          <div className="flex items-center justify-center gap-2 mb-3">
+            <svg className="w-5 h-5 text-lavenderPress" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+            </svg>
+            <p className="text-body-sm font-body font-semibold text-sepiaInk">
+              Voice Message
+            </p>
+          </div>
+          <div className="flex justify-center">
+            <audio 
+              controls 
+              src={message.audioUrl}
+              className="max-w-md"
+              style={{
+                filter: 'sepia(30%) saturate(90%) hue-rotate(-10deg)',
+              }}
+            >
+              Your browser does not support the audio element.
+            </audio>
+          </div>
+        </div>
+      )}
     </motion.article>
   )
 }

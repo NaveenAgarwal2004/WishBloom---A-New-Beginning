@@ -29,6 +29,7 @@ export interface IMessage {
   signature: string
   title?: string // ✅ Changed from `string | undefined`
   postscript?: string // ✅ Changed from `string | undefined`
+  audioUrl?: string // Phase 5: Voice message support
   contributor: IContributor
   date: string
   createdAt: Date
@@ -92,6 +93,7 @@ const MessageSchema = new Schema<IMessage>({
   signature: { type: String, required: true },
   title: { type: String },
   postscript: { type: String },
+  audioUrl: { type: String }, // Phase 5: Voice message URL
   contributor: { type: ContributorSchema, required: true },
   date: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },

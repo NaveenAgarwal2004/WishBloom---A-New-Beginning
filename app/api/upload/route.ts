@@ -27,24 +27,61 @@ export async function POST(request: Request) {
           )
         }
 
+        // Determine file type (image or audio)
+        const isAudio = file.type.startsWith('audio/')
+        const isImage = file.type.startsWith('image/')
+
         // Validate file type - Type-safe check
-        const allowedTypes = FILE_LIMITS.ALLOWED_IMAGE_TYPES as readonly string[]
-        if (!allowedTypes.includes(file.type)) {
+        if (isImage) {
+          const allowedImageTypes = FILE_LIMITS.ALLOWED_IMAGE_TYPES as readonly string[]
+          if (!allowedImageTypes.includes(file.type)) {
+            return NextResponse.json(
+              {
+                success: false,
+                error: ERROR_MESSAGES.INVALID_FILE_TYPE,
+              },
+              { status: 400 }
+            )
+          }
+
+          // Validate image file size
+          if (file.size > FILE_LIMITS.IMAGE_MAX_SIZE_BYTES) {
+            return NextResponse.json(
+              { 
+                success: false, 
+                error: ERROR_MESSAGES.FILE_TOO_LARGE,
+              },
+              { status: 400 }
+            )
+          }
+        } else if (isAudio) {
+          // Phase 5: Audio file validation
+          const allowedAudioTypes = FILE_LIMITS.ALLOWED_AUDIO_TYPES as readonly string[]
+          if (!allowedAudioTypes.includes(file.type)) {
+            return NextResponse.json(
+              {
+                success: false,
+                error: ERROR_MESSAGES.INVALID_AUDIO_TYPE,
+              },
+              { status: 400 }
+            )
+          }
+
+          // Validate audio file size
+          if (file.size > FILE_LIMITS.AUDIO_MAX_SIZE_BYTES) {
+            return NextResponse.json(
+              { 
+                success: false, 
+                error: ERROR_MESSAGES.AUDIO_FILE_TOO_LARGE,
+              },
+              { status: 400 }
+            )
+          }
+        } else {
           return NextResponse.json(
             {
               success: false,
-              error: ERROR_MESSAGES.INVALID_FILE_TYPE,
-            },
-            { status: 400 }
-          )
-        }
-
-        // Validate file size
-        if (file.size > FILE_LIMITS.IMAGE_MAX_SIZE_BYTES) {
-          return NextResponse.json(
-            { 
-              success: false, 
-              error: ERROR_MESSAGES.FILE_TOO_LARGE,
+              error: 'File must be an image or audio file',
             },
             { status: 400 }
           )
@@ -60,21 +97,28 @@ export async function POST(request: Request) {
           public_id: string
         }
 
-        // Upload to Cloudinary
+        // Upload to Cloudinary with resource_type based on file type
         const result = await new Promise<CloudinaryResult>((resolve, reject) => {
+          const uploadOptions: any = {
+            folder: CLOUDINARY_CONFIG.FOLDER,
+            resource_type: isAudio ? 'video' : 'image', // Cloudinary uses 'video' for audio files
+          }
+
+          // Add transformations only for images
+          if (isImage) {
+            uploadOptions.transformation = [
+              { 
+                width: CLOUDINARY_CONFIG.TRANSFORMATION.width, 
+                crop: CLOUDINARY_CONFIG.TRANSFORMATION.crop 
+              },
+              { quality: CLOUDINARY_CONFIG.TRANSFORMATION.quality },
+              { fetch_format: CLOUDINARY_CONFIG.TRANSFORMATION.fetch_format },
+            ]
+          }
+
           cloudinary.uploader
             .upload_stream(
-              {
-                folder: CLOUDINARY_CONFIG.FOLDER,
-                transformation: [
-                  { 
-                    width: CLOUDINARY_CONFIG.TRANSFORMATION.width, 
-                    crop: CLOUDINARY_CONFIG.TRANSFORMATION.crop 
-                  },
-                  { quality: CLOUDINARY_CONFIG.TRANSFORMATION.quality },
-                  { fetch_format: CLOUDINARY_CONFIG.TRANSFORMATION.fetch_format },
-                ],
-              },
+              uploadOptions,
               (error, result) => {
                 if (error) reject(error)
                 else if (result) resolve(result as CloudinaryResult)

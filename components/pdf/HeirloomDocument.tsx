@@ -1,5 +1,5 @@
 import React from 'react'
-import { Document, Page, Text, View, Image, StyleSheet, Font } from '@react-pdf/renderer'
+import { Document, Page, Text, View, Image, StyleSheet, Font, Svg, Circle, Ellipse, G } from '@react-pdf/renderer'
 import type { IContributor, IMemory, IMessage, IGuestbookEntry } from '@/models/WishBloom'
 
 // ✅ DTO type for PDF generation (plain data, no Mongoose Document methods)
@@ -59,6 +59,37 @@ Font.register({
     },
   ],
 })
+
+// ✅ NEW COMPONENT: Vector flower that matches FloralDecoration.tsx exactly
+const PdfFloralIcon = ({ size = 40, color = '#D4859D', opacity = 0.6 }) => {
+  // Original viewBox is 200x200. We render it into the PDF at the requested 'size'.
+  return (
+    <Svg width={size} height={size} viewBox="0 0 200 200">
+      {/* Center circle */}
+      <Circle cx="100" cy="100" r="20" fill={color} opacity={opacity + 0.1} />
+      
+      {/* Cardinal Petals */}
+      <Ellipse cx="100" cy="60" rx="18" ry="35" fill={color} opacity={opacity} />
+      <Ellipse cx="140" cy="100" rx="35" ry="18" fill={color} opacity={opacity} />
+      <Ellipse cx="100" cy="140" rx="18" ry="35" fill={color} opacity={opacity} />
+      <Ellipse cx="60" cy="100" rx="35" ry="18" fill={color} opacity={opacity} />
+      
+      {/* Diagonal Petals (Rotated) */}
+      <G transform="rotate(45, 130, 70)">
+        <Ellipse cx="130" cy="70" rx="25" ry="15" fill={color} opacity={opacity} />
+      </G>
+      <G transform="rotate(-45, 130, 130)">
+        <Ellipse cx="130" cy="130" rx="25" ry="15" fill={color} opacity={opacity} />
+      </G>
+      <G transform="rotate(45, 70, 130)">
+        <Ellipse cx="70" cy="130" rx="25" ry="15" fill={color} opacity={opacity} />
+      </G>
+      <G transform="rotate(-45, 70, 70)">
+        <Ellipse cx="70" cy="70" rx="25" ry="15" fill={color} opacity={opacity} />
+      </G>
+    </Svg>
+  )
+}
 
 // PDF Styles matching WishBloom aesthetic
 const styles = StyleSheet.create({
@@ -299,7 +330,10 @@ export default function HeirloomDocument({ wishbloom }: HeirloomDocumentProps) {
         <Text style={styles.watermark} fixed>WishBloom</Text>
 
         <View style={styles.coverPage}>
-          <Text style={styles.coverFloral}>✿</Text>
+          {/* ✅ REPLACED: Text flower with Vector Icon */}
+          <View style={{ marginBottom: 20 }}>
+            <PdfFloralIcon size={60} color="#D4859D" />
+          </View>
           
           <Text style={styles.coverTitle}>Happy Birthday</Text>
           
@@ -311,7 +345,12 @@ export default function HeirloomDocument({ wishbloom }: HeirloomDocumentProps) {
             </Text>
           )}
           
-          <Text style={styles.coverFloral}>✿ ✿ ✿</Text>
+          {/* ✅ REPLACED: Triple flower divider */}
+          <View style={{ flexDirection: 'row', gap: 15, marginVertical: 20 }}>
+            <PdfFloralIcon size={30} color="#D4A373" opacity={0.4} />
+            <PdfFloralIcon size={40} color="#D4A373" opacity={0.6} />
+            <PdfFloralIcon size={30} color="#D4A373" opacity={0.4} />
+          </View>
           
           <Text style={styles.coverFooter}>
             Created with love by {createdBy.name} • {formattedDate}
@@ -496,7 +535,12 @@ export default function HeirloomDocument({ wishbloom }: HeirloomDocumentProps) {
         <Text style={styles.watermark} fixed>WishBloom</Text>
         
         <View style={[styles.coverPage, { justifyContent: 'center' }]}>
-          <Text style={styles.coverFloral}>✿ ✿ ✿</Text>
+          {/* ✅ REPLACED: Closing floral divider */}
+          <View style={{ flexDirection: 'row', gap: 15, marginTop: 30 }}>
+            <PdfFloralIcon size={30} color="#D4859D" opacity={0.4} />
+            <PdfFloralIcon size={30} color="#D4859D" opacity={0.4} />
+            <PdfFloralIcon size={30} color="#D4859D" opacity={0.4} />
+          </View>
           
           <Text style={[styles.coverSubtitle, { fontSize: 24, marginTop: 30 }]}>
             May these memories bring you joy
@@ -506,7 +550,10 @@ export default function HeirloomDocument({ wishbloom }: HeirloomDocumentProps) {
             for years to come
           </Text>
           
-          <Text style={[styles.coverFloral, { marginTop: 40, fontSize: 36 }]}>✿</Text>
+          {/* ✅ REPLACED: Final flower */}
+          <View style={{ marginTop: 40 }}>
+            <PdfFloralIcon size={50} color="#D4859D" />
+          </View>
           
           <Text style={[styles.coverFooter, { fontSize: 10, marginTop: 60 }]}>
             Created with WishBloom

@@ -14,7 +14,7 @@
 [![WCAG 2.1 AA](https://img.shields.io/badge/Accessibility-WCAG%202.1%20AA-brightgreen?style=flat-square)](https://www.w3.org/WAI/WCAG2AA-Conformance)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](CONTRIBUTING.md)
 
-[Live Demo](https://wishbloom-a-new-beginning.vercel.app/) • [Documentation](#documentation) • [Report Bug](https://github.com/NaveenAgarwal2004/WishBloom/issues) • [Request Feature](https://github.com/NaveenAgarwal2004/WishBloom/issues)
+[Live Demo](https://wishbloom-a-new-beginning.vercel.app/) • [Documentation](#documentation) • [Report Bug](https://github.com/NaveenAgarwal2004/WishBloom---A-New-Beginning/issues) • [Request Feature](https://github.com/NaveenAgarwal2004/WishBloom---A-New-Beginning)
 
 </div>
 

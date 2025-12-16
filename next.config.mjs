@@ -141,7 +141,7 @@ const cspHeader = `
   style-src 'self' 'unsafe-inline';
   img-src 'self' data: https: blob:;
   font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net;
-  media-src 'self' data: blob:;
+  media-src 'self' data: blob: https://res.cloudinary.com https://*.cloudinary.com;
   connect-src 'self' data: blob: https://va.vercel-scripts.com https://vercel.live https://*.mongodb.net https://*.cloudinary.com https://*.upstash.io https://fonts.gstatic.com https://cdn.jsdelivr.net;
   frame-src 'self' https://vercel.live;
   object-src 'none';

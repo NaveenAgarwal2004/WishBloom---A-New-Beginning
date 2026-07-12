@@ -5,14 +5,10 @@ import WishBloom from '@/models/WishBloom'
 
 /**
  * Base URL logic:
- * - Prefer explicit NEXT_PUBLIC_BASE_URL (set in Vercel)
- * - Fallback to NEXT_PUBLIC_VERCEL_URL (Vercel env for preview/prod without protocol)
- * - Finally fallback to the production URL string
+ * We hardcode the production URL to ensure Vercel preview domains NEVER leak into our sitemaps, 
+ * which could cause Google to index duplicate Vercel subdomains.
  */
-const BASE =
-  process.env.NEXT_PUBLIC_BASE_URL ||
-  (process.env.NEXT_PUBLIC_VERCEL_URL ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}` : '') ||
-  'https://wishblooms.in'
+const BASE = 'https://wishblooms.in'
 
 /**
  * Fetch dynamic WishBloom pages from MongoDB

@@ -36,67 +36,49 @@ async function getDynamicPages(): Promise<string[]> {
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Static routes - always available
   const staticRoutes: MetadataRoute.Sitemap = [
-    {
-      url: BASE,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 1.0,
-    },
-    {
-      url: `${BASE}/create`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: `${BASE}/dashboard`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.7,
-    },
-    {
-      url: `${BASE}/auth/signin`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.3,
-    },
-    {
-      url: `${BASE}/auth/signup`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.3,
-    },
-    {
-      url: `${BASE}/privacy`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.2,
-    },
-    {
-      url: `${BASE}/terms`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.2,
-    },
-    {
-      url: `${BASE}/about`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: `${BASE}/how-it-works`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: `${BASE}/blog`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-  ]
+  {
+    url: BASE,
+    lastModified: new Date(),
+    changeFrequency: 'weekly',
+    priority: 1.0,
+  },
+  {
+    url: `${BASE}/create`,
+    lastModified: new Date(),
+    changeFrequency: 'monthly',
+    priority: 0.8,
+  },
+  {
+    url: `${BASE}/privacy`,
+    lastModified: new Date(),
+    changeFrequency: 'monthly',
+    priority: 0.2,
+  },
+  {
+    url: `${BASE}/terms`,
+    lastModified: new Date(),
+    changeFrequency: 'monthly',
+    priority: 0.2,
+  },
+  {
+    url: `${BASE}/about`,
+    lastModified: new Date(),
+    changeFrequency: 'monthly',
+    priority: 0.8,
+  },
+  {
+    url: `${BASE}/how-it-works`,
+    lastModified: new Date(),
+    changeFrequency: 'monthly',
+    priority: 0.8,
+  },
+  {
+    url: `${BASE}/blog`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly',
+    priority: 0.8,
+  },
+]
 
   try {
     // Set timeout for entire dynamic page fetch (5 seconds max)

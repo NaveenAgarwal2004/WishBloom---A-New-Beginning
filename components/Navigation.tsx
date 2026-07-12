@@ -50,6 +50,18 @@ export default function Navigation() {
                       </Button>
                     </Link>
 
+                    {/* Journal/Blog Link */}
+                    <Link href="/blog">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="gap-2 font-heading"
+                        data-testid="nav-blog-btn"
+                      >
+                        <span className="hidden sm:inline">Journal</span>
+                      </Button>
+                    </Link>
+
                     {/* Create Link */}
                     <Link href="/create">
                       <Button
@@ -94,6 +106,17 @@ export default function Navigation() {
                       <LogIn size={18} />
                       Sign In
                     </Button>
+
+                    {/* Journal/Blog Link */}
+                    <Link href="/blog">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="gap-2 font-heading"
+                      >
+                        <span className="hidden sm:inline">Journal</span>
+                      </Button>
+                    </Link>
 
                     {/* Create Button */}
                     <Link href="/create">

@@ -5,7 +5,7 @@ import { requireBlogAdmin } from '@/lib/blogAdmin'
 
 // GET — Fetch a single blog post by slug
 export async function GET(
-  request: Request,
+  _request: Request,
   { params }: { params: { slug: string } }
 ) {
   try {
@@ -58,7 +58,7 @@ export async function PATCH(
 
 // DELETE — Delete a blog post
 export async function DELETE(
-  request: Request,
+  _request: Request,
   { params }: { params: { slug: string } }
 ) {
   const session = await requireBlogAdmin()

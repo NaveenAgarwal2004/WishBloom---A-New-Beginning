@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Plus, Edit, Trash2, Eye, EyeOff, ArrowLeft, FileText } from 'lucide-react'
 
@@ -22,7 +21,6 @@ interface BlogPostListProps {
 }
 
 export default function BlogPostList({ posts: initialPosts }: BlogPostListProps) {
-  const router = useRouter()
   const [posts, setPosts] = useState(initialPosts)
   const [deleting, setDeleting] = useState<string | null>(null)
 

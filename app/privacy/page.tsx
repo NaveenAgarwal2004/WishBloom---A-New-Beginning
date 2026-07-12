@@ -5,6 +5,28 @@ import { ArrowLeft } from 'lucide-react'
 export const metadata: Metadata = {
   title: 'Privacy Policy | WishBloom',
   description: 'Learn how WishBloom protects and handles your personal information',
+  keywords: [
+    'free birthday memory book online',
+    'birthday gift ideas',
+    'digital scrapbook birthday',
+    'online birthday card maker',
+    'birthday memory book creator'
+  ],
+  openGraph: {
+    title: 'Privacy Policy | WishBloom',
+    description: 'Learn how WishBloom protects and handles your personal information',
+    url: 'https://wishblooms.in/privacy',
+    siteName: 'WishBloom',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Privacy Policy | WishBloom',
+    description: 'Learn how WishBloom protects and handles your personal information',
+  },
+  alternates: {
+    canonical: 'https://wishblooms.in/privacy',
+  },
 }
 
 export default function PrivacyPolicyPage() {
@@ -12,7 +34,7 @@ export default function PrivacyPolicyPage() {
     <main className="min-h-screen bg-warmCream-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         {/* Back Button */}
-        <Link 
+        <Link
           href="/"
           className="inline-flex items-center gap-2 text-body font-body text-warmCream-700 hover:text-sepiaInk transition-colors mb-8"
         >
@@ -39,8 +61,8 @@ export default function PrivacyPolicyPage() {
           <section className="bg-white/60 backdrop-blur-sm rounded-2xl p-8 border border-warmCream-200 shadow-soft">
             <h2 className="text-h3 font-heading text-sepiaInk mb-4">Welcome to WishBloom</h2>
             <p className="text-body-sm italic text-warmCream-600 mt-4">
-              At WishBloom, we believe in creating beautiful digital memories while respecting your privacy. 
-              This Privacy Policy explains how we collect, use, protect, and share information about you when 
+              At WishBloom, we believe in creating beautiful digital memories while respecting your privacy.
+              This Privacy Policy explains how we collect, use, protect, and share information about you when
               you use our platform to create and share birthday memory experiences.
             </p>
           </section>
@@ -48,7 +70,7 @@ export default function PrivacyPolicyPage() {
           {/* Information We Collect */}
           <section className="bg-white/60 backdrop-blur-sm rounded-2xl p-8 border border-warmCream-200 shadow-soft">
             <h2 className="text-h3 font-heading text-sepiaInk mb-4">Information We Collect</h2>
-            
+
             <h3 className="text-h5 font-heading text-fadedGold mt-6 mb-3">Information You Provide</h3>
             <ul className="space-y-2 text-body font-body text-warmCream-700">
               <li><strong>Account Information:</strong> Name, email address, and password when you create an account</li>
@@ -83,7 +105,7 @@ export default function PrivacyPolicyPage() {
             <h2 className="text-h3 font-heading text-sepiaInk mb-4">Data Storage and Security</h2>
             <div className="space-y-4 text-body font-body text-warmCream-700">
               <p>
-                <strong>Where We Store Your Data:</strong> Your WishBloom data is stored securely on MongoDB Atlas 
+                <strong>Where We Store Your Data:</strong> Your WishBloom data is stored securely on MongoDB Atlas
                 servers. Images are hosted on Cloudinary&apos;s secure CDN infrastructure.
               </p>
               <p>
@@ -97,7 +119,7 @@ export default function PrivacyPolicyPage() {
                 <li>🔐 Secure authentication via NextAuth.js</li>
               </ul>
               <p className="text-body-sm italic text-warmCream-600 mt-4">
-                While we implement strong security measures, no method of transmission over the Internet is 100% secure. 
+                While we implement strong security measures, no method of transmission over the Internet is 100% secure.
                 We cannot guarantee absolute security.
               </p>
             </div>
@@ -142,8 +164,8 @@ export default function PrivacyPolicyPage() {
           <section className="bg-white/60 backdrop-blur-sm rounded-2xl p-8 border border-warmCream-200 shadow-soft">
             <h2 className="text-h3 font-heading text-sepiaInk mb-4">Children&apos;s Privacy</h2>
             <p className="text-body font-body text-warmCream-700">
-              WishBloom is not intended for children under 13. We do not knowingly collect personal information from 
-              children under 13. If you believe we have collected information from a child under 13, please contact us 
+              WishBloom is not intended for children under 13. We do not knowingly collect personal information from
+              children under 13. If you believe we have collected information from a child under 13, please contact us
               immediately, and we will delete it.
             </p>
           </section>
@@ -168,7 +190,7 @@ export default function PrivacyPolicyPage() {
           <section className="bg-white/60 backdrop-blur-sm rounded-2xl p-8 border border-warmCream-200 shadow-soft">
             <h2 className="text-h3 font-heading text-sepiaInk mb-4">International Users</h2>
             <p className="text-body font-body text-warmCream-700">
-              WishBloom is operated from India. If you access our service from outside India, your information may be 
+              WishBloom is operated from India. If you access our service from outside India, your information may be
               transferred to and processed in India. By using WishBloom, you consent to this transfer.
             </p>
           </section>
@@ -177,8 +199,8 @@ export default function PrivacyPolicyPage() {
           <section className="bg-white/60 backdrop-blur-sm rounded-2xl p-8 border border-warmCream-200 shadow-soft">
             <h2 className="text-h3 font-heading text-sepiaInk mb-4">Changes to This Policy</h2>
             <p className="text-body font-body text-warmCream-700">
-              We may update this Privacy Policy from time to time. We will notify you of significant changes by email 
-              or by posting a notice on our website. Your continued use of WishBloom after changes are posted constitutes 
+              We may update this Privacy Policy from time to time. We will notify you of significant changes by email
+              or by posting a notice on our website. Your continued use of WishBloom after changes are posted constitutes
               acceptance of the updated policy.
             </p>
           </section>

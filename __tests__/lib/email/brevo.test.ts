@@ -25,7 +25,7 @@ describe('Brevo Email Service', () => {
       // the structure through the public API
       const testData: TestEmailData = {
         recipientName: 'John Doe',
-        wishbloomUrl: 'https://wishbloom.app/test',
+        wishbloomUrl: 'https://wishblooms.in/test',
         senderName: 'Jane Smith',
         customMessage: 'Happy birthday!',
       }
@@ -39,7 +39,7 @@ describe('Brevo Email Service', () => {
     it('should handle missing custom message', () => {
       const testData: TestEmailData = {
         recipientName: 'John Doe',
-        wishbloomUrl: 'https://wishbloom.app/test',
+        wishbloomUrl: 'https://wishblooms.in/test',
         senderName: 'Jane Smith',
       }
       expect(testData.customMessage).toBeUndefined()

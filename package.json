@@ -99,6 +99,7 @@
     "@types/react-dom": "^18.2.17",
     "@typescript-eslint/eslint-plugin": "^8.46.4",
     "autoprefixer": "^10.4.16",
+    "baseline-browser-mapping": "^2.10.43",
     "critters": "^0.0.23",
     "cross-env": "^10.1.0",
     "eslint": "^9.39.1",

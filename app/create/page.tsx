@@ -17,11 +17,11 @@ import { useState } from 'react'
 
 export default function CreatePage() {
   const currentStep = useWishBloomStore((state) => state.currentStep)
-  
+
   // Use initial state instead of useEffect to avoid cascading renders
   const [isMounted] = useState(true)
   const isMobileView = useMobile()
-  
+
   // Auto-save hook
   const { isAutoSaving, lastSaved } = useAutoSave()
 
@@ -74,10 +74,10 @@ export default function CreatePage() {
             </div>
             <div className="w-10" /> {/* Balance spacer */}
           </div>
-          
+
           {/* Progress Bar (Integrated into Header) */}
           <div className="absolute bottom-0 left-0 h-1 w-full bg-warmCream-200">
-            <motion.div 
+            <motion.div
               className="h-full bg-burntSienna"
               initial={{ width: 0 }}
               animate={{ width: `${(currentStep / 6) * 100}%` }}
@@ -140,14 +140,13 @@ export default function CreatePage() {
             {steps.slice(0, 5).map((item, index) => (
               <div key={item.step} className="flex items-center flex-1">
                 <div className="flex flex-col items-center">
-                   <div
-                    className={`w-12 h-12 md:w-16 md:h-16 rounded-full flex items-center justify-center font-heading font-bold text-h6 transition-all ${
-                      currentStep === item.step
+                  <div
+                    className={`w-12 h-12 md:w-16 md:h-16 rounded-full flex items-center justify-center font-heading font-bold text-h6 transition-all ${currentStep === item.step
                         ? 'bg-fadedGold text-white scale-110'
                         : currentStep > item.step
-                        ? 'bg-mossGreen text-white'
-                        : 'bg-warmCream-300 text-warmCream-600'
-                    }`}
+                          ? 'bg-mossGreen text-white'
+                          : 'bg-warmCream-300 text-warmCream-600'
+                      }`}
                   >
                     {currentStep > item.step ? <Check size={24} /> : item.step}
                   </div>
@@ -157,9 +156,8 @@ export default function CreatePage() {
                 </div>
                 {index < 4 && (
                   <div
-                    className={`flex-1 h-1 mx-2 transition-all ${
-                      currentStep > item.step ? 'bg-mossGreen' : 'bg-warmCream-300'
-                    }`}
+                    className={`flex-1 h-1 mx-2 transition-all ${currentStep > item.step ? 'bg-mossGreen' : 'bg-warmCream-300'
+                      }`}
                   />
                 )}
               </div>

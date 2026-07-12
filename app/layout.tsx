@@ -90,50 +90,62 @@ export const viewport: Viewport = {
   themeColor: '#FDFBF7',
 }
 
-// ✅ Clean metadata object (no more deprecated viewport key)
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'),
-  title: 'WishBloom - Pressed Flower Birthday Memories',
-  description:
-    'Create beautiful, interactive birthday memory books. Preserve and share memories with pressed flowers aesthetic.',
-  keywords: ['birthday', 'memories', 'gift', 'scrapbook', 'pressed flowers'],
+  metadataBase: new URL('https://wishblooms.in'),
+  title: 'Free Birthday Memory Book Creator Online | WishBloom',
+  description: 'Create a free birthday memory book online. Collect memories, photos, letters, and poems from friends in a beautiful pressed flower scrapbook. No signup needed.',
+  keywords: [
+    'free birthday memory book online',
+    'birthday gift ideas',
+    'digital scrapbook birthday',
+    'online birthday card maker',
+    'birthday memory book creator'
+  ],
 
   // ✅ Google Search Console Verification
   verification: {
     google: 'Oii_nGFCUPfTxOYY2MLI2g9KHQ12O4LDV7BS1JJct9c',
   },
-  
+
   // ✅ Part 10: PWA Manifest
   manifest: '/manifest.json',
-  
+
   // ✅ Mobile Web App configuration (replaces deprecated apple-mobile-web-app-capable)
   other: {
     'mobile-web-app-capable': 'yes',
   },
-  
+
   // ✅ Apple Web App configuration
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
     title: 'WishBloom',
   },
-  
+
   // ✅ PWA Application Name
   applicationName: 'WishBloom',
-  
+
   openGraph: {
-    title: 'WishBloom - Pressed Flower Birthday Memories',
-    description: "Preserve and share life's most precious moments",
+    title: 'Free Birthday Memory Book Creator Online | WishBloom',
+    description: 'Create a free birthday memory book online. Collect memories, photos, letters, and poems from friends in a beautiful pressed flower scrapbook. No signup needed.',
     type: 'website',
     locale: 'en_US',
-    url: process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000',
+    url: 'https://wishblooms.in',
     siteName: 'WishBloom',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Free Birthday Memory Book Creator Online | WishBloom',
+    description: 'Create a free birthday memory book online. Collect memories, photos, letters, and poems from friends in a beautiful pressed flower scrapbook. No signup needed.',
+  },
+  alternates: {
+    canonical: 'https://wishblooms.in',
   },
   robots: {
     index: true,
     follow: true,
   },
-  
+
   // ✅ Part 10: Additional PWA icons
   icons: {
     icon: [

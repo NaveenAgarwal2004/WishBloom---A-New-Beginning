@@ -15,7 +15,7 @@ export default function SEO({
   title = 'WishBloom - Pressed Flower Birthday Memories',
   description = "Create beautiful, interactive birthday memory books. Preserve and share life's most precious moments in a digital pressed flower scrapbook.",
   image = '/og-image.png',
-  url = 'https://wishbloom.app',
+  url = 'https://wishblooms.in',
   type = 'website',
   publishedTime,
   author,

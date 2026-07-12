@@ -12,7 +12,7 @@ import WishBloom from '@/models/WishBloom'
 const BASE =
   process.env.NEXT_PUBLIC_BASE_URL ||
   (process.env.NEXT_PUBLIC_VERCEL_URL ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}` : '') ||
-  'https://wishbloom-a-new-beginning.vercel.app'
+  'https://wishblooms.in'
 
 /**
  * Fetch dynamic WishBloom pages from MongoDB
@@ -21,7 +21,7 @@ const BASE =
 async function getDynamicPages(): Promise<string[]> {
   try {
     await dbConnect()
-    
+
     // Fetch all non-archived WishBlooms with timeout protection
     const wishblooms = await WishBloom.find({ isArchived: { $ne: true } })
       .select('uniqueUrl')
@@ -81,6 +81,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.2,
+    },
+    {
+      url: `${BASE}/about`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
+      url: `${BASE}/how-it-works`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
+      url: `${BASE}/blog`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.8,
     },
   ]
 

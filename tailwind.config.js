@@ -165,7 +165,116 @@ module.exports = {
         'bounce': 'cubic-bezier(0.34, 1.56, 0.64, 1)',
         'dramatic': 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
       },
+      typography: (theme) => ({
+        warm: {
+          css: {
+            '--tw-prose-body': theme('colors.warmCream.800'),
+            '--tw-prose-headings': theme('colors.sepiaInk'),
+            '--tw-prose-lead': theme('colors.warmCream.700'),
+            '--tw-prose-links': theme('colors.burntSienna'),
+            '--tw-prose-bold': theme('colors.deepPlum'),
+            '--tw-prose-counters': theme('colors.fadedGold'),
+            '--tw-prose-bullets': theme('colors.mossGreen'),
+            '--tw-prose-hr': theme('colors.warmCream.300'),
+            '--tw-prose-quotes': theme('colors.sepiaInk'),
+            '--tw-prose-quote-borders': theme('colors.fadedGold'),
+            '--tw-prose-captions': theme('colors.warmCream.600'),
+            '--tw-prose-code': theme('colors.deepPlum'),
+            '--tw-prose-pre-code': theme('colors.warmCream.50'),
+            '--tw-prose-pre-bg': theme('colors.deepPlum'),
+            '--tw-prose-th-borders': theme('colors.warmCream.300'),
+            '--tw-prose-td-borders': theme('colors.warmCream.200'),
+            a: {
+              color: theme('colors.burntSienna'),
+              textDecoration: 'none',
+              fontWeight: '500',
+              borderBottom: `1px solid ${theme('colors.fadedGold')}80`,
+              transition: 'all 0.2s ease',
+              '&:hover': {
+                color: theme('colors.sepiaInk'),
+                borderBottomColor: theme('colors.sepiaInk'),
+              },
+            },
+            h1: {
+              fontFamily: theme('fontFamily.heading').join(', '),
+              fontWeight: '700',
+              marginTop: '2em',
+              marginBottom: '1em',
+            },
+            h2: {
+              fontFamily: theme('fontFamily.heading').join(', '),
+              fontWeight: '600',
+              color: theme('colors.deepPlum'),
+              marginTop: '2em',
+              marginBottom: '1em',
+            },
+            h3: {
+              fontFamily: theme('fontFamily.heading').join(', '),
+              fontWeight: '600',
+              color: theme('colors.mossGreen'),
+            },
+            p: {
+              fontFamily: theme('fontFamily.body').join(', '),
+              lineHeight: '1.8',
+              marginBottom: '1.5em',
+            },
+            li: {
+              fontFamily: theme('fontFamily.body').join(', '),
+            },
+            blockquote: {
+              fontFamily: theme('fontFamily.accent').join(', '),
+              fontStyle: 'italic',
+              borderLeftWidth: '4px',
+              borderLeftColor: theme('colors.fadedGold'),
+              backgroundColor: theme('colors.warmCream.100'),
+              padding: '1em 1.5em',
+              borderRadius: '0 0.5rem 0.5rem 0',
+              marginTop: '2em',
+              marginBottom: '2em',
+              color: theme('colors.sepiaInk'),
+            },
+            'blockquote p:first-of-type::before': {
+              content: 'none',
+            },
+            'blockquote p:last-of-type::after': {
+              content: 'none',
+            },
+            ul: {
+              listStyleType: 'disc',
+            },
+            ol: {
+              listStyleType: 'decimal',
+            },
+            'ul li::marker': {
+              color: theme('colors.mossGreen'),
+            },
+            'ol li::marker': {
+              color: theme('colors.fadedGold'),
+              fontWeight: '600',
+            },
+            strong: {
+              color: theme('colors.deepPlum'),
+              fontWeight: '600',
+            },
+            hr: {
+              borderColor: theme('colors.warmCream.300'),
+              borderTopWidth: '1px',
+              marginTop: '3em',
+              marginBottom: '3em',
+            },
+            img: {
+              borderRadius: theme('borderRadius.2xl'),
+              boxShadow: theme('boxShadow.soft'),
+              marginTop: '2em',
+              marginBottom: '2em',
+            },
+          },
+        },
+      }),
     }
   },
-  plugins: [import("tailwindcss-animate")],
+  plugins: [
+    import("tailwindcss-animate"),
+    require('@tailwindcss/typography'),
+  ],
 }

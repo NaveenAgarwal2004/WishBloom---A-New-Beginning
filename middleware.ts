@@ -23,6 +23,7 @@ const publicRoutes = [
   '/sitemap.xml',
   '/manifest.json',
   '/create',
+  '/blog',
 ]
 
 // Define routes that require authentication

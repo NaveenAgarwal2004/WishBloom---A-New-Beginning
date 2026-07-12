@@ -39,16 +39,20 @@ interface DashboardBloom {
 interface DashboardClientProps {
   blooms: DashboardBloom[]
   userName: string
+  userEmail: string
 }
 
 /**
  * ✅ Part 4: Dashboard Client Component
  * Displays user's created WishBlooms with actions
  */
-export default function DashboardClient({ blooms, userName }: DashboardClientProps) {
+export default function DashboardClient({ blooms, userName, userEmail }: DashboardClientProps) {
   const { toast } = useToast()
   const [copiedId, setCopiedId] = useState<string | null>(null)
   const [downloadingId, setDownloadingId] = useState<string | null>(null)
+
+  // Check if current user is the blog admin
+  const isBlogAdmin = userEmail === 'agarwalnaveen9001@gmail.com'
 
   // Copy link to clipboard
   const handleCopyLink = (uniqueUrl: string, id: string) => {
@@ -132,12 +136,12 @@ export default function DashboardClient({ blooms, userName }: DashboardClientPro
           </p>
         </motion.div>
 
-        {/* Create New Button */}
+        {/* Buttons */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="mt-6"
+          className="mt-6 flex flex-wrap gap-4"
         >
           <Link href="/create">
             <Button
@@ -148,6 +152,18 @@ export default function DashboardClient({ blooms, userName }: DashboardClientPro
               Create New WishBloom
             </Button>
           </Link>
+
+          {isBlogAdmin && (
+            <Link href="/dashboard/blog">
+              <Button
+                size="lg"
+                variant="outline"
+                className="font-heading font-bold gap-2 border-mossGreen text-mossGreen hover:bg-mossGreen/10"
+              >
+                Manage Blog
+              </Button>
+            </Link>
+          )}
         </motion.div>
       </div>
 

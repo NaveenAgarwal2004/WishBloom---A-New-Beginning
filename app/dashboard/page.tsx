@@ -49,6 +49,7 @@ export default async function DashboardPage() {
       <DashboardClient 
         blooms={serializedBlooms} 
         userName={session.user.name || 'User'}
+        userEmail={session.user.email || ''}
       />
     </div>
   )

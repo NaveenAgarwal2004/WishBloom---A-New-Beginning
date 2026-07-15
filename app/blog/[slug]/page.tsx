@@ -178,6 +178,23 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                     prose-img:shadow-medium prose-img:border-4 prose-img:border-white prose-img:-rotate-1"
                   dangerouslySetInnerHTML={{ __html: post.content }}
                 />
+
+                {/* Visible FAQ Section */}
+                {post.faqSchema && post.faqSchema.mainEntity && post.faqSchema.mainEntity.length > 0 && (
+                  <div className="relative z-10 mt-16 pt-12 border-t border-warmCream-200">
+                    <h2 className="text-h3 font-heading font-bold text-sepiaInk mb-8">Frequently Asked Questions</h2>
+                    <div className="space-y-6">
+                      {post.faqSchema.mainEntity.map((faq: any, index: number) => (
+                        <div key={index} className="bg-warmCream-50/50 rounded-xl p-6 border border-warmCream-200">
+                          <h3 className="text-lg font-heading font-bold text-sepiaInk mb-3">{faq.name}</h3>
+                          <p className="text-body font-body text-warmCream-700 leading-relaxed">
+                            {faq.acceptedAnswer.text}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
               
               {/* Footer */}

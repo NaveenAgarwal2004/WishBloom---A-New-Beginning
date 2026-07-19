@@ -31,6 +31,7 @@ interface BlogEditorFormProps {
     tier: number
     readTime: string
     faqSchema?: { mainEntity?: FaqItem[] } | null
+    keywords?: string[]
   }
   mode: 'create' | 'edit'
 }
@@ -56,9 +57,16 @@ export default function BlogEditorForm({ initialData, mode }: BlogEditorFormProp
   const [published, setPublished] = useState(initialData?.published || false)
   const [tier, setTier] = useState(initialData?.tier || 2)
   const [readTime, setReadTime] = useState(initialData?.readTime || '3 min read')
-  const [faqItems, setFaqItems] = useState<FaqItem[]>(
-    initialData?.faqSchema?.mainEntity || []
-  )
+  const [faqItems, setFaqItems] = useState<FaqItem[]>(() => {
+    const entities = initialData?.faqSchema?.mainEntity
+    if (!entities || !Array.isArray(entities)) return []
+    // Map from JSON-LD shape ({ name, acceptedAnswer.text }) back to editor shape ({ question, answer })
+    return entities.map((e: any) => ({
+      question: e.question || e.name || '',
+      answer: e.answer || e.acceptedAnswer?.text || '',
+    }))
+  })
+  const [keywords, setKeywords] = useState(initialData?.keywords?.join(', ') || '')
 
   const handleTitleChange = (value: string) => {
     setTitle(value)
@@ -110,7 +118,12 @@ export default function BlogEditorForm({ initialData, mode }: BlogEditorFormProp
             }
           : null
 
-      const body = { title, slug, description, content, published, tier, readTime, faqSchema }
+      const keywordsArray = keywords
+        .split(',')
+        .map((k) => k.trim())
+        .filter(Boolean)
+
+      const body = { title, slug, description, content, published, tier, readTime, keywords: keywordsArray, faqSchema }
 
       const url = mode === 'create' ? '/api/blog' : `/api/blog/${initialData?.slug}`
       const method = mode === 'create' ? 'POST' : 'PATCH'
@@ -230,6 +243,21 @@ export default function BlogEditorForm({ initialData, mode }: BlogEditorFormProp
                 className="w-full px-4 py-3 bg-white/60 border border-warmCream-300 rounded-xl text-body font-body text-sepiaInk placeholder:text-warmCream-400 focus:outline-none focus:ring-2 focus:ring-fadedGold/50 focus:border-fadedGold transition-colors"
               />
             </div>
+          </div>
+
+          {/* Keywords */}
+          <div>
+            <label className="block text-body-sm font-heading text-sepiaInk mb-2">
+              SEO Keywords
+            </label>
+            <input
+              type="text"
+              value={keywords}
+              onChange={(e) => setKeywords(e.target.value)}
+              placeholder="birthday scrapbook, memory book, online gift (comma-separated)"
+              className="w-full px-4 py-3 bg-white/60 border border-warmCream-300 rounded-xl text-body font-body text-sepiaInk placeholder:text-warmCream-400 focus:outline-none focus:ring-2 focus:ring-fadedGold/50 focus:border-fadedGold transition-colors"
+            />
+            <p className="mt-1 text-caption text-warmCream-500 font-mono">Comma-separated keywords for the meta tag</p>
           </div>
 
           {/* Rich Text Editor */}

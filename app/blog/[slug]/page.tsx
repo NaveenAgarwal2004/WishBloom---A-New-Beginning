@@ -30,6 +30,8 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   return {
     title: `${post.title} | WishBloom`,
     description: post.description,
+    keywords: post.keywords || [],
+    robots: { index: true, follow: true },
     openGraph: {
       title: post.title,
       description: post.description,
@@ -179,7 +181,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                   dangerouslySetInnerHTML={{ __html: post.content }}
                 />
 
-                {/* Visible FAQ Section */}
+                {/* FAQ Section */}
                 {post.faqSchema && post.faqSchema.mainEntity && post.faqSchema.mainEntity.length > 0 && (
                   <div className="relative z-10 mt-16 pt-12 border-t border-warmCream-200">
                     <h2 className="text-h3 font-heading font-bold text-sepiaInk mb-8">Frequently Asked Questions</h2>

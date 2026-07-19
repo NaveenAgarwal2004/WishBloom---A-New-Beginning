@@ -9,6 +9,7 @@ export interface IBlogPost extends Document {
   published: boolean
   tier: 1 | 2 | 3
   readTime: string
+  keywords?: string[]
   faqSchema?: Record<string, unknown>
   author: {
     name: string
@@ -28,6 +29,7 @@ const BlogPostSchema = new Schema<IBlogPost>(
     published: { type: Boolean, default: false },
     tier: { type: Number, enum: [1, 2, 3], default: 2 },
     readTime: { type: String, default: '3 min read' },
+    keywords: [{ type: String }],
     faqSchema: { type: Schema.Types.Mixed },
     author: {
       name: { type: String, required: true },

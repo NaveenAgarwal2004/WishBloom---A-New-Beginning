@@ -49,7 +49,7 @@ export async function POST(request: Request) {
     await dbConnect()
     const body = await request.json()
 
-    const { title, slug, description, content, published, tier, readTime, faqSchema } = body
+    const { title, slug, description, content, published, tier, readTime, keywords, faqSchema } = body
 
     if (!title || !slug || !description || !content) {
       return NextResponse.json(
@@ -72,6 +72,7 @@ export async function POST(request: Request) {
       published: published || false,
       tier: tier || 2,
       readTime: readTime || '3 min read',
+      keywords: keywords || [],
       faqSchema: faqSchema || null,
       author: {
         name: session.user?.name || 'Naveen Agarwal',

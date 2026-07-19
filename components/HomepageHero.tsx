@@ -40,16 +40,19 @@ export default function HomepageHero() {
           </Link>
         </motion.div>
 
-        <motion.section 
-          aria-label="What is WishBloom" 
-          className="bg-white/60 backdrop-blur-sm rounded-2xl p-8 md:p-10 border border-warmCream-200 shadow-soft max-w-3xl mx-auto text-left"
+        <motion.section
+          aria-label="What is WishBloom"
+          className="mt-6 max-w-2xl mx-auto text-center"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}
         >
-          <h3 className="text-h4 font-heading text-sepiaInk mb-4">What is WishBloom?</h3>
-          <p className="text-body font-body text-warmCream-700 leading-relaxed">
-            WishBloom is a free, collaborative online birthday memory book creator. Instead of buying a traditional greeting card, you can invite friends and family to upload their favorite photos, write personal letters, and add meaningful quotes to a stunning, digital pressed-flower scrapbook. When it's ready, just send the link to the birthday person—no registration or app download required to view their surprise!
+          <p className="text-sm font-body text-warmCream-600 leading-relaxed">
+            WishBloom is a free online birthday memory book creator. You collect photos
+            and heartfelt messages from friends and family — WishBloom turns them into a
+            beautiful interactive digital scrapbook, complete with a pressed flower aesthetic
+            and a microphone-powered candle-blowing moment, that the birthday person opens
+            via a single shared link. Completely free. No app. No signup needed to view.
           </p>
         </motion.section>
       </div>

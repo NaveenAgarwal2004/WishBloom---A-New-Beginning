@@ -14,22 +14,35 @@ const BASE = 'https://wishblooms.in'
  * Fetch dynamic WishBloom pages from MongoDB
  * Returns array of uniqueUrl strings
  */
-async function getDynamicPages(): Promise<string[]> {
+import BlogPost from '@/models/BlogPost'
+
+/**
+ * Fetch dynamic WishBloom pages and published BlogPosts from MongoDB
+ */
+async function getDynamicPages(): Promise<{ wishbloomUrls: string[]; blogPosts: { slug: string; updatedAt?: Date }[] }> {
   try {
     await dbConnect()
 
-    // Fetch all non-archived WishBlooms with timeout protection
-    const wishblooms = await WishBloom.find({ isArchived: { $ne: true } })
-      .select('uniqueUrl')
-      .lean()
-      .maxTimeMS(4000) // 4 second MongoDB timeout
-      .exec()
+    const [wishblooms, posts] = await Promise.all([
+      WishBloom.find({ isArchived: { $ne: true } })
+        .select('uniqueUrl')
+        .lean()
+        .maxTimeMS(4000)
+        .exec(),
+      BlogPost.find({ published: true })
+        .select('slug updatedAt')
+        .lean()
+        .maxTimeMS(4000)
+        .exec()
+    ])
 
-    return wishblooms.map((wb: { uniqueUrl: string }) => wb.uniqueUrl).filter(Boolean)
+    return {
+      wishbloomUrls: wishblooms.map((wb: any) => wb.uniqueUrl).filter(Boolean),
+      blogPosts: posts.map((p: any) => ({ slug: p.slug, updatedAt: p.updatedAt }))
+    }
   } catch (error) {
     console.error('Error fetching dynamic pages for sitemap:', error)
-    // Return empty array on error - static pages will still work
-    return []
+    return { wishbloomUrls: [], blogPosts: [] }
   }
 }
 
@@ -81,19 +94,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 ]
 
   try {
-    // Set timeout for entire dynamic page fetch (5 seconds max)
-    const timeoutPromise = new Promise<string[]>((_, reject) => {
+    const timeoutPromise = new Promise<{ wishbloomUrls: string[]; blogPosts: { slug: string; updatedAt?: Date }[] }>((_, reject) => {
       setTimeout(() => reject(new Error('Sitemap generation timeout')), 5000)
     })
 
-    const dynamicPageSlugs = await Promise.race([
+    const { wishbloomUrls, blogPosts } = await Promise.race([
       getDynamicPages(),
       timeoutPromise,
     ])
 
-    // Map dynamic pages to sitemap entries
-    const dynamicRoutes: MetadataRoute.Sitemap = dynamicPageSlugs.map((slug) => {
-      // Ensure slug starts with /
+    // Map dynamic WishBloom creation pages
+    const wishbloomRoutes: MetadataRoute.Sitemap = wishbloomUrls.map((slug) => {
       const path = slug.startsWith('/') ? slug : `/${slug}`
       return {
         url: `${BASE}${path}`,
@@ -103,10 +114,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       }
     })
 
-    return [...staticRoutes, ...dynamicRoutes]
+    // Map published blog post pages
+    const blogRoutes: MetadataRoute.Sitemap = blogPosts.map((post) => {
+      const cleanSlug = post.slug.replace(/^\/blog\//, '').replace(/^\//, '')
+      return {
+        url: `${BASE}/blog/${cleanSlug}`,
+        lastModified: post.updatedAt ? new Date(post.updatedAt) : new Date(),
+        changeFrequency: 'weekly' as const,
+        priority: 0.8,
+      }
+    })
+
+    return [...staticRoutes, ...blogRoutes, ...wishbloomRoutes]
   } catch (error) {
     console.error('Error generating dynamic sitemap entries:', error)
-    // Return static pages only if dynamic fetch fails
     return staticRoutes
   }
 }

@@ -3,6 +3,9 @@ import type { MetadataRoute } from 'next'
 import dbConnect from '@/lib/mongodb'
 import WishBloom from '@/models/WishBloom'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 /**
  * Base URL logic:
  * We hardcode the production URL to ensure Vercel preview domains NEVER leak into our sitemaps, 

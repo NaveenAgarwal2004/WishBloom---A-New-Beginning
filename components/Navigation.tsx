@@ -6,7 +6,6 @@ import { useSession, signIn, signOut } from 'next-auth/react'
 import { usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { LayoutDashboard, Plus, LogIn, LogOut, User, Home } from 'lucide-react'
-import { APP_CONFIG } from '@/config/constants'
 
 /**
  * Navigation Header Component

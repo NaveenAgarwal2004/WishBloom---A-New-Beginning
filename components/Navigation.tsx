@@ -7,8 +7,6 @@ import { usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { LayoutDashboard, Plus, LogIn, LogOut, User, Home } from 'lucide-react'
 
-import Logo from '@/components/Logo'
-
 /**
  * Navigation Header Component
  * Provides access to Dashboard, Create, and Auth

@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useSession, signIn, signOut } from 'next-auth/react'
 import { usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
@@ -25,10 +26,14 @@ export default function Navigation() {
           <div className="flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-            <span className="text-2xl">🌸</span>
-            <span className="text-h5 font-heading font-bold text-sepiaInk">
-              {APP_CONFIG.APP_NAME}
-            </span>
+            <Image
+              src="/wishbloom-logo.webp"
+              alt="WishBloom Logo"
+              width={140}
+              height={36}
+              className="h-8 w-auto"
+              priority
+            />
           </Link>
 
           {/* Navigation Links */}

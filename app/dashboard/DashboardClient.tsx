@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useToast } from '@/hooks/use-toast'
 import { toast as sonnerToast } from 'sonner'
 import Link from 'next/link'
+import Image from 'next/image'
 import { APP_CONFIG } from '@/config/constants'
 import DraftsSection from '@/components/dashboard/DraftsSection'
 import { pdf } from '@react-pdf/renderer'
@@ -219,7 +220,7 @@ export default function DashboardClient({ blooms, userName, userEmail }: Dashboa
           <Card className="text-center py-16">
             <CardContent>
               <div className="max-w-md mx-auto">
-                <div className="text-6xl mb-4">🌸</div>
+                <Image src="/icons/icon-192x192.png" alt="WishBloom" width={80} height={80} className="mx-auto mb-4" />
                 <h2 className="text-h4 font-heading font-bold text-sepiaInk mb-3">
                   No WishBlooms Yet
                 </h2>

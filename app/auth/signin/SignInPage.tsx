@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Mail, Lock, Sparkles, ArrowRight } from 'lucide-react'
 import { APP_CONFIG } from '@/config/constants'
 
@@ -92,7 +93,7 @@ export default function SignInPage() {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="mb-4"
             >
-              <div className="text-6xl">🌸</div>
+              <Image src="/icons/icon-192x192.png" alt="WishBloom" width={80} height={80} className="mx-auto" />
             </motion.div>
             <h1 className="text-h3 font-heading font-bold text-sepiaInk mb-2">
               Welcome to {APP_CONFIG.APP_NAME}

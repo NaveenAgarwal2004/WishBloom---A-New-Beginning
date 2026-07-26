@@ -7,6 +7,8 @@ import { usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { LayoutDashboard, Plus, LogIn, LogOut, User, Home } from 'lucide-react'
 
+import Logo from '@/components/Logo'
+
 /**
  * Navigation Header Component
  * Provides access to Dashboard, Create, and Auth
@@ -23,121 +25,121 @@ export default function Navigation() {
       <nav className="fixed top-0 left-0 right-0 z-50 bg-warmCream-50/95 backdrop-blur-sm border-b border-warmCream-200">
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-            <Image
-              src="/wishbloom-logo.webp"
-              alt="WishBloom Logo"
-              width={140}
-              height={36}
-              className="h-8 w-auto"
-              priority
-            />
-          </Link>
+            {/* Logo */}
+            <Link href="/" className="flex items-center hover:opacity-85 transition-opacity">
+              <Image
+                src="/wishbloom-logo-transparent.png"
+                alt="WishBloom Logo"
+                width={150}
+                height={50}
+                className="h-10 w-auto object-contain"
+                priority
+              />
+            </Link>
 
-          {/* Navigation Links */}
-          <div className="flex items-center gap-3">
-            {!isLoading && (
-              <>
-                {session ? (
-                  <>
-                    {/* Dashboard Link */}
-                    <Link href="/dashboard">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="gap-2 font-heading"
-                        data-testid="nav-dashboard-btn"
-                      >
-                        <LayoutDashboard size={18} />
-                        <span className="hidden sm:inline">Dashboard</span>
-                      </Button>
-                    </Link>
+            {/* Navigation Links */}
+            <div className="flex items-center gap-3">
+              {!isLoading && (
+                <>
+                  {session ? (
+                    <>
+                      {/* Dashboard Link */}
+                      <Link href="/dashboard">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="gap-2 font-heading"
+                          data-testid="nav-dashboard-btn"
+                        >
+                          <LayoutDashboard size={18} />
+                          <span className="hidden sm:inline">Dashboard</span>
+                        </Button>
+                      </Link>
 
-                    {/* Journal/Blog Link */}
-                    <Link href="/blog">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="gap-2 font-heading"
-                        data-testid="nav-blog-btn"
-                      >
-                        <span className="hidden sm:inline">Journal</span>
-                      </Button>
-                    </Link>
+                      {/* Journal/Blog Link */}
+                      <Link href="/blog">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="gap-2 font-heading"
+                          data-testid="nav-blog-btn"
+                        >
+                          <span className="hidden sm:inline">Journal</span>
+                        </Button>
+                      </Link>
 
-                    {/* Create Link */}
-                    <Link href="/create">
+                      {/* Create Link */}
+                      <Link href="/create">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="gap-2 font-heading bg-fadedGold/10 border-fadedGold text-sepiaInk hover:bg-fadedGold/20"
+                          data-testid="nav-create-btn"
+                        >
+                          <Plus size={18} />
+                          <span className="hidden sm:inline">Create</span>
+                        </Button>
+                      </Link>
+
+                      {/* User Menu */}
+                      <div className="flex items-center gap-2 pl-2 border-l border-warmCream-300">
+                        <div className="hidden md:flex items-center gap-2 text-body-sm text-warmCream-700">
+                          <User size={16} />
+                          <span>{session.user?.name || session.user?.email}</span>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => signOut()}
+                          className="gap-2 font-heading text-warmCream-600 hover:text-sepiaInk"
+                          data-testid="nav-signout-btn"
+                        >
+                          <LogOut size={18} />
+                          <span className="hidden sm:inline">Sign Out</span>
+                        </Button>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      {/* Sign In Button */}
                       <Button
                         variant="outline"
                         size="sm"
-                        className="gap-2 font-heading bg-fadedGold/10 border-fadedGold text-sepiaInk hover:bg-fadedGold/20"
-                        data-testid="nav-create-btn"
-                      >
-                        <Plus size={18} />
-                        <span className="hidden sm:inline">Create</span>
-                      </Button>
-                    </Link>
-
-                    {/* User Menu */}
-                    <div className="flex items-center gap-2 pl-2 border-l border-warmCream-300">
-                      <div className="hidden md:flex items-center gap-2 text-body-sm text-warmCream-700">
-                        <User size={16} />
-                        <span>{session.user?.name || session.user?.email}</span>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => signOut()}
-                        className="gap-2 font-heading text-warmCream-600 hover:text-sepiaInk"
-                        data-testid="nav-signout-btn"
-                      >
-                        <LogOut size={18} />
-                        <span className="hidden sm:inline">Sign Out</span>
-                      </Button>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    {/* Sign In Button */}
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => signIn()}
-                      className="gap-2 font-heading"
-                      data-testid="nav-signin-btn"
-                    >
-                      <LogIn size={18} />
-                      Sign In
-                    </Button>
-
-                    {/* Journal/Blog Link */}
-                    <Link href="/blog">
-                      <Button
-                        variant="ghost"
-                        size="sm"
+                        onClick={() => signIn()}
                         className="gap-2 font-heading"
+                        data-testid="nav-signin-btn"
                       >
-                        <span className="hidden sm:inline">Journal</span>
+                        <LogIn size={18} />
+                        Sign In
                       </Button>
-                    </Link>
 
-                    {/* Create Button */}
-                    <Link href="/create">
-                      <Button
-                        size="sm"
-                        className="gap-2 font-heading bg-fadedGold hover:bg-fadedGold/90 text-white"
-                        data-testid="nav-create-btn"
-                      >
-                        <Plus size={18} />
-                        <span className="hidden sm:inline">Create</span>
-                      </Button>
-                    </Link>
-                  </>
-                )}
-              </>
-            )}
-          </div>
+                      {/* Journal/Blog Link */}
+                      <Link href="/blog">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="gap-2 font-heading"
+                        >
+                          <span className="hidden sm:inline">Journal</span>
+                        </Button>
+                      </Link>
+
+                      {/* Create Button */}
+                      <Link href="/create">
+                        <Button
+                          size="sm"
+                          className="gap-2 font-heading bg-fadedGold hover:bg-fadedGold/90 text-white"
+                          data-testid="nav-create-btn"
+                        >
+                          <Plus size={18} />
+                          <span className="hidden sm:inline">Create</span>
+                        </Button>
+                      </Link>
+                    </>
+                  )}
+                </>
+              )}
+            </div>
           </div>
         </div>
       </nav>
@@ -148,11 +150,10 @@ export default function Navigation() {
           {/* Home */}
           <Link href="/">
             <button
-              className={`flex flex-col items-center justify-center gap-1 py-3 px-4 rounded-xl transition-all ${
-                pathname === '/'
+              className={`flex flex-col items-center justify-center gap-1 py-3 px-4 rounded-xl transition-all ${pathname === '/'
                   ? 'bg-fadedGold/20 text-sepiaInk'
                   : 'text-warmCream-600 hover:bg-warmCream-200/50'
-              }`}
+                }`}
               data-testid="bottom-nav-home"
             >
               <Home size={22} strokeWidth={pathname === '/' ? 2.5 : 2} />
@@ -163,11 +164,10 @@ export default function Navigation() {
           {/* Create */}
           <Link href="/create">
             <button
-              className={`flex flex-col items-center justify-center gap-1 py-3 px-4 rounded-xl transition-all ${
-                pathname === '/create'
+              className={`flex flex-col items-center justify-center gap-1 py-3 px-4 rounded-xl transition-all ${pathname === '/create'
                   ? 'bg-fadedGold/20 text-sepiaInk'
                   : 'text-warmCream-600 hover:bg-warmCream-200/50'
-              }`}
+                }`}
               data-testid="bottom-nav-create"
             >
               <Plus size={22} strokeWidth={pathname === '/create' ? 2.5 : 2} />
@@ -181,11 +181,10 @@ export default function Navigation() {
               {session ? (
                 <Link href="/dashboard">
                   <button
-                    className={`flex flex-col items-center justify-center gap-1 py-3 px-4 rounded-xl transition-all ${
-                      pathname === '/dashboard'
+                    className={`flex flex-col items-center justify-center gap-1 py-3 px-4 rounded-xl transition-all ${pathname === '/dashboard'
                         ? 'bg-fadedGold/20 text-sepiaInk'
                         : 'text-warmCream-600 hover:bg-warmCream-200/50'
-                    }`}
+                      }`}
                     data-testid="bottom-nav-dashboard"
                   >
                     <LayoutDashboard size={22} strokeWidth={pathname === '/dashboard' ? 2.5 : 2} />

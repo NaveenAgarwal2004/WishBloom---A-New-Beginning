@@ -44,6 +44,10 @@ export const APP_CONFIG = {
   APP_TAGLINE: 'Preserving memories, one bloom at a time',
   APP_DESCRIPTION: 'Create beautiful, interactive birthday memory books',
   DEFAULT_SENDER_NAME: 'WishBloom',
+  SOCIAL_LINKS: {
+    INSTAGRAM: 'https://www.instagram.com/wishblooms.in',
+    FACEBOOK: 'https://www.facebook.com/profile.php?id=61592338235105',
+  },
 } as const
 
 // ========================================

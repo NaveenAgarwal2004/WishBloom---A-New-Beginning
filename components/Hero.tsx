@@ -75,9 +75,7 @@ export default function Hero({ recipientName, creativeAgeDescription }: HeroProp
         </motion.h2>
 
         <motion.svg
-          className="mx-auto mb-12"
-          width="400"
-          height="20"
+          className="mx-auto mb-12 w-full max-w-[400px]"
           viewBox="0 0 400 20"
           initial={{ pathLength: 0 }}
           animate={{ pathLength: 1 }}

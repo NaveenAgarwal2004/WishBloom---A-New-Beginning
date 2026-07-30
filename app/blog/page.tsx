@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
+import Footer from '@/components/Footer'
 import { ArrowLeft, ArrowRight, Calendar, Clock } from 'lucide-react'
 import dbConnect from '@/lib/mongodb'
 import BlogPost from '@/models/BlogPost'
@@ -47,7 +48,7 @@ export default async function BlogPage() {
   const posts = JSON.parse(JSON.stringify(postsData))
 
   return (
-    <main className="min-h-screen bg-warmCream-50 py-12 px-4 sm:px-6 lg:px-8">
+    <main className="min-h-screen bg-warmCream-50 pt-20 pb-12 pb-bottom-nav md:pb-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         <Link
           href="/"
@@ -104,6 +105,7 @@ export default async function BlogPage() {
           )}
         </div>
       </div>
+      <Footer />
     </main>
   )
 }

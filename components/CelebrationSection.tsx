@@ -94,9 +94,7 @@ export default function CelebrationSection({
 
         {/* Decorative underlines */}
         <motion.svg
-          className="mx-auto mb-6"
-          width="500"
-          height="40"
+          className="mx-auto mb-6 w-full max-w-[500px]"
           viewBox="0 0 500 40"
           initial={{ pathLength: 0 }}
           whileInView={{ pathLength: 1 }}

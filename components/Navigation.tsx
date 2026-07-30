@@ -35,8 +35,8 @@ export default function Navigation() {
               />
             </Link>
 
-            {/* Navigation Links */}
-            <div className="flex items-center gap-3">
+            {/* Navigation Links (Desktop/Tablet — Mobile uses Bottom Nav) */}
+            <div className="hidden sm:flex items-center gap-3">
               {!isLoading && (
                 <>
                   {session ? (

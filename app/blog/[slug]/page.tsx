@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import Footer from '@/components/Footer'
 import { ArrowLeft, Calendar, Clock } from 'lucide-react'
 import dbConnect from '@/lib/mongodb'
 import BlogPost from '@/models/BlogPost'
@@ -103,7 +104,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
           <ellipse cx="50" cy="100" rx="45" ry="25" fill="#7A5C47" opacity="0.8" />
         </svg>
 
-        <main className="relative z-10 py-16 px-4 sm:px-6 lg:px-8">
+        <main className="relative z-10 pt-20 pb-16 pb-bottom-nav md:pb-16 px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto">
             {/* Elegant Back Button */}
             <Link
@@ -231,6 +232,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
             </article>
           </div>
         </main>
+        <Footer />
       </div>
     </>
   )

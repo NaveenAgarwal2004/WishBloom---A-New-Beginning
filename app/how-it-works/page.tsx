@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
+import Footer from '@/components/Footer'
 import { ArrowLeft, Edit3, Image as ImageIcon, Mail, Sparkles, Eye, Share2 } from 'lucide-react'
 
 export const metadata: Metadata = {
@@ -109,7 +110,7 @@ export default function HowItWorksPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(howToJsonLd) }}
       />
       
-      <main className="min-h-screen bg-warmCream-50 py-12 px-4 sm:px-6 lg:px-8">
+      <main className="min-h-screen bg-warmCream-50 pt-20 pb-12 pb-bottom-nav md:pb-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
           <Link 
             href="/"
@@ -160,6 +161,7 @@ export default function HowItWorksPage() {
           </div>
         </div>
       </main>
+      <Footer />
     </>
   )
 }

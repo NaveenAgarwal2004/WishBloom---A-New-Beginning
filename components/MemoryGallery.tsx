@@ -57,9 +57,7 @@ export default function MemoryGallery({ memories }: MemoryGalleryProps) {
 
         {/* Decorative underline */}
         <motion.svg
-          className="mx-auto mb-6"
-          width="300"
-          height="20"
+          className="mx-auto mb-6 w-full max-w-[300px]"
           viewBox="0 0 300 20"
           initial={{ pathLength: 0 }}
           whileInView={{ pathLength: 1 }}

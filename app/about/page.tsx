@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
+import Footer from '@/components/Footer'
 import { ArrowLeft, Github, Mail, ExternalLink } from 'lucide-react'
 
 export const metadata: Metadata = {
@@ -31,7 +32,7 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <main className="min-h-screen bg-warmCream-50 py-12 px-4 sm:px-6 lg:px-8">
+    <main className="min-h-screen bg-warmCream-50 pt-20 pb-12 pb-bottom-nav md:pb-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
         <Link
           href="/"
@@ -155,6 +156,7 @@ export default function AboutPage() {
 
         </article>
       </div>
+      <Footer />
     </main>
   )
 }

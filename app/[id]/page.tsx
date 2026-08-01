@@ -31,6 +31,10 @@ export async function generateMetadata({ params }: WishBloomPageProps): Promise<
       return {
         title: 'WishBloom Not Found',
         description: 'This WishBloom could not be found.',
+        robots: {
+          index: false,
+          follow: false,
+        },
       }
     }
 
@@ -47,6 +51,10 @@ export async function generateMetadata({ params }: WishBloomPageProps): Promise<
     return {
       title,
       description,
+      robots: {
+        index: false,
+        follow: false,
+      },
       openGraph: {
         title,
         description,
@@ -86,6 +94,10 @@ export async function generateMetadata({ params }: WishBloomPageProps): Promise<
     return {
       title: 'WishBloom - Digital Memory Book',
       description: 'A beautiful collection of memories and wishes.',
+      robots: {
+        index: false,
+        follow: false,
+      },
     }
   }
 }

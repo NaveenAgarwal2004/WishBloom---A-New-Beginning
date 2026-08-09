@@ -15,6 +15,25 @@ import { sampleWishBloom } from '@/lib/sampleData'
  * Displays the complete birthday memory experience
  */
 export default function App() {
+  const organizationJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    'name': 'WishBloom',
+    'url': 'https://wishblooms.in',
+    'logo': 'https://wishblooms.in/wishbloom-logo-transparent.png',
+    'description': 'Create a free collaborative birthday memory book online. Collect photos and heartfelt messages from friends and family in a pressed flower digital scrapbook.',
+    'founder': {
+      '@type': 'Person',
+      'name': 'Naveen Agarwal',
+      'url': 'https://github.com/NaveenAgarwal2004',
+    },
+    'sameAs': [
+      'https://www.instagram.com/wishblooms.in',
+      'https://www.facebook.com/profile.php?id=61592338235105',
+      'https://github.com/NaveenAgarwal2004/WishBloom---A-New-Beginning',
+    ],
+  }
+
   const webAppJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'WebApplication',
@@ -41,6 +60,10 @@ export default function App() {
       'name': 'Naveen Agarwal',
       'url': 'https://github.com/NaveenAgarwal2004',
     },
+    'sameAs': [
+      'https://www.instagram.com/wishblooms.in',
+      'https://www.facebook.com/profile.php?id=61592338235105',
+    ],
   }
 
   const faqJsonLd = {
@@ -100,6 +123,10 @@ export default function App() {
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(webAppJsonLd) }}

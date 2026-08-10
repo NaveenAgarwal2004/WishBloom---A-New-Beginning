@@ -1,6 +1,8 @@
 'use client'
 
+import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { ChevronDown, ChevronUp } from 'lucide-react'
 import Image from 'next/image'
 import { useMobile } from '@/hooks/use-mobile'
 import { useSoundEffects } from '@/hooks/useSoundEffects'
@@ -57,6 +59,16 @@ function StandardMemoryCard({ memory, rotation, index }: MemoryCardComponentProp
   const isMobile = useMobile()
   const cardRotation = isMobile ? 0 : rotation
   const { play } = useSoundEffects()
+  const [isExpanded, setIsExpanded] = useState(false)
+
+  // Determine if description is long enough to warrant a "Read more" toggle
+  const isLong = (memory.description?.length || 0) > 160 || (memory.description?.includes('\n') && (memory.description?.length || 0) > 80)
+
+  const toggleExpand = (e?: React.MouseEvent) => {
+    if (e) e.stopPropagation()
+    setIsExpanded((prev) => !prev)
+    play('paper-rustle')
+  }
   
   return (
     <motion.article
@@ -75,6 +87,12 @@ function StandardMemoryCard({ memory, rotation, index }: MemoryCardComponentProp
       }}
       whileTap={{ scale: 0.97 }}
       onMouseEnter={() => !isMobile && play('paper-rustle')}
+      onClick={() => {
+        if (isLong && !isExpanded) {
+          setIsExpanded(true)
+          play('paper-rustle')
+        }
+      }}
     >
       {/* Decorative washi tape corner glow - Enhanced */}
       <div className="absolute -top-3 -right-3 w-24 h-24 bg-gradient-to-br from-rosePetal/60 to-lavenderPress/60 rounded-full blur-xl opacity-70 group-hover:opacity-90 transition-opacity" aria-hidden="true" />
@@ -127,9 +145,29 @@ function StandardMemoryCard({ memory, rotation, index }: MemoryCardComponentProp
       </h3>
 
       {/* Description */}
-      <p className="text-body font-body text-warmCream-700 leading-loose line-clamp-5 mb-6">
-        {memory.description}
-      </p>
+      <div className="mb-6">
+        <p className={`text-body font-body text-warmCream-700 leading-loose whitespace-pre-line ${
+          !isExpanded && isLong ? 'line-clamp-5' : ''
+        }`}>
+          {memory.description}
+        </p>
+
+        {isLong && (
+          <button
+            type="button"
+            onClick={toggleExpand}
+            className="mt-2.5 inline-flex items-center gap-1.5 text-body-sm font-heading font-semibold text-burntSienna hover:text-burntSienna/80 transition-colors focus:outline-none focus-visible:underline cursor-pointer group/btn"
+            aria-expanded={isExpanded}
+          >
+            <span>{isExpanded ? 'Show less' : 'Read more'}</span>
+            {isExpanded ? (
+              <ChevronUp size={16} className="transition-transform group-hover/btn:-translate-y-0.5" />
+            ) : (
+              <ChevronDown size={16} className="transition-transform group-hover/btn:translate-y-0.5" />
+            )}
+          </button>
+        )}
+      </div>
 
       {/* Tags */}
       {memory.tags && memory.tags.length > 0 && (
@@ -253,7 +291,7 @@ function FeaturedMemoryCard({ memory, rotation, index }: MemoryCardComponentProp
       </svg>
 
       {/* Description */}
-      <p className="text-body-xl font-body text-warmCream-800 leading-loose mb-8">
+      <p className="text-body-xl font-body text-warmCream-800 leading-loose mb-8 whitespace-pre-line">
         {memory.description}
       </p>
 
@@ -315,7 +353,7 @@ function QuoteMemoryCard({ memory, rotation, index }: MemoryCardComponentProps) 
 
       {/* Quote text */}
       <div className="relative z-10">
-        <p className="text-h5 md:text-h4 font-body font-medium text-warmCream-800 text-center leading-relaxed mb-6">
+        <p className="text-h5 md:text-h4 font-body font-medium text-warmCream-800 text-center leading-relaxed mb-6 whitespace-pre-line">
           {memory.description}
         </p>
 

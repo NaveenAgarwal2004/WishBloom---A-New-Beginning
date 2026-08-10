@@ -42,6 +42,7 @@ type MemoryFormData = z.infer<typeof MemoryFormSchema>
 export default function Step2Memories() {
   const store = useWishBloomStore()
   const [editingMemoryId, setEditingMemoryId] = useState<string | null>(null)
+  const [isUploading, setIsUploading] = useState(false)
   const { play } = useSoundEffects()
 
   const {
@@ -191,9 +192,13 @@ export default function Step2Memories() {
               Image (optional)
             </label>
             <ImageUploader
-              onUpload={(url) => setValue('imageUrl', url)}
+              onUpload={(url) => { setValue('imageUrl', url); setIsUploading(false) }}
+              onUploadStart={() => setIsUploading(true)}
               existingImage={watch('imageUrl')}
             />
+            {isUploading && (
+              <p className="text-caption text-fadedGold mt-1">⏳ Uploading image, please wait...</p>
+            )}
           </div>
 
           <div>
@@ -274,10 +279,11 @@ export default function Step2Memories() {
 
           <button
             type="submit"
-            className="px-6 py-3 bg-mossGreen text-warmCream-50 rounded-lg font-body font-semibold hover:shadow-colored-green transition-all flex items-center gap-2"
+            disabled={isUploading}
+            className="px-6 py-3 bg-mossGreen text-warmCream-50 rounded-lg font-body font-semibold hover:shadow-colored-green transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {editingMemoryId ? <Check size={20} /> : <Plus size={20} />}
-            {editingMemoryId ? 'Update Memory' : 'Add Memory'}
+            {isUploading ? 'Uploading image...' : editingMemoryId ? 'Update Memory' : 'Add Memory'}
           </button>
         </div>
       </form>

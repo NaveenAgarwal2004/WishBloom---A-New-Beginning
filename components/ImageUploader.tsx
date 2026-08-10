@@ -8,14 +8,15 @@ import { Skeleton } from '@/components/ui/skeleton'
 import Image from 'next/image'
 
 interface ImageUploaderProps {
-  onUpload?: (url: string | undefined) => void // ✅ Changed from `string | null`
-  existingImage?: string // ✅ Changed from `string | null`
+  onUpload?: (url: string | undefined) => void
+  onUploadStart?: () => void // Called when upload begins, before response
+  existingImage?: string
 }
 
-export default function ImageUploader({ onUpload, existingImage }: ImageUploaderProps) {
+export default function ImageUploader({ onUpload, onUploadStart, existingImage }: ImageUploaderProps) {
   const [uploading, setUploading] = useState(false)
-  const [imageUrl, setImageUrl] = useState<string | undefined>(existingImage) // ✅ Changed from `string | null`
-  const [error, setError] = useState<string | undefined>(undefined) // ✅ Changed from `string | null`
+  const [imageUrl, setImageUrl] = useState<string | undefined>(existingImage)
+  const [error, setError] = useState<string | undefined>(undefined)
 
   const onDrop = async (acceptedFiles: FileWithPath[]) => {
     const file = acceptedFiles[0]
@@ -33,8 +34,9 @@ export default function ImageUploader({ onUpload, existingImage }: ImageUploader
       return
     }
 
-    setError(undefined) // ✅ Changed from null
+    setError(undefined)
     setUploading(true)
+    if (onUploadStart) onUploadStart() // Notify parent that upload has started
 
     try {
       const formData = new FormData()

@@ -171,12 +171,21 @@ export function moderateTextFields(fields: Record<string, string>): {
  * 
  * Current implementation: Basic URL validation
  */
-export function moderateImage(imageUrl: string): ModerationResult {
+export function moderateImage(imageUrl?: string): ModerationResult {
   const reasons: string[] = []
 
-  // Ensure it's from Cloudinary (trusted source)
-  if (!imageUrl.includes('res.cloudinary.com')) {
-    reasons.push('Image must be uploaded through Cloudinary')
+  if (!imageUrl || imageUrl.trim() === '') {
+    return {
+      safe: true,
+      flagged: false,
+      reasons: [],
+      severity: 'low',
+    }
+  }
+
+  // Ensure it's a secure URL
+  if (!imageUrl.startsWith('https://') && !imageUrl.startsWith('data:image/')) {
+    reasons.push('Image must be hosted over HTTPS or data URI')
     return {
       safe: false,
       flagged: true,

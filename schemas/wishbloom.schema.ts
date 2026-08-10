@@ -33,7 +33,7 @@ export const MemorySchema = z.object({
   date: z.string().regex(PATTERNS.DATE_FORMAT, ERROR_MESSAGES.INVALID_DATE),
   type: z.enum(MEMORY_TYPES).default(DEFAULT_VALUES.MEMORY_TYPE), // ✅ ROOT FIX: System-managed field with sensible default
   contributor: ContributorSchema,
-  imageUrl: z.string().url(ERROR_MESSAGES.INVALID_URL).optional(),
+  imageUrl: z.string().url(ERROR_MESSAGES.INVALID_URL).or(z.literal('')).optional(),
   tags: z.array(z.enum(MEMORY_TAGS)).default([]),
   rotation: z.number().min(-10).max(10).default(DEFAULT_VALUES.MEMORY_ROTATION),
   createdAt: z.string().datetime().optional(),

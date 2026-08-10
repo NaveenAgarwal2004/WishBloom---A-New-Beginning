@@ -44,16 +44,22 @@ export default function Step6Publish() {
         }),
       })
 
-      const data = await response.json()
+      let data: any = null
+      try {
+        data = await response.json()
+      } catch {
+        // In case response is not JSON
+      }
 
-      if (data.success) {
+      if (response.ok && data?.success) {
         const fullUrl = `${window.location.origin}/${data.wishbloom.uniqueUrl}`
         setPublishedUrl(fullUrl)
       } else {
-        setPublishError(data.error || 'Failed to publish')
+        const errorMsg = data?.error || data?.message || `Failed to publish (Status: ${response.status})`
+        setPublishError(errorMsg)
       }
     } catch (error) {
-      setPublishError('Failed to publish. Please try again.')
+      setPublishError(error instanceof Error ? error.message : 'Failed to publish. Please try again.')
       console.error('Publish error:', error)
     } finally {
       setPublishing(false)

@@ -39,7 +39,8 @@ const BlogPostSchema = new Schema<IBlogPost>(
   { timestamps: true }
 )
 
-BlogPostSchema.index({ slug: 1 }, { unique: true })
+// Note: slug index is already created by unique:true on the field definition above
+// Adding only the compound index needed for blog listing queries
 BlogPostSchema.index({ published: 1, createdAt: -1 })
 
 export default (mongoose.models.BlogPost as Model<IBlogPost>) ||

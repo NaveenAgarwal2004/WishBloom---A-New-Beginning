@@ -137,13 +137,13 @@ const withPWA = withPWAInit({
  */
 const cspHeader = `
   default-src 'self';
-  script-src 'self' 'unsafe-eval' 'unsafe-inline' https://va.vercel-scripts.com https://vercel.live https://cdnjs.cloudflare.com;
-  style-src 'self' 'unsafe-inline';
+  script-src 'self' 'unsafe-eval' 'unsafe-inline' https://va.vercel-scripts.com https://vercel.live https://assets.vercel.com https://cdnjs.cloudflare.com;
+  style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://vercel.live https://assets.vercel.com;
   img-src 'self' data: https: blob:;
-  font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net;
+  font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net https://vercel.live https://assets.vercel.com;
   media-src 'self' data: blob: https://res.cloudinary.com https://*.cloudinary.com;
-  connect-src 'self' data: blob: https://va.vercel-scripts.com https://vercel.live https://*.mongodb.net https://*.cloudinary.com https://*.upstash.io https://fonts.gstatic.com https://cdn.jsdelivr.net;
-  frame-src 'self' https://vercel.live;
+  connect-src 'self' data: blob: https://va.vercel-scripts.com https://vercel.live https://assets.vercel.com https://*.mongodb.net https://*.cloudinary.com https://*.upstash.io https://fonts.gstatic.com https://cdn.jsdelivr.net;
+  frame-src 'self' https://vercel.live https://assets.vercel.com;
   object-src 'none';
   base-uri 'self';
   form-action 'self';

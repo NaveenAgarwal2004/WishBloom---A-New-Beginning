@@ -122,15 +122,24 @@ export function getIdentifier(request: Request): string {
   return ip
 }
 
-// Helper to check rate limit
+// Helper to check rate limit with safe error fallback
 export async function checkRateLimit(
   request: Request,
   limiter: Ratelimit | MemoryRateLimiter = rateLimiters.public
 ): Promise<{ success: boolean; limit: number; remaining: number; reset: number }> {
-  const identifier = getIdentifier(request)
-  const result = await limiter.limit(identifier)
-  
-  return result
+  try {
+    const identifier = getIdentifier(request)
+    const result = await limiter.limit(identifier)
+    return result
+  } catch (error) {
+    console.warn('⚠️ Rate limiter check failed, allowing request gracefully:', error)
+    return {
+      success: true,
+      limit: 100,
+      remaining: 99,
+      reset: Date.now() + 60000,
+    }
+  }
 }
 
 // Middleware-style helper
@@ -139,37 +148,42 @@ export async function withRateLimit(
   handler: () => Promise<Response>,
   limiter?: Ratelimit | MemoryRateLimiter
 ): Promise<Response> {
-  const result = await checkRateLimit(request, limiter)
+  try {
+    const result = await checkRateLimit(request, limiter)
 
-  // Add rate limit headers
-  const headers = new Headers()
-  headers.set('X-RateLimit-Limit', result.limit.toString())
-  headers.set('X-RateLimit-Remaining', result.remaining.toString())
-  headers.set('X-RateLimit-Reset', new Date(result.reset).toISOString())
+    // Add rate limit headers
+    const headers = new Headers()
+    headers.set('X-RateLimit-Limit', result.limit.toString())
+    headers.set('X-RateLimit-Remaining', result.remaining.toString())
+    headers.set('X-RateLimit-Reset', new Date(result.reset).toISOString())
 
-  if (!result.success) {
-    return new Response(
-      JSON.stringify({
-        success: false,
-        error: 'Rate limit exceeded',
-        retryAfter: new Date(result.reset).toISOString(),
-      }),
-      {
-        status: 429,
-        headers: {
-          ...Object.fromEntries(headers),
-          'Content-Type': 'application/json',
-        },
-      }
-    )
+    if (!result.success) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: 'Rate limit exceeded',
+          retryAfter: new Date(result.reset).toISOString(),
+        }),
+        {
+          status: 429,
+          headers: {
+            ...Object.fromEntries(headers),
+            'Content-Type': 'application/json',
+          },
+        }
+      )
+    }
+
+    const response = await handler()
+    
+    // Add rate limit headers to successful response
+    headers.forEach((value, key) => {
+      response.headers.set(key, value)
+    })
+
+    return response
+  } catch (error) {
+    console.error('⚠️ withRateLimit error, proceeding with handler execution:', error)
+    return handler()
   }
-
-  const response = await handler()
-  
-  // Add rate limit headers to successful response
-  headers.forEach((value, key) => {
-    response.headers.set(key, value)
-  })
-
-  return response
 }

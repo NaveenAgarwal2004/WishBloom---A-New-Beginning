@@ -96,3 +96,6 @@ testsprite_tests/
 
 test-results/
 playwright-report/
+
+# One-off dev scripts and scratch files
+scratch/

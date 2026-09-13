@@ -110,9 +110,10 @@ export const metadata: Metadata = {
   // ✅ Part 10: PWA Manifest
   manifest: '/manifest.json',
 
-  // ✅ Mobile Web App configuration (replaces deprecated apple-mobile-web-app-capable)
+  // ✅ Mobile Web App configuration & SaaSHub Verification
   other: {
     'mobile-web-app-capable': 'yes',
+    'saashub-verification': 'd4vosffnckj6',
   },
 
   // ✅ Apple Web App configuration

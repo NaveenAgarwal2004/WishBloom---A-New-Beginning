@@ -60,8 +60,39 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
     notFound()
   }
 
+  const articleJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    'headline': post.title,
+    'description': post.description,
+    'datePublished': post.createdAt ? new Date(post.createdAt).toISOString() : new Date().toISOString(),
+    'dateModified': post.updatedAt ? new Date(post.updatedAt).toISOString() : (post.createdAt ? new Date(post.createdAt).toISOString() : new Date().toISOString()),
+    'author': {
+      '@type': 'Person',
+      'name': post.author || 'Naveen Agarwal',
+      'url': 'https://wishblooms.in/about',
+    },
+    'publisher': {
+      '@type': 'Organization',
+      'name': 'WishBloom',
+      'url': 'https://wishblooms.in',
+      'logo': {
+        '@type': 'ImageObject',
+        'url': 'https://wishblooms.in/og-image.png',
+      },
+    },
+    'mainEntityOfPage': {
+      '@type': 'WebPage',
+      '@id': `https://wishblooms.in/blog/${post.slug}`,
+    },
+  }
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
       {post.faqSchema && (
         <script
           type="application/ld+json"

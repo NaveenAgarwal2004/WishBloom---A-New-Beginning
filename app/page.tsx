@@ -23,6 +23,7 @@ export default function App() {
     'url': 'https://wishblooms.in',
     'logo': 'https://wishblooms.in/wishbloom-logo-transparent.png',
     'description': 'Create a free collaborative birthday memory book online. Collect photos and heartfelt messages from friends and family in a pressed flower digital scrapbook.',
+    'foundingDate': '2025-08-01',
     'founder': {
       '@type': 'Person',
       'name': 'Naveen Agarwal',
@@ -42,6 +43,8 @@ export default function App() {
     'url': 'https://wishblooms.in',
     'applicationCategory': 'LifestyleApplication',
     'operatingSystem': 'Web',
+    'datePublished': '2025-08-01',
+    'dateModified': new Date().toISOString().split('T')[0],
     'offers': {
       '@type': 'Offer',
       'price': '0',

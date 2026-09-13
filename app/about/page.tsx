@@ -4,8 +4,8 @@ import Footer from '@/components/Footer'
 import { ArrowLeft, Github, Mail, ExternalLink } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'About WishBloom — Built by Naveen Agarwal | Jaipur',
-  description: 'Learn about WishBloom, a free birthday memory book maker created by Naveen Agarwal from Jaipur. Discover our story, tech stack, and design philosophy.',
+  title: 'Why I Built WishBloom — A Free Birthday Memory Book for Everyone',
+  description: 'WishBloom is a free birthday memory book creator built by Naveen Agarwal. No paid plans. No app. Just a beautiful, collaborative scrapbook you can send to someone you love.',
   keywords: [
     'free birthday memory book online',
     'birthday gift ideas',
@@ -14,16 +14,25 @@ export const metadata: Metadata = {
     'birthday memory book creator'
   ],
   openGraph: {
-    title: 'About WishBloom — Built by Naveen Agarwal | Jaipur',
-    description: 'Learn about WishBloom, a free birthday memory book maker created by Naveen Agarwal from Jaipur. Discover our story, tech stack, and design philosophy.',
+    title: 'Why I Built WishBloom — A Free Birthday Memory Book for Everyone',
+    description: 'WishBloom is a free birthday memory book creator. No paid plans. No app. Just a beautiful, collaborative scrapbook you can send to someone you love.',
     url: 'https://wishblooms.in/about',
     siteName: 'WishBloom',
     type: 'website',
+    images: [
+      {
+        url: 'https://wishblooms.in/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'WishBloom — Free Birthday Memory Book Creator',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'About WishBloom — Built by Naveen Agarwal | Jaipur',
-    description: 'Learn about WishBloom, a free birthday memory book maker created by Naveen Agarwal from Jaipur. Discover our story, tech stack, and design philosophy.',
+    title: 'Why I Built WishBloom — A Free Birthday Memory Book for Everyone',
+    description: 'WishBloom is a free birthday memory book creator. No paid plans. No app. Just a beautiful, collaborative scrapbook you can send to someone you love.',
+    images: ['https://wishblooms.in/og-image.png'],
   },
   alternates: {
     canonical: 'https://wishblooms.in/about',

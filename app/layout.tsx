@@ -132,11 +132,20 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: 'https://wishblooms.in',
     siteName: 'WishBloom',
+    images: [
+      {
+        url: 'https://wishblooms.in/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'WishBloom — Free Birthday Memory Book Creator',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Free Birthday Memory Book Creator Online | WishBloom',
     description: 'Create a free birthday memory book online. Collect memories, photos, letters, and poems from friends in a beautiful pressed flower scrapbook. No signup needed.',
+    images: ['https://wishblooms.in/og-image.png'],
   },
   alternates: {
     canonical: 'https://wishblooms.in',

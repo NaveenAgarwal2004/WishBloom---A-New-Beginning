@@ -8,6 +8,7 @@ import CelebrationSection from '@/components/CelebrationSection'
 import Footer from '@/components/Footer'
 import MusicControl from '@/components/MusicControl'
 import HomepageHero from '@/components/HomepageHero'
+import HomepageFAQ from '@/components/HomepageFAQ'
 import { sampleWishBloom } from '@/lib/sampleData'
 
 /**
@@ -142,9 +143,9 @@ export default function App() {
         
         <div id="demo-section" className="border-t border-warmCream-200">
           <div className="bg-warmCream-200/50 py-6 text-center border-b border-warmCream-300">
-            <h2 className="text-body-lg font-heading italic text-sepiaInk">
+            <p className="text-body-lg font-heading italic text-sepiaInk">
               Below is a live interactive preview of a WishBloom birthday scrapbook
-            </h2>
+            </p>
           </div>
           
           <Hero
@@ -170,6 +171,8 @@ export default function App() {
             createdDate={sampleWishBloom.createdDate}
           />
         </div>
+
+        <HomepageFAQ />
       </main>
     </>
   )

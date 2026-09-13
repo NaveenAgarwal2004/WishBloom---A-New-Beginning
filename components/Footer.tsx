@@ -140,6 +140,23 @@ export default function Footer({ contributors = [], createdDate }: FooterProps) 
                 Facebook
               </a>
             </div>
+
+            {/* SaaSHub Approved Badge */}
+            <div className="pt-3">
+              <a
+                href="https://www.saashub.com/wishbloom?utm_source=badge&utm_campaign=badge&utm_content=wishbloom&badge_variant=color&badge_kind=approved"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block hover:opacity-90 transition-opacity"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="https://cdn-b.saashub.com/img/badges/approved-color.png?v=1"
+                  alt="WishBloom badge on SaaSHub"
+                  className="max-w-[130px] h-auto"
+                />
+              </a>
+            </div>
           </div>
         </div>
 

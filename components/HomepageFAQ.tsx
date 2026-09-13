@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { ChevronDown } from 'lucide-react'
 
 const faqs = [
@@ -46,10 +46,9 @@ export default function HomepageFAQ() {
       aria-labelledby="faq-heading"
     >
       <div className="max-w-3xl mx-auto">
-        {/* Section header */}
         <div className="text-center mb-14">
           <p className="text-caption font-mono text-warmCream-500 uppercase tracking-widest mb-3">
-            Questions & Answers
+            Questions &amp; Answers
           </p>
           <h2
             id="faq-heading"
@@ -57,24 +56,11 @@ export default function HomepageFAQ() {
           >
             Frequently Asked Questions
           </h2>
-          <svg
-            className="mx-auto mt-4"
-            width="120"
-            height="8"
-            viewBox="0 0 120 8"
-            aria-hidden="true"
-          >
-            <path
-              d="M 5 5 Q 30 2, 60 4 T 115 5"
-              stroke="#D4A373"
-              strokeWidth="3"
-              fill="none"
-              strokeLinecap="round"
-            />
+          <svg className="mx-auto mt-4" width="120" height="8" viewBox="0 0 120 8" aria-hidden="true">
+            <path d="M 5 5 Q 30 2, 60 4 T 115 5" stroke="#D4A373" strokeWidth="3" fill="none" strokeLinecap="round" />
           </svg>
         </div>
 
-        {/* FAQ accordion */}
         <div className="space-y-3" role="list">
           {faqs.map((faq, index) => {
             const isOpen = openIndex === index
@@ -100,32 +86,28 @@ export default function HomepageFAQ() {
                     className="flex-shrink-0 w-8 h-8 rounded-full bg-warmCream-100 flex items-center justify-center"
                     aria-hidden="true"
                   >
-                    <ChevronDown
-                      size={18}
-                      className="text-fadedGold"
-                    />
+                    <ChevronDown size={18} className="text-fadedGold" />
                   </motion.div>
                 </button>
 
-                <AnimatePresence initial={false}>
-                  {isOpen && (
-                    <motion.div
-                      id={`faq-answer-${index}`}
-                      role="region"
-                      aria-labelledby={`faq-btn-${index}`}
-                      key="answer"
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3, ease: 'easeInOut' }}
-                      className="overflow-hidden"
-                    >
-                      <p className="px-7 pb-6 text-body font-body text-warmCream-700 leading-relaxed border-t border-warmCream-100 pt-4">
-                        {faq.answer}
-                      </p>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                {/*
+                  Answer is ALWAYS in the DOM. CSS max-height handles collapse.
+                  Crawlers and AI engines see all answer text at page load.
+                */}
+                <div
+                  id={`faq-answer-${index}`}
+                  role="region"
+                  aria-labelledby={`faq-btn-${index}`}
+                  style={{
+                    maxHeight: isOpen ? '400px' : '0px',
+                    overflow: 'hidden',
+                    transition: 'max-height 0.3s ease-in-out',
+                  }}
+                >
+                  <p className="px-7 pb-6 text-body font-body text-warmCream-700 leading-relaxed border-t border-warmCream-100 pt-4">
+                    {faq.answer}
+                  </p>
+                </div>
               </div>
             )
           })}

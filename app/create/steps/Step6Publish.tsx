@@ -14,7 +14,7 @@ export default function Step6Publish() {
   const { data: session } = useSession()
 
   const [publishing, setPublishing] = useState(false)
-  const [publishError, setPublishError] = useState<string | null>(null)
+  const [publishError, setPublishError] = useState<{ message: string; details?: { field: string; message: string }[] } | null>(null)
   const [publishedUrl, setPublishedUrl] = useState<string | null>(null)
 
   const [emailForm, setEmailForm] = useState({
@@ -56,10 +56,18 @@ export default function Step6Publish() {
         setPublishedUrl(fullUrl)
       } else {
         const errorMsg = data?.error || data?.message || `Failed to publish (Status: ${response.status})`
-        setPublishError(errorMsg)
+        // Capture field-level details if the API returned them (moderation or validation failures)
+        const details = data?.details
+          ? Array.isArray(data.details)
+            ? data.details  // moderation returns [{ field, message }]
+            : Object.entries(data.details).flatMap(([field, msgs]) =>
+                (Array.isArray(msgs) ? msgs : [msgs]).map((msg: any) => ({ field, message: String(msg) }))
+              )  // Zod flatten returns { field: string[] }
+          : undefined
+        setPublishError({ message: errorMsg, details })
       }
     } catch (error) {
-      setPublishError(error instanceof Error ? error.message : 'Failed to publish. Please try again.')
+      setPublishError({ message: error instanceof Error ? error.message : 'Failed to publish. Please try again.' })
       console.error('Publish error:', error)
     } finally {
       setPublishing(false)
@@ -134,8 +142,29 @@ export default function Step6Publish() {
         <h2 className="text-h2 font-heading font-bold text-fadedRose mb-4">
           Oops! Something went wrong
         </h2>
-        <p className="text-body font-body text-warmCream-700 mb-8">
-          {publishError}
+        <p className="text-body font-body text-warmCream-700 mb-4">
+          {publishError.message}
+        </p>
+
+        {/* Field-level details — shown when API returns moderation or validation specifics */}
+        {publishError.details && publishError.details.length > 0 && (
+          <div className="text-left bg-warmCream-50 border border-fadedRose/30 rounded-xl p-6 mb-6 mx-auto max-w-lg">
+            <p className="text-body-sm font-body font-semibold text-sepiaInk mb-3">
+              Please review these fields:
+            </p>
+            <ul className="space-y-1">
+              {publishError.details.map((detail, i) => (
+                <li key={i} className="text-body-sm font-body text-warmCream-700">
+                  <span className="font-semibold text-fadedRose">{detail.field}:</span>{' '}
+                  {detail.message}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <p className="text-body-sm font-body text-warmCream-500 mb-8">
+          Your work is saved as a draft — go back to any step to review your content, then return here to publish.
         </p>
         <button
           onClick={handlePublish}

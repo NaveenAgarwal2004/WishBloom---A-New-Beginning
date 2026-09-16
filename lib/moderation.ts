@@ -37,18 +37,18 @@ const PROFANITY_LIST = [
 ]
 
 // Spam patterns
+// NOTE: The broad URL pattern (http|https)://... was removed.
+// Reason: Cloudinary image URLs appear in memory imageUrl fields, and users legitimately
+// reference websites in personal messages. Only flag unambiguously spammy phrases.
 const SPAM_PATTERNS = [
   /viagra/gi,
   /cialis/gi,
   /casino/gi,
-  /bitcoin/gi,
-  /crypto/gi,
   /click here/gi,
   /buy now/gi,
   /limited offer/gi,
   /act now/gi,
   /free money/gi,
-  /(http|https):\/\/[^\s]+/gi, // URLs (WishBloom shouldn't have URLs in content)
 ]
 
 /**

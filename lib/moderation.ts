@@ -269,7 +269,7 @@ export function moderateWishBloomContent(data: {
   recipientName: string
   introMessage: string
   memories: Array<{ title: string; description: string; imageUrl?: string }>
-  messages: Array<{ content: string; greeting?: string; signature: string }>
+  messages: Array<{ content: string; greeting?: string; signature?: string }>
   celebrationWishPhrases?: string[]
 }): {
   approved: boolean

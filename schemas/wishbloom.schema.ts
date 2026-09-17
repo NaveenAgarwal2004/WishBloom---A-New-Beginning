@@ -50,10 +50,13 @@ export const MessageSchema = z.object({
     .min(VALIDATION_LIMITS.MESSAGE_CONTENT_MIN, `Content must be at least ${VALIDATION_LIMITS.MESSAGE_CONTENT_MIN} characters`)
     .max(VALIDATION_LIMITS.MESSAGE_CONTENT_MAX),
   closing: z.string().max(VALIDATION_LIMITS.MESSAGE_CLOSING_MAX).optional(),
+  // signature is optional — contributor.name already carries the sender's identity.
+  // Making it required in the schema caused silent publish failures when the field
+  // was left blank (common since it is not visually marked as required in the UI).
   signature: z
     .string()
-    .min(1, ERROR_MESSAGES.REQUIRED_FIELD)
-    .max(VALIDATION_LIMITS.MESSAGE_SIGNATURE_MAX),
+    .max(VALIDATION_LIMITS.MESSAGE_SIGNATURE_MAX)
+    .optional(),
   title: z.string().max(VALIDATION_LIMITS.MESSAGE_TITLE_MAX).optional(),
   postscript: z.string().max(VALIDATION_LIMITS.MESSAGE_POSTSCRIPT_MAX).optional(),
   // ✅ FIX: Allow empty string OR valid URL for audioUrl
@@ -91,9 +94,11 @@ export const CreateWishBloomSchema = z.object({
     .array(MessageSchema)
     .min(VALIDATION_LIMITS.MESSAGES_MIN_REQUIRED, ERROR_MESSAGES.MIN_MESSAGES)
     .max(VALIDATION_LIMITS.MESSAGES_MAX_ALLOWED),
+  // celebrationWishPhrases: .min(1) removed — the API route already has a defaultPhrases
+  // fallback that replaces an empty array, so enforcing min at the schema level is redundant
+  // and caused a silent failure if a user deleted all phrases in Step 4.
   celebrationWishPhrases: z
     .array(z.string().max(VALIDATION_LIMITS.CELEBRATION_PHRASE_MAX_LENGTH))
-    .min(VALIDATION_LIMITS.CELEBRATION_PHRASES_MIN)
     .max(VALIDATION_LIMITS.CELEBRATION_PHRASES_MAX)
     .optional(),
 })

@@ -34,7 +34,7 @@ export default function Step6Publish() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           recipientName: store.recipientName,
-          age: store.age,
+          age: store.age ?? undefined, // null → undefined: Zod .optional() accepts undefined, not null
           creativeAgeDescription: store.creativeAgeDescription,
           introMessage: store.introMessage,
           createdBy: store.createdBy,

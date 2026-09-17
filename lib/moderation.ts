@@ -10,19 +10,24 @@
  * - AWS Rekognition for image safety
  */
 
-// Common profanity and inappropriate words (basic list for MVP)
-const PROFANITY_LIST = [
-  'damn',
-  'hell',
-  'crap',
-  'shit',
+// Profanity list — split into two tiers based on false-positive risk:
+//
+// PROFANITY_PREFIX: matched with leading \b only — catches inflections (fucking, shitty, niggers)
+//   Safe to do because none of these are prefixes of common innocent English words.
+//
+// PROFANITY_EXACT: matched with full \b...\b — these ARE prefixes of innocent words:
+//   'ass' -> assemble, associate, assess
+//   'cock' -> cocktail, Cockfosters
+//   'hell' -> hello, Hellenic
+//   'dick' -> Dickens
+//   We explicitly list the abusive variants as exact-match alternatives instead.
+
+const PROFANITY_PREFIX = [
   'fuck',
-  'ass',
+  'shit',
   'bitch',
   'bastard',
-  'dick',
   'piss',
-  'cock',
   'pussy',
   'slut',
   'whore',
@@ -33,7 +38,20 @@ const PROFANITY_LIST = [
   'spic',
   'kike',
   'retard',
-  // Add more as needed
+  'damn',
+  'crap',
+]
+
+// Exact-match words + their explicit abusive variants
+const PROFANITY_EXACT = [
+  // 'ass' — would hit 'assemble', 'associate', etc.
+  'ass', 'asses', 'asshole', 'assholes', 'asshat',
+  // 'cock' — would hit 'cocktail', 'Cockfosters'
+  'cock', 'cocks', 'cockhead',
+  // 'hell' — would hit 'hello', 'Hellenic'
+  'hell',
+  // 'dick' — would hit 'Dickens'
+  'dick', 'dicks', 'dickhead',
 ]
 
 // Spam patterns
@@ -71,11 +89,19 @@ export function moderateText(text: string): ModerationResult {
   // Convert to lowercase for checking
   const lowerText = text.toLowerCase()
 
-  // Check for profanity
-  const foundProfanity = PROFANITY_LIST.filter(word => {
-    const regex = new RegExp(`\\b${word}\\b`, 'i')
-    return regex.test(lowerText)
-  })
+  // Check for profanity — two-tier approach:
+  // PROFANITY_PREFIX: leading \b only — catches inflections (fucking, shitty, niggers)
+  // PROFANITY_EXACT: full word boundaries — avoids false positives (assemble, cocktail, hello)
+  const foundProfanity = [
+    ...PROFANITY_PREFIX.filter(word => {
+      const regex = new RegExp(`\\b${word}`, 'i')
+      return regex.test(lowerText)
+    }),
+    ...PROFANITY_EXACT.filter(word => {
+      const regex = new RegExp(`\\b${word}\\b`, 'i')
+      return regex.test(lowerText)
+    }),
+  ]
 
   if (foundProfanity.length > 0) {
     reasons.push(`Contains inappropriate language: ${foundProfanity.slice(0, 3).join(', ')}`)

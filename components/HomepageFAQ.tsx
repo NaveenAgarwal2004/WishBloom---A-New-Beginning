@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
@@ -47,7 +47,7 @@ export default function HomepageFAQ() {
     >
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-14">
-          <p className="text-caption font-mono text-warmCream-500 uppercase tracking-widest mb-3">
+          <p className="text-caption font-mono text-warmCream-700 uppercase tracking-widest mb-3">
             Questions &amp; Answers
           </p>
           <h2

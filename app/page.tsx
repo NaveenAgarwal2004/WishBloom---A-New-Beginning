@@ -1,4 +1,3 @@
-'use client'
 
 import Hero from '@/components/Hero'
 import IntroMessage from '@/components/IntroMessage'
@@ -44,7 +43,7 @@ export default function App() {
     'applicationCategory': 'LifestyleApplication',
     'operatingSystem': 'Web',
     'datePublished': '2025-08-01',
-    'dateModified': new Date().toISOString().split('T')[0],
+    'dateModified': '2025-08-01',
     'offers': {
       '@type': 'Offer',
       'price': '0',

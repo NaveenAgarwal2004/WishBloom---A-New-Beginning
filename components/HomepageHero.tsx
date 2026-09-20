@@ -8,24 +8,18 @@ export default function HomepageHero() {
   return (
     <section className="bg-gradient-to-b from-warmCream-50 to-warmCream-100 pt-20 pb-16 px-4 md:px-8 text-center border-b border-warmCream-200">
       <div className="max-w-4xl mx-auto">
-        <motion.h1
-          className="text-h2 md:text-h1 font-heading font-bold text-sepiaInk mb-6"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+        <h1
+          className="text-h2 md:text-h1 font-heading font-bold text-sepiaInk mb-6 animate-fade-in-up"
         >
           Create a Free Birthday Memory Book Online
-        </motion.h1>
+        </h1>
         
-        <motion.h2
-          className="text-body-lg md:text-h6 font-body text-warmCream-700 mb-10 max-w-2xl mx-auto leading-relaxed"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
+        <p
+          className="text-body-lg md:text-h6 font-body text-warmCream-700 mb-10 max-w-2xl mx-auto leading-relaxed animate-fade-in-up [animation-delay:200ms] opacity-0 [animation-fill-mode:forwards]"
         >
           Collect photos and heartfelt messages from everyone who loves them. 
           Share one beautiful interactive birthday scrapbook — no app, no cost.
-        </motion.h2>
+        </p>
         
         <motion.div
           className="mb-16"

@@ -46,9 +46,9 @@ export default function Footer({ contributors = [], createdDate }: FooterProps) 
 
           {/* Column 2: Navigation Links */}
           <div>
-            <h4 className="text-sm font-heading font-bold text-sepiaInk uppercase tracking-wider mb-4">
+            <h3 className="text-sm font-heading font-bold text-sepiaInk uppercase tracking-wider mb-4">
               Navigation
-            </h4>
+            </h3>
             <ul className="space-y-2.5 text-body-sm font-body">
               <li>
                 <Link href="/" className="text-warmCream-700 hover:text-sepiaInk transition-colors">
@@ -80,9 +80,9 @@ export default function Footer({ contributors = [], createdDate }: FooterProps) 
 
           {/* Column 3: Legal & Trust */}
           <div>
-            <h4 className="text-sm font-heading font-bold text-sepiaInk uppercase tracking-wider mb-4">
-              Legal & Trust
-            </h4>
+            <h3 className="text-sm font-heading font-bold text-sepiaInk uppercase tracking-wider mb-4">
+              Legal &amp; Trust
+            </h3>
             <ul className="space-y-2.5 text-body-sm font-body">
               <li>
                 <Link href="/privacy" className="text-warmCream-700 hover:text-sepiaInk transition-colors">
@@ -104,9 +104,9 @@ export default function Footer({ contributors = [], createdDate }: FooterProps) 
 
           {/* Column 4: Social Media & Connect */}
           <div>
-            <h4 className="text-sm font-heading font-bold text-sepiaInk uppercase tracking-wider mb-4">
+            <h3 className="text-sm font-heading font-bold text-sepiaInk uppercase tracking-wider mb-4">
               Follow Us
-            </h4>
+            </h3>
             <p className="text-body-sm text-warmCream-700 font-body mb-4">
               Follow our community on social media for birthday inspiration & story highlights!
             </p>

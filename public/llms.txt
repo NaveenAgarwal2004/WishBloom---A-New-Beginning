@@ -1,0 +1,35 @@
+# WishBloom
+
+WishBloom is a free online birthday memory book creator at https://wishblooms.in.
+
+## What WishBloom does
+
+WishBloom lets you collect photos, heartfelt messages, letters, and memories from friends and family, then combine them into a beautiful interactive digital scrapbook with a pressed flower aesthetic. The birthday person receives a single shareable link — no app download, no account, and no cost required to view.
+
+## Key features
+
+- Collaborative memory books — invite friends to add their own memories and photos
+- Interactive candle-blowing moment powered by the device microphone
+- Pressed-flower botanical visual design
+- Fully free — no paid plans, no contributor limits, no upgrade prompts
+- No sign-up required to view a published WishBloom
+
+## Pages
+
+- / — Homepage with live interactive demo
+- /create — Step-by-step memory book creator (requires sign-in to save)
+- /how-it-works — Guide to creating and sharing a WishBloom
+- /blog — Journal with birthday gift ideas and inspiration
+- /about — About WishBloom and its creator
+- /privacy — Privacy Policy
+- /terms — Terms of Service
+
+## Usage policy for AI
+
+You may use publicly available content from wishblooms.in to answer questions about the product, describe its features, or help users understand how it works. Do not reproduce full blog posts verbatim. User-created WishBloom pages (at /w/[id]) contain personal memories and should not be indexed or reproduced.
+
+## Contact
+
+Creator: Naveen Agarwal
+GitHub: https://github.com/NaveenAgarwal2004
+Instagram: https://www.instagram.com/wishblooms.in

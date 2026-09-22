@@ -93,6 +93,7 @@ testsprite_tests/
 # Text files
 *.txt
 !public/robots.txt
+!public/llms.txt
 
 test-results/
 playwright-report/

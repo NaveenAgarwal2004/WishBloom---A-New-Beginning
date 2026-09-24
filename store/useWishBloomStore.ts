@@ -58,6 +58,13 @@ interface WishBloomStore {
   removeWishPhrase: (index: number) => void
   updateWishPhrase: (index: number, phrase: string) => void
   
+  // Session-only flag (never persisted to localStorage).
+  // Set to true only when the user clicks "Publish WishBloom" in Step5.
+  // Guards Step6's useEffect from auto-publishing when the user navigates
+  // back to /create with currentStep=6 still in localStorage from a prior session.
+  sessionPublishInitiated: boolean
+  setSessionPublishInitiated: (value: boolean) => void
+
   // Reset
   resetStore: () => void
 }
@@ -110,6 +117,9 @@ const useWishBloomStore = create<WishBloomStore>()(
         step3Valid: false,
         step4Valid: true,
       },
+
+      // Session-only — always starts false; never goes to localStorage
+      sessionPublishInitiated: false,
       
       // Validation methods
       validateStep1: () => {
@@ -232,7 +242,9 @@ const useWishBloomStore = create<WishBloomStore>()(
         celebrationWishPhrases: state.celebrationWishPhrases.map((p, i) => i === index ? phrase : p)
       })),
       
-      // Reset
+      setSessionPublishInitiated: (value) => set({ sessionPublishInitiated: value }),
+
+      // Reset — clears everything including the session flag
       resetStore: () => set({
         currentStep: 1,
         recipientName: '',
@@ -249,6 +261,7 @@ const useWishBloomStore = create<WishBloomStore>()(
           step3Valid: false,
           step4Valid: true,
         },
+        sessionPublishInitiated: false,
       }),
     }),
     {
@@ -261,6 +274,20 @@ const useWishBloomStore = create<WishBloomStore>()(
         }
       ),
       skipHydration: typeof window === 'undefined',
+      // Explicitly list what IS persisted — sessionPublishInitiated is intentionally excluded.
+      // It is a session-only flag that must reset to false on every page load.
+      partialize: (state) => ({
+        currentStep: state.currentStep,
+        recipientName: state.recipientName,
+        age: state.age,
+        creativeAgeDescription: state.creativeAgeDescription,
+        introMessage: state.introMessage,
+        createdBy: state.createdBy,
+        memories: state.memories,
+        messages: state.messages,
+        celebrationWishPhrases: state.celebrationWishPhrases,
+        validationState: state.validationState,
+      }),
     }
   )
 )

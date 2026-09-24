@@ -53,6 +53,10 @@ export default function Step6Publish() {
 
       if (response.ok && data?.success) {
         const fullUrl = `${window.location.origin}/${data.wishbloom.uniqueUrl}`
+        // Clear the session flag now that publish is done.
+        // If the user navigates back to /create later, Step6 will show the
+        // "go back to preview" screen instead of silently republishing.
+        store.setSessionPublishInitiated(false)
         setPublishedUrl(fullUrl)
       } else {
         const errorMsg = data?.error || data?.message || `Failed to publish (Status: ${response.status})`
@@ -110,13 +114,39 @@ export default function Step6Publish() {
     }
   }
 
-  // Auto-publish on mount
+  // Auto-publish on mount — but ONLY if the user explicitly clicked "Publish WishBloom"
+  // in Step5 during this session. Without this guard, navigating back to /create with
+  // currentStep=6 persisted in localStorage would silently create a duplicate WishBloom.
   useEffect(() => {
-    if (!publishing && !publishedUrl && !publishError) {
+    if (!publishing && !publishedUrl && !publishError && store.sessionPublishInitiated) {
       handlePublish()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // Guard: Step6 was reached without going through Step5's Publish button
+  // (e.g. user returned to /create via URL with currentStep=6 in localStorage,
+  // or refreshed the page mid-flow). Show a safe recovery screen instead of
+  // publishing with stale data.
+  if (!store.sessionPublishInitiated && !publishing && !publishedUrl && !publishError) {
+    return (
+      <div className="max-w-3xl mx-auto text-center py-20">
+        <h2 className="text-h2 font-heading font-bold text-sepiaInk mb-4">
+          Ready to publish? 🌸
+        </h2>
+        <p className="text-body font-body text-warmCream-700 mb-8">
+          Go back to the preview to review your WishBloom and click &ldquo;Publish WishBloom&rdquo; when you&apos;re ready.
+        </p>
+        <button
+          onClick={() => store.previousStep()}
+          type="button"
+          className="px-8 py-4 bg-burntSienna text-warmCream-50 rounded-xl text-h6 font-heading font-semibold hover:shadow-colored-gold transition-all"
+        >
+          ← Back to Preview
+        </button>
+      </div>
+    )
+  }
 
   // Loading State - Using FloralLoader (Part 7)
   if (publishing) {

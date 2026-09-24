@@ -32,6 +32,7 @@ export default function Step3Messages() {
     reset,
     watch,
     setValue,
+    getValues,
   } = useForm<MessageFormData>({
     resolver: zodResolver(MessageSchema),
     mode: 'onBlur',
@@ -57,8 +58,32 @@ export default function Step3Messages() {
   const messageType = watch('type')
   const canProceed = store.messages.length >= VALIDATION_LIMITS.MESSAGES_MIN_REQUIRED
 
+  // Shown when user clicks Next while the content field has unsaved text
+  const [showUnsavedWarning, setShowUnsavedWarning] = useState(false)
+
   const handleNext = () => {
-    // 🔊 Play step completion sound
+    // Check whether the user has typed content in the form but hasn't clicked
+    // "Add Message". If yes, show a warning so they can decide what to do.
+    // Uses getValues() — the correct react-hook-form API for imperative reads.
+    const currentContent = getValues('content')
+    if (currentContent && currentContent.trim().length > 0) {
+      setShowUnsavedWarning(true)
+      return
+    }
+    play('step-complete')
+    store.nextStep()
+  }
+
+  // "Add it first" — runs the same submit path as clicking "Add Message",
+  // including full Zod validation. If validation fails, form errors appear inline.
+  const handleAddThenNext = () => {
+    handleSubmit(onSubmit)()
+    setShowUnsavedWarning(false)
+  }
+
+  // "Skip and continue" — user explicitly chooses to discard the in-progress form
+  const handleDiscardAndNext = () => {
+    setShowUnsavedWarning(false)
     play('step-complete')
     store.nextStep()
   }
@@ -335,6 +360,32 @@ export default function Step3Messages() {
         <p className="text-body text-fadedRose mb-4">Please add at least 1 message to continue</p>
       )}
 
+
+      {/* Unsaved message warning — shown when user clicks Next with content in the form */}
+      {showUnsavedWarning && (
+        <div className="mb-4 p-4 bg-fadedGold/10 border-2 border-fadedGold rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <p className="text-body-sm font-body font-semibold text-sepiaInk">
+            ⚠️ You have an unsaved message. Would you like to add it before continuing?
+          </p>
+          <div className="flex gap-3 shrink-0">
+            <button
+              type="button"
+              onClick={handleAddThenNext}
+              className="px-4 py-2 bg-mossGreen text-warmCream-50 rounded-lg text-body-sm font-body font-semibold hover:shadow-colored-green transition-all"
+            >
+              Add it first
+            </button>
+            <button
+              type="button"
+              onClick={handleDiscardAndNext}
+              className="px-4 py-2 bg-warmCream-300 text-warmCream-800 rounded-lg text-body-sm font-body font-semibold hover:bg-warmCream-400 transition-all"
+            >
+              Skip and continue
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="flex justify-between">
         <button
           onClick={() => store.previousStep()}
@@ -352,6 +403,7 @@ export default function Step3Messages() {
           Next <ArrowRight size={20} />
         </button>
       </div>
+
 
       {/* Phase 5: AI Poet Modal */}
       <AIPoetModal

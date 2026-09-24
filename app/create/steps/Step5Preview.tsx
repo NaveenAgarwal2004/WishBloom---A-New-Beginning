@@ -72,7 +72,12 @@ export default function Step5Preview() {
           
           {/* Publish Button */}
           <button
-            onClick={() => store.nextStep()}
+            onClick={() => {
+              // Mark this publish as intentionally initiated from Step5.
+              // Step6's useEffect checks this flag before auto-publishing.
+              store.setSessionPublishInitiated(true)
+              store.nextStep()
+            }}
             type="button"
             className="px-12 py-6 bg-gradient-to-r from-burntSienna to-fadedGold text-warmCream-50 rounded-2xl text-h5 font-heading font-bold shadow-dramatic hover:shadow-colored-gold transition-all"
           >

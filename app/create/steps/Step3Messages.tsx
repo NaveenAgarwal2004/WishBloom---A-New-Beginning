@@ -58,6 +58,42 @@ export default function Step3Messages() {
   const canProceed = store.messages.length >= VALIDATION_LIMITS.MESSAGES_MIN_REQUIRED
 
   const handleNext = () => {
+    // Auto-save the in-progress form if the user has typed content but hasn't clicked "Add Message".
+    // Without this, clicking Next silently drops whatever was in the form.
+    const currentContent = watch('content')
+    const currentContributorName = watch('contributor.name')
+    if (currentContent && currentContent.trim().length >= VALIDATION_LIMITS.MESSAGE_CONTENT_MIN) {
+      // Build and save the message exactly as onSubmit does
+      const currentFormData = {
+        type: watch('type'),
+        greeting: watch('greeting'),
+        content: currentContent,
+        closing: watch('closing'),
+        signature: watch('signature'),
+        title: watch('title'),
+        postscript: watch('postscript'),
+        date: watch('date') || new Date().toISOString().split('T')[0],
+        contributor: {
+          id: watch('contributor.id') || undefined,
+          name: currentContributorName || 'Anonymous',
+          email: watch('contributor.email') || undefined,
+          contributionCount: 1,
+        },
+      }
+      const autoSavedMessage: IMessage = {
+        ...currentFormData,
+        id: nanoid(8),
+        signature: currentFormData.signature || 'Anonymous',
+        audioUrl: currentAudioUrl || undefined,
+        contributor: {
+          ...currentFormData.contributor,
+          id: currentFormData.contributor.id || nanoid(8),
+          contributionCount: 1,
+        },
+        createdAt: new Date(),
+      }
+      store.addMessage(autoSavedMessage)
+    }
     // 🔊 Play step completion sound
     play('step-complete')
     store.nextStep()

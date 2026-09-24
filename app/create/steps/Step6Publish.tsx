@@ -53,6 +53,10 @@ export default function Step6Publish() {
 
       if (response.ok && data?.success) {
         const fullUrl = `${window.location.origin}/${data.wishbloom.uniqueUrl}`
+        // ✅ Reset the store immediately after a successful publish.
+        // Without this, the persisted currentStep=6 causes a duplicate publish
+        // if the user navigates back to /create (the useEffect re-fires on mount).
+        store.resetStore()
         setPublishedUrl(fullUrl)
       } else {
         const errorMsg = data?.error || data?.message || `Failed to publish (Status: ${response.status})`

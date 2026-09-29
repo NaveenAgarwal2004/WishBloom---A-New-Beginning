@@ -16,20 +16,20 @@ WishBloom lets you collect photos, heartfelt messages, letters, and memories fro
 
 ## Pages
 
-- / — Homepage with live interactive demo
-- /create — Step-by-step memory book creator (requires sign-in to save)
-- /how-it-works — Guide to creating and sharing a WishBloom
-- /blog — Journal with birthday gift ideas and inspiration
-- /about — About WishBloom and its creator
-- /privacy — Privacy Policy
-- /terms — Terms of Service
+- [Homepage](https://wishblooms.in/) — Homepage with live interactive demo
+- [Create](https://wishblooms.in/create) — Step-by-step memory book creator (requires sign-in to save)
+- [How It Works](https://wishblooms.in/how-it-works) — Guide to creating and sharing a WishBloom
+- [Blog](https://wishblooms.in/blog) — Journal with birthday gift ideas and inspiration
+- [About](https://wishblooms.in/about) — About WishBloom and its creator
+- [Privacy Policy](https://wishblooms.in/privacy) — Privacy Policy
+- [Terms of Service](https://wishblooms.in/terms) — Terms of Service
 
 ## Usage policy for AI
 
-You may use publicly available content from wishblooms.in to answer questions about the product, describe its features, or help users understand how it works. Do not reproduce full blog posts verbatim. User-created WishBloom pages (at /w/[id]) contain personal memories and should not be indexed or reproduced.
+You may use publicly available content from wishblooms.in to answer questions about the product, describe its features, or help users understand how it works. Do not reproduce full blog posts verbatim. User-created WishBloom pages (at /[id]) contain personal memories and should not be indexed or reproduced.
 
 ## Contact
 
-Creator: Naveen Agarwal
-GitHub: https://github.com/NaveenAgarwal2004
-Instagram: https://www.instagram.com/wishblooms.in
+- Creator: [Naveen Agarwal](https://github.com/NaveenAgarwal2004)
+- GitHub: [WishBloom Repository](https://github.com/NaveenAgarwal2004/WishBloom---A-New-Beginning)
+- Instagram: [@wishblooms.in](https://www.instagram.com/wishblooms.in)

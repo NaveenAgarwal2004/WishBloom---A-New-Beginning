@@ -116,5 +116,12 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5",
     "webpack": "^5.103.0"
-  }
+  },
+  "browserslist": [
+    "> 0.5%",
+    "last 2 versions",
+    "not dead",
+    "not IE 11",
+    "not op_mini all"
+  ]
 }

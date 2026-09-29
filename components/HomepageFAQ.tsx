@@ -38,7 +38,7 @@ const faqs = [
 ]
 
 export default function HomepageFAQ() {
-  const [openIndex, setOpenIndex] = useState<number | null>(null)
+  const [openIndex, setOpenIndex] = useState<number | null>(0)
 
   return (
     <section

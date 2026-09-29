@@ -1,7 +1,7 @@
 
+import { Suspense } from 'react'
 import localFont from 'next/font/local'
 import './globals.css'
-import { AudioProvider } from '@/context/AudioContext'
 import type { Metadata, Viewport } from 'next'
 import { WebVitals } from './web-vitals'
 import SkipLink from '@/components/SkipLink'
@@ -180,11 +180,11 @@ export default function RootLayout({
       >
         <SkipLink />
         <Providers>
-          <Navigation />
-          {/* ✅ AudioProvider now safely runs client-side */}
-          <AudioProvider>
-            {children}
-          </AudioProvider>
+          {/* Suspense prevents React #422/#425 hydration errors from useSession() in Navigation */}
+          <Suspense fallback={<div className="h-16 bg-warmCream-50" aria-hidden="true" />}>
+            <Navigation />
+          </Suspense>
+          {children}
           <Toaster />
         </Providers>
         <WebVitals />

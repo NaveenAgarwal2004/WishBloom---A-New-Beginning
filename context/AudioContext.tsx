@@ -82,12 +82,18 @@ export function AudioProvider({ children }: AudioProviderProps) {
       window.addEventListener('load', loadAudio)
       return () => window.removeEventListener('load', loadAudio)
     }
-  }, [volume])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps -- mount-only: volume is only used for initial Audio creation; subsequent changes are handled below
 
-  // Update volume when it changes
+  // Sync volume to existing audio elements when it changes (no re-creation)
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = volume
+    }
+    // Also sync sound effects volume
+    if (soundsRef.current) {
+      Object.values(soundsRef.current).forEach((audio) => {
+        if (audio) audio.volume = audio === soundsRef.current['paper-rustle'] ? Math.min(volume * 3.75, 0.3) : Math.min(volume * 8.75, 0.7)
+      })
     }
   }, [volume])
 

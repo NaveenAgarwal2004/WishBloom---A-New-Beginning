@@ -9,6 +9,7 @@ import MusicControl from '@/components/MusicControl'
 import HomepageHero from '@/components/HomepageHero'
 import HomepageFAQ from '@/components/HomepageFAQ'
 import { sampleWishBloom } from '@/lib/sampleData'
+import { AudioProvider } from '@/context/AudioContext'
 
 /**
  * Main WishBloom View Page
@@ -138,44 +139,51 @@ export default function App() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
-      <MusicControl />
 
-      <main id="main-content" className="min-h-screen bg-warmCream-100 pt-16 pb-bottom-nav md:pb-0">
-        <HomepageHero />
-        
-        <div id="demo-section" className="border-t border-warmCream-200">
-          <div className="bg-warmCream-200/50 py-6 text-center border-b border-warmCream-300">
-            <p className="text-body-lg font-heading italic text-sepiaInk">
-              Below is a live interactive preview of a WishBloom birthday scrapbook
-            </p>
-          </div>
+      {/*
+        AudioProvider is scoped here so audio only loads on the homepage demo,
+        not on blog, about, create, or any other page.
+      */}
+      <AudioProvider>
+        <MusicControl />
+
+        <main id="main-content" className="min-h-screen bg-warmCream-100 pt-16 pb-bottom-nav md:pb-0">
+          <HomepageHero />
           
-          <Hero
-            recipientName={sampleWishBloom.recipientName}
-            age={sampleWishBloom.age}
-            creativeAgeDescription={sampleWishBloom.creativeAgeDescription}
-          />
+          <div id="demo-section" className="border-t border-warmCream-200">
+            <div className="bg-warmCream-200/50 py-6 text-center border-b border-warmCream-300">
+              <p className="text-body-lg font-heading italic text-sepiaInk">
+                Below is a live interactive preview of a WishBloom birthday scrapbook
+              </p>
+            </div>
+            
+            <Hero
+              recipientName={sampleWishBloom.recipientName}
+              age={sampleWishBloom.age}
+              creativeAgeDescription={sampleWishBloom.creativeAgeDescription}
+            />
 
-          <IntroMessage message={sampleWishBloom.introMessage} />
+            <IntroMessage message={sampleWishBloom.introMessage} />
 
-          <MemoryGallery memories={sampleWishBloom.memories} />
+            <MemoryGallery memories={sampleWishBloom.memories} />
 
-          <MessagesSection messages={sampleWishBloom.messages} />
+            <MessagesSection messages={sampleWishBloom.messages} />
 
-          <CelebrationSection
-            age={sampleWishBloom.age}
-            celebrationWishPhrases={sampleWishBloom.celebrationWishPhrases}
-            contributors={sampleWishBloom.contributors}
-          />
+            <CelebrationSection
+              age={sampleWishBloom.age}
+              celebrationWishPhrases={sampleWishBloom.celebrationWishPhrases}
+              contributors={sampleWishBloom.contributors}
+            />
 
-          <Footer
-            contributors={sampleWishBloom.contributors}
-            createdDate={sampleWishBloom.createdDate}
-          />
-        </div>
+            <Footer
+              contributors={sampleWishBloom.contributors}
+              createdDate={sampleWishBloom.createdDate}
+            />
+          </div>
 
-        <HomepageFAQ />
-      </main>
+          <HomepageFAQ />
+        </main>
+      </AudioProvider>
     </>
   )
 }

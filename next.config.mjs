@@ -336,8 +336,8 @@ const nextConfig = {
             value: 'camera=(), microphone=(self), geolocation=()',
           },
           {
-            key: 'Link',
-            value: '<https://res.cloudinary.com>; rel=preconnect',
+            key: 'Cross-Origin-Opener-Policy',
+            value: 'same-origin-allow-popups',
           },
         ],
       },

@@ -153,7 +153,10 @@ export default function Footer({ contributors = [], createdDate }: FooterProps) 
                 <img
                   src="https://cdn-b.saashub.com/img/badges/approved-color.png?v=1"
                   alt="WishBloom badge on SaaSHub"
+                  width={130}
+                  height={42}
                   className="max-w-[130px] h-auto"
+                  loading="lazy"
                 />
               </a>
             </div>

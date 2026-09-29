@@ -34,21 +34,21 @@ export default function HomepageHero() {
           </Link>
         </motion.div>
 
-        <motion.section
-          aria-label="What is WishBloom"
-          className="mt-6 max-w-2xl mx-auto text-center"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
+        {/* AEO: Top summary block — visible on load, contains internal links for SEO */}
+        <section
+          aria-label="What is WishBloom — quick summary"
+          className="mt-10 max-w-2xl mx-auto bg-white/60 backdrop-blur-sm border border-warmCream-200 rounded-2xl px-7 py-5 text-left shadow-soft"
         >
-          <p className="text-sm font-body text-warmCream-600 leading-relaxed">
-            WishBloom is a free online birthday memory book creator. You collect photos
-            and heartfelt messages from friends and family — WishBloom turns them into a
-            beautiful interactive digital scrapbook, complete with a pressed flower aesthetic
-            and a microphone-powered candle-blowing moment, that the birthday person opens
-            via a single shared link. Completely free. No app. No signup needed to view.
+          <p className="text-body font-body text-sepiaInk leading-relaxed">
+            <strong>WishBloom</strong> is a free online birthday memory book creator.
+            Share one link — friends add photos, messages, and memories —
+            and the birthday person receives a beautiful interactive scrapbook they can open on any device.
+            No app, no signup, no cost.{' '}
+            <Link href="/how-it-works" className="text-burntSienna hover:underline font-medium">See how it works</Link>
+            {' '}or{' '}
+            <Link href="/create" className="text-mossGreen hover:underline font-medium">create a free birthday memory book</Link> now.
           </p>
-        </motion.section>
+        </section>
       </div>
     </section>
   )

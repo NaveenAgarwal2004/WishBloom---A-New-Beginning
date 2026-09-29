@@ -352,6 +352,22 @@ const nextConfig = {
         destination: '/create',
         permanent: true,
       },
+      // P6: GSC weird slugs — 301 to correct canonical URLs
+      {
+        source: '/blog/sentimental-birthday-editing-for-best-friend',
+        destination: '/blog/sentimental-birthday-gifts-for-best-friend',
+        permanent: true,
+      },
+      {
+        source: '/blog/sentimental-birthday-gift-for-best-friend',
+        destination: '/blog/sentimental-birthday-gifts-for-best-friend',
+        permanent: true,
+      },
+      {
+        source: '/blog/virtual-birthday-virtual-birthday-gift-ideas',
+        destination: '/blog/virtual-birthday-gift-ideas',
+        permanent: true,
+      },
     ]
   },
 }

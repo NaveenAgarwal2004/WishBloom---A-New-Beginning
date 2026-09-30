@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import { AudioProvider } from '@/context/AudioContext'
 
 export const metadata: Metadata = {
   title: 'Create a Birthday Memory Book Online Free | WishBloom',
@@ -32,5 +33,5 @@ export default function CreateLayout({
 }: {
   children: React.ReactNode
 }) {
-  return <>{children}</>
+  return <AudioProvider>{children}</AudioProvider>
 }

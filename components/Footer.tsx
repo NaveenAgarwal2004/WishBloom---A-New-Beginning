@@ -95,8 +95,14 @@ export default function Footer({ contributors = [], createdDate }: FooterProps) 
                 </Link>
               </li>
               <li>
+                <Link href="/contact" className="text-warmCream-700 hover:text-sepiaInk transition-colors">
+                  Contact
+                </Link>
+              </li>
+              <li>
                 <span className="text-warmCream-600 text-xs block pt-2">
-                  🔒 100% Private & Ad-Free. No app required.
+                  🔒 Your WishBloom is 100% private &amp; always free of ads.
+                  This public blog may be supported by advertising.
                 </span>
               </li>
             </ul>

@@ -5,7 +5,11 @@ import BlogPost from '@/models/BlogPost'
 
 // ─── Site URL map ────────────────────────────────────────────────────────────
 // All pages we want to track indexing status for
-const SITE_URL = 'https://wishblooms.in'
+const SITE_URL = process.env.GSC_SITE_URL || 'sc-domain:wishblooms.in'
+const BASE_INSPECT_URL = SITE_URL.startsWith('sc-domain:')
+  ? 'https://wishblooms.in'
+  : SITE_URL.replace(/\/$/, '')
+
 
 // ─── Static pages ────────────────────────────────────────────────────────────
 const STATIC_PAGES = [
@@ -262,7 +266,7 @@ export async function GET(request: Request) {
             () =>
               inspectUrl(
                 accessToken,
-                `${SITE_URL}${page.path}`,
+                `${BASE_INSPECT_URL}${page.path}`,
                 page.label,
                 page.path
               ).then(resolve),

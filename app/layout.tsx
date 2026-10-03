@@ -193,8 +193,8 @@ export default function RootLayout({
         <WebVitals />
         {/* ✅ Only load Vercel Analytics in production */}
         {process.env.NODE_ENV === 'production' && <Analytics />}
-        {/* ✅ Monetag ads — only injected on public pages, blocked on /[id], /create, /dashboard */}
-        {process.env.NODE_ENV === 'production' && <MonetagScript />}
+        {/* ✅ Monetag ads — route-guarded inside component */}
+        <MonetagScript />
       </body>
     </html>
   )

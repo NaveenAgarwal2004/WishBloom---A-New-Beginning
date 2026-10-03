@@ -1,10 +1,10 @@
 'use client'
 
-import Script from 'next/script'
+import { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 
 /**
- * Monetag Ad Script — Conditional Route Guard
+ * Monetag Ad Script — Route-Guarded DOM Injector
  *
  * Ads ONLY show on public informational pages:
  *   ✅ /              — homepage
@@ -46,8 +46,7 @@ const AD_BLOCKED_PREFIXES = [
 ]
 
 function isAdAllowed(pathname: string | null): boolean {
-  // During SSR/initial hydration, if pathname is null, allow by default
-  if (!pathname) return true
+  if (!pathname) return false
 
   // Block if path starts with any protected prefix
   if (AD_BLOCKED_PREFIXES.some((prefix) => pathname.startsWith(prefix))) {
@@ -71,30 +70,32 @@ function isAdAllowed(pathname: string | null): boolean {
 export default function MonetagScript() {
   const pathname = usePathname()
 
-  // Don't render anything if the route is not allowed
-  if (!isAdAllowed(pathname)) {
-    return null
-  }
+  useEffect(() => {
+    // Only inject on allowed public routes
+    if (!isAdAllowed(pathname)) {
+      return
+    }
 
-  return (
-    <>
-      {/* In-Page Push (Banner) — Zone 11946408 */}
-      <Script
-        id="monetag-inpage-push"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: `(function(s){s.dataset.zone='11946408',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));`,
-        }}
-      />
+    // 1. In-Page Push (Banner) — Zone 11946408
+    if (!document.getElementById('monetag-inpage-push')) {
+      const s1 = document.createElement('script')
+      s1.id = 'monetag-inpage-push'
+      s1.dataset.zone = '11946408'
+      s1.src = 'https://nap5k.com/tag.min.js'
+      s1.async = true
+      document.body.appendChild(s1)
+    }
 
-      {/* Vignette Banner — Zone 11946529 */}
-      <Script
-        id="monetag-vignette"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: `(function(s){s.dataset.zone='11946529',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));`,
-        }}
-      />
-    </>
-  )
+    // 2. Vignette Banner — Zone 11946529
+    if (!document.getElementById('monetag-vignette')) {
+      const s2 = document.createElement('script')
+      s2.id = 'monetag-vignette'
+      s2.dataset.zone = '11946529'
+      s2.src = 'https://n6wxm.com/vignette.min.js'
+      s2.async = true
+      document.body.appendChild(s2)
+    }
+  }, [pathname])
+
+  return null
 }

@@ -26,13 +26,13 @@ import { usePathname } from 'next/navigation'
  */
 
 // ── Monetag Ad Zone Configuration ─────────────────────────────────────────
-// In-Page Push (Banner) — "Dreamy" tag — Zone: 11946408
+// 1. In-Page Push (Banner) — "Dreamy" tag — Zone: 11946408
 const INPAGE_PUSH_ZONE = '11946408'
 const INPAGE_PUSH_SRC  = 'https://nap5k.com/tag.min.js'
 
-// Vignette Banner — uncomment and fill in once retrieved from Monetag dashboard
-// const VIGNETTE_ZONE = 'REPLACE_WITH_VIGNETTE_ZONE_ID'
-// const VIGNETTE_SRC  = 'REPLACE_WITH_VIGNETTE_SCRIPT_URL'
+// 2. Vignette Banner — Zone: 11946529
+const VIGNETTE_ZONE = '11946529'
+const VIGNETTE_SRC  = 'https://n6wxm.com/vignette.min.js'
 // ───────────────────────────────────────────────────────────────────────────
 
 /** Routes where ads are explicitly allowed */
@@ -93,13 +93,13 @@ export default function MonetagScript() {
         id="monetag-inpage-push"
       />
 
-      {/* Vignette Banner — uncomment after adding zone + src above */}
-      {/* <Script
+      {/* Vignette Banner */}
+      <Script
         src={VIGNETTE_SRC}
         data-zone={VIGNETTE_ZONE}
         strategy="lazyOnload"
         id="monetag-vignette"
-      /> */}
+      />
     </>
   )
 }

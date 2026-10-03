@@ -17,22 +17,22 @@ import { usePathname } from 'next/navigation'
  *   ✅ /terms
  *
  * Ads are BLOCKED on:
- *   🚫 /[id]/*        — personal WishBloom memory books (most important)
+ *   🚫 /[id]/*        — personal WishBloom memory books (most critical)
  *   🚫 /create/*      — creation flow
  *   🚫 /dashboard/*   — admin dashboard
  *   🚫 /auth/*        — sign in / sign up
  *   🚫 /api/*         — API routes
  *   🚫 /offline       — PWA offline page
- *
- * To activate:
- * 1. Replace MONETAG_VERIFICATION_CODE with your site verification code from Monetag dashboard
- * 2. Replace MONETAG_SCRIPT_URL with your unique script URL from Monetag dashboard
- * 3. Uncomment the <Script> block below
  */
 
-// ── Replace these with your actual Monetag values ──────────────────────────
-const MONETAG_SCRIPT_URL = 'REPLACE_WITH_YOUR_MONETAG_SCRIPT_URL'
-// Example: 'https://cdn.monetag.com/tag.min.js?z=1234567'
+// ── Monetag Ad Zone Configuration ─────────────────────────────────────────
+// In-Page Push (Banner) — "Dreamy" tag — Zone: 11946408
+const INPAGE_PUSH_ZONE = '11946408'
+const INPAGE_PUSH_SRC  = 'https://nap5k.com/tag.min.js'
+
+// Vignette Banner — uncomment and fill in once retrieved from Monetag dashboard
+// const VIGNETTE_ZONE = 'REPLACE_WITH_VIGNETTE_ZONE_ID'
+// const VIGNETTE_SRC  = 'REPLACE_WITH_VIGNETTE_SCRIPT_URL'
 // ───────────────────────────────────────────────────────────────────────────
 
 /** Routes where ads are explicitly allowed */
@@ -71,7 +71,7 @@ function isAdAllowed(pathname: string): boolean {
     return true
   }
 
-  // Everything else (e.g. /[id] — the WishBloom viewer) is blocked
+  // Everything else (e.g. /[id] — the WishBloom viewer) is blocked by default
   return false
 }
 
@@ -83,20 +83,23 @@ export default function MonetagScript() {
     return null
   }
 
-  // Don't render if the script URL hasn't been configured yet
-  if (!MONETAG_SCRIPT_URL || MONETAG_SCRIPT_URL.startsWith('REPLACE_')) {
-    if (process.env.NODE_ENV === 'development') {
-      console.warn('[MonetagScript] Script URL not configured. Set MONETAG_SCRIPT_URL.')
-    }
-    return null
-  }
-
   return (
-    <Script
-      src={MONETAG_SCRIPT_URL}
-      strategy="lazyOnload"     // Load after page is interactive — protects LCP/TBT
-      data-cfasync="false"       // Required by Monetag to bypass Cloudflare async
-      id="monetag-script"
-    />
+    <>
+      {/* In-Page Push (Banner) — "Dreamy" tag */}
+      <Script
+        src={INPAGE_PUSH_SRC}
+        data-zone={INPAGE_PUSH_ZONE}
+        strategy="lazyOnload"
+        id="monetag-inpage-push"
+      />
+
+      {/* Vignette Banner — uncomment after adding zone + src above */}
+      {/* <Script
+        src={VIGNETTE_SRC}
+        data-zone={VIGNETTE_ZONE}
+        strategy="lazyOnload"
+        id="monetag-vignette"
+      /> */}
+    </>
   )
 }

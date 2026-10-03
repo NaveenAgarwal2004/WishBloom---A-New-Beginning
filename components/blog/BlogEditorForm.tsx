@@ -129,6 +129,11 @@ export default function BlogEditorForm({ initialData, mode }: BlogEditorFormProp
         isPublished = true
         pubDate = new Date().toISOString()
       } else if (publishStatus === 'scheduled') {
+        if (!scheduledDate || isNaN(new Date(scheduledDate).getTime())) {
+          setError('Please select a valid schedule date and time.')
+          setSaving(false)
+          return
+        }
         isPublished = true
         pubDate = new Date(scheduledDate).toISOString()
       } else {

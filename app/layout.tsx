@@ -9,6 +9,7 @@ import { Toaster } from '@/components/ui/toaster'
 import Providers from '@/components/Providers'
 import Navigation from '@/components/Navigation'
 import { Analytics } from '@vercel/analytics/next'
+import MonetagScript from '@/components/MonetagScript'
 
 // ✅ Self-hosted fonts with Next.js optimization
 const cormorantGaramond = localFont({
@@ -114,6 +115,8 @@ export const metadata: Metadata = {
   other: {
     'mobile-web-app-capable': 'yes',
     'saashub-verification': 'd4vosffnckj6',
+    // ✅ Monetag site verification (meta tag approach — sw.js avoided to protect PWA service worker)
+    'monetag': 'e998fa2c8047dc6f5b7e8f01376bc880',
   },
 
   // ✅ Apple Web App configuration
@@ -190,6 +193,8 @@ export default function RootLayout({
         <WebVitals />
         {/* ✅ Only load Vercel Analytics in production */}
         {process.env.NODE_ENV === 'production' && <Analytics />}
+        {/* ✅ Monetag ads — only injected on public pages, blocked on /[id], /create, /dashboard */}
+        {process.env.NODE_ENV === 'production' && <MonetagScript />}
       </body>
     </html>
   )

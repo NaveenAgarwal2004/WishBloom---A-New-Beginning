@@ -38,10 +38,18 @@ export const revalidate = 60
 export default async function BlogPage() {
   await dbConnect()
   
-  // Only fetch published posts for the public blog
-  const postsData = await BlogPost.find({ published: true })
-    .sort({ createdAt: -1 })
-    .select('title slug description createdAt readTime')
+  // Only fetch published posts whose scheduled time has arrived for the public blog
+  const now = new Date()
+  const postsData = await BlogPost.find({
+    published: true,
+    $or: [
+      { publishedAt: { $exists: false } },
+      { publishedAt: null },
+      { publishedAt: { $lte: now } },
+    ],
+  })
+    .sort({ publishedAt: -1, createdAt: -1 })
+    .select('title slug description createdAt publishedAt readTime')
     .lean()
     .exec()
 
@@ -85,7 +93,7 @@ export default async function BlogPage() {
                 <div className="flex items-center gap-6 text-caption font-mono text-warmCream-500">
                   <span className="flex items-center gap-2">
                     <Calendar size={14} />
-                    {new Date(post.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+                    {new Date(post.publishedAt || post.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
                   </span>
                   <span className="flex items-center gap-2">
                     <Clock size={14} />

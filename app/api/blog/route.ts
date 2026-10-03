@@ -21,8 +21,16 @@ export async function GET(request: Request) {
       }
       // Admin sees everything
     } else {
-      // Public only sees published posts
-      query = { published: true }
+      // Public only sees published posts whose scheduled time has arrived
+      const now = new Date()
+      query = {
+        published: true,
+        $or: [
+          { publishedAt: { $exists: false } },
+          { publishedAt: null },
+          { publishedAt: { $lte: now } },
+        ],
+      }
     }
 
     const posts = await BlogPost.find(query)
@@ -49,7 +57,7 @@ export async function POST(request: Request) {
     await dbConnect()
     const body = await request.json()
 
-    const { title, slug, description, content, published, tier, readTime, keywords, faqSchema } = body
+    const { title, slug, description, content, published, publishedAt, tier, readTime, keywords, faqSchema } = body
 
     if (!title || !slug || !description || !content) {
       return NextResponse.json(
@@ -70,6 +78,7 @@ export async function POST(request: Request) {
       description,
       content,
       published: published || false,
+      publishedAt: publishedAt ? new Date(publishedAt) : null,
       tier: tier || 2,
       readTime: readTime || '3 min read',
       keywords: keywords || [],

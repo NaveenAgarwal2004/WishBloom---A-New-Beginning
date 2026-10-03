@@ -10,6 +10,7 @@ interface BlogPostSummary {
   slug: string
   description: string
   published: boolean
+  publishedAt?: string | null
   tier: number
   readTime: string
   createdAt: string
@@ -97,42 +98,52 @@ export default function BlogPostList({ posts: initialPosts }: BlogPostListProps)
           </div>
         ) : (
           <div className="space-y-4">
-            {posts.map((post) => (
-              <div
-                key={post._id}
-                className="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-warmCream-200 shadow-soft hover:shadow-medium transition-shadow"
-              >
-                <div className="flex flex-col sm:flex-row items-start gap-4">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-3 mb-2">
-                      <h2 className="text-h5 font-heading text-sepiaInk truncate">
-                        {post.title}
-                      </h2>
-                      <span
-                        className={`flex-shrink-0 px-3 py-1 rounded-full text-micro font-mono font-bold tracking-wider ${
-                          post.published
-                            ? 'bg-mossGreen/10 text-mossGreen border border-mossGreen/30'
-                            : 'bg-warmCream-100 text-warmCream-600 border border-warmCream-300'
-                        }`}
-                      >
-                        {post.published ? 'LIVE' : 'DRAFT'}
-                      </span>
-                      <span className="flex-shrink-0 px-2 py-1 rounded-full text-micro font-mono text-warmCream-500 bg-warmCream-100 border border-warmCream-200">
-                        T{post.tier}
-                      </span>
+            {posts.map((post) => {
+              const isScheduled = post.published && post.publishedAt && new Date(post.publishedAt) > new Date()
+              const isLive = post.published && (!post.publishedAt || new Date(post.publishedAt) <= new Date())
+
+              return (
+                <div
+                  key={post._id}
+                  className="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-warmCream-200 shadow-soft hover:shadow-medium transition-shadow"
+                >
+                  <div className="flex flex-col sm:flex-row items-start gap-4">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-wrap items-center gap-2.5 mb-2">
+                        <h2 className="text-h5 font-heading text-sepiaInk truncate">
+                          {post.title}
+                        </h2>
+                        <span
+                          className={`flex-shrink-0 px-3 py-1 rounded-full text-micro font-mono font-bold tracking-wider ${
+                            isScheduled
+                              ? 'bg-amber-100 text-amber-900 border border-amber-300'
+                              : isLive
+                              ? 'bg-mossGreen/10 text-mossGreen border border-mossGreen/30'
+                              : 'bg-warmCream-100 text-warmCream-600 border border-warmCream-300'
+                          }`}
+                        >
+                          {isScheduled
+                            ? `SCHEDULED (${new Date(post.publishedAt!).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })})`
+                            : isLive
+                            ? 'LIVE'
+                            : 'DRAFT'}
+                        </span>
+                        <span className="flex-shrink-0 px-2 py-1 rounded-full text-micro font-mono text-warmCream-500 bg-warmCream-100 border border-warmCream-200">
+                          T{post.tier}
+                        </span>
+                      </div>
+                      <p className="text-body-sm font-body text-warmCream-600 line-clamp-1 mb-2">
+                        {post.description}
+                      </p>
+                      <p className="text-caption font-mono text-warmCream-500">
+                        /blog/{post.slug} · {post.readTime} ·{' '}
+                        {new Date(post.publishedAt || post.updatedAt).toLocaleDateString('en-US', {
+                          month: 'short',
+                          day: 'numeric',
+                          year: 'numeric',
+                        })}
+                      </p>
                     </div>
-                    <p className="text-body-sm font-body text-warmCream-600 line-clamp-1 mb-2">
-                      {post.description}
-                    </p>
-                    <p className="text-caption font-mono text-warmCream-500">
-                      /blog/{post.slug} · {post.readTime} ·{' '}
-                      {new Date(post.updatedAt).toLocaleDateString('en-US', {
-                        month: 'short',
-                        day: 'numeric',
-                        year: 'numeric',
-                      })}
-                    </p>
-                  </div>
 
                   <div className="flex items-center gap-2 flex-shrink-0">
                     <button
@@ -160,8 +171,9 @@ export default function BlogPostList({ posts: initialPosts }: BlogPostListProps)
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
+            )
+          })}
+        </div>
         )}
       </div>
     </div>

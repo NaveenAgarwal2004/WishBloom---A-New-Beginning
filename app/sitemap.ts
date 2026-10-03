@@ -19,14 +19,22 @@ const BASE = 'https://wishblooms.in'
 async function getBlogPosts(): Promise<{ slug: string; updatedAt?: Date }[]> {
   try {
     await dbConnect()
+    const now = new Date()
 
-    const posts = await BlogPost.find({ published: true })
-      .select('slug updatedAt')
+    const posts = await BlogPost.find({
+      published: true,
+      $or: [
+        { publishedAt: { $exists: false } },
+        { publishedAt: null },
+        { publishedAt: { $lte: now } },
+      ],
+    })
+      .select('slug updatedAt publishedAt')
       .lean()
       .maxTimeMS(4000)
       .exec()
 
-    return posts.map((p: any) => ({ slug: p.slug, updatedAt: p.updatedAt }))
+    return posts.map((p: any) => ({ slug: p.slug, updatedAt: p.publishedAt || p.updatedAt }))
   } catch (error) {
     console.error('Error fetching blog posts for sitemap:', error)
     return []

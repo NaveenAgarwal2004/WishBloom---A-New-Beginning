@@ -54,7 +54,16 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 
 export default async function BlogPostPage({ params }: { params: { slug: string } }) {
   await dbConnect()
-  const post = await BlogPost.findOne({ slug: params.slug, published: true }).lean().exec() as any
+  const now = new Date()
+  const post = await BlogPost.findOne({
+    slug: params.slug,
+    published: true,
+    $or: [
+      { publishedAt: { $exists: false } },
+      { publishedAt: null },
+      { publishedAt: { $lte: now } },
+    ],
+  }).lean().exec() as any
 
   if (!post) {
     notFound()

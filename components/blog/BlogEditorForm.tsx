@@ -28,6 +28,7 @@ interface BlogEditorFormProps {
     description: string
     content: string
     published: boolean
+    publishedAt?: Date | string | null
     tier: number
     readTime: string
     faqSchema?: { mainEntity?: FaqItem[] } | null
@@ -45,6 +46,22 @@ function slugify(text: string): string {
     .trim()
 }
 
+function formatDateTimeForInput(d?: Date | string | null): string {
+  if (!d) {
+    const tomorrow = new Date()
+    tomorrow.setDate(tomorrow.getDate() + 1)
+    tomorrow.setHours(10, 0, 0, 0)
+    return tomorrow.toISOString().slice(0, 16)
+  }
+  const dateObj = new Date(d)
+  const year = dateObj.getFullYear()
+  const month = String(dateObj.getMonth() + 1).padStart(2, '0')
+  const day = String(dateObj.getDate()).padStart(2, '0')
+  const hours = String(dateObj.getHours()).padStart(2, '0')
+  const minutes = String(dateObj.getMinutes()).padStart(2, '0')
+  return `${year}-${month}-${day}T${hours}:${minutes}`
+}
+
 export default function BlogEditorForm({ initialData, mode }: BlogEditorFormProps) {
   const router = useRouter()
   const [saving, setSaving] = useState(false)
@@ -54,13 +71,19 @@ export default function BlogEditorForm({ initialData, mode }: BlogEditorFormProp
   const [slug, setSlug] = useState(initialData?.slug || '')
   const [description, setDescription] = useState(initialData?.description || '')
   const [content, setContent] = useState(initialData?.content || '<p>Start writing your blog post here…</p>')
-  const [published, setPublished] = useState(initialData?.published || false)
+  
+  const [publishStatus, setPublishStatus] = useState<'draft' | 'published' | 'scheduled'>(() => {
+    if (!initialData?.published) return 'draft'
+    if (initialData?.publishedAt && new Date(initialData.publishedAt) > new Date()) return 'scheduled'
+    return 'published'
+  })
+  const [scheduledDate, setScheduledDate] = useState(() => formatDateTimeForInput(initialData?.publishedAt))
+
   const [tier, setTier] = useState(initialData?.tier || 2)
   const [readTime, setReadTime] = useState(initialData?.readTime || '3 min read')
   const [faqItems, setFaqItems] = useState<FaqItem[]>(() => {
     const entities = initialData?.faqSchema?.mainEntity
     if (!entities || !Array.isArray(entities)) return []
-    // Map from JSON-LD shape ({ name, acceptedAnswer.text }) back to editor shape ({ question, answer })
     return entities.map((e: any) => ({
       question: e.question || e.name || '',
       answer: e.answer || e.acceptedAnswer?.text || '',
@@ -99,6 +122,20 @@ export default function BlogEditorForm({ initialData, mode }: BlogEditorFormProp
     setError('')
 
     try {
+      let isPublished = false
+      let pubDate: string | null = null
+
+      if (publishStatus === 'published') {
+        isPublished = true
+        pubDate = new Date().toISOString()
+      } else if (publishStatus === 'scheduled') {
+        isPublished = true
+        pubDate = new Date(scheduledDate).toISOString()
+      } else {
+        isPublished = false
+        pubDate = null
+      }
+
       // Build FAQ schema if items exist
       const faqSchema =
         faqItems.length > 0
@@ -123,7 +160,18 @@ export default function BlogEditorForm({ initialData, mode }: BlogEditorFormProp
         .map((k) => k.trim())
         .filter(Boolean)
 
-      const body = { title, slug, description, content, published, tier, readTime, keywords: keywordsArray, faqSchema }
+      const body = {
+        title,
+        slug,
+        description,
+        content,
+        published: isPublished,
+        publishedAt: pubDate,
+        tier,
+        readTime,
+        keywords: keywordsArray,
+        faqSchema,
+      }
 
       const url = mode === 'create' ? '/api/blog' : `/api/blog/${initialData?.slug}`
       const method = mode === 'create' ? 'POST' : 'PATCH'
@@ -324,33 +372,87 @@ export default function BlogEditorForm({ initialData, mode }: BlogEditorFormProp
             </div>
           </div>
 
+          {/* Publishing & Scheduling Status Control */}
+          <div className="bg-white/60 rounded-2xl border border-warmCream-200 p-6 space-y-4">
+            <label className="block text-body-sm font-heading text-sepiaInk">
+              Publishing Options
+            </label>
+            
+            <div className="flex flex-wrap items-center gap-3">
+              <button
+                type="button"
+                onClick={() => setPublishStatus('draft')}
+                className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-body-sm font-heading transition-all ${
+                  publishStatus === 'draft'
+                    ? 'bg-warmCream-200 text-sepiaInk font-bold border border-warmCream-400 shadow-sm'
+                    : 'bg-white/60 text-warmCream-600 border border-warmCream-200 hover:bg-warmCream-100'
+                }`}
+              >
+                <EyeOff size={16} />
+                Draft
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setPublishStatus('scheduled')}
+                className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-body-sm font-heading transition-all ${
+                  publishStatus === 'scheduled'
+                    ? 'bg-amber-100 text-amber-900 font-bold border border-amber-300 shadow-sm'
+                    : 'bg-white/60 text-warmCream-600 border border-warmCream-200 hover:bg-warmCream-100'
+                }`}
+              >
+                📅 Schedule
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setPublishStatus('published')}
+                className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-body-sm font-heading transition-all ${
+                  publishStatus === 'published'
+                    ? 'bg-mossGreen/15 text-mossGreen font-bold border border-mossGreen/40 shadow-sm'
+                    : 'bg-white/60 text-warmCream-600 border border-warmCream-200 hover:bg-warmCream-100'
+                }`}
+              >
+                <Eye size={16} />
+                Publish Immediately
+              </button>
+            </div>
+
+            {/* DateTime picker when Scheduled is active */}
+            {publishStatus === 'scheduled' && (
+              <div className="pt-2 animate-fadeIn">
+                <label className="block text-caption font-heading text-sepiaInk mb-1.5">
+                  Schedule Date & Time (Your Local Time)
+                </label>
+                <input
+                  type="datetime-local"
+                  value={scheduledDate}
+                  onChange={(e) => setScheduledDate(e.target.value)}
+                  className="px-4 py-2.5 bg-white border border-warmCream-300 rounded-xl text-body-sm font-mono text-sepiaInk focus:outline-none focus:ring-2 focus:ring-fadedGold/50"
+                />
+                <p className="mt-1 text-caption text-warmCream-500 font-mono">
+                  The post will remain hidden from the public blog until this date and time arrives.
+                </p>
+              </div>
+            )}
+          </div>
+
           {/* Actions */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-4 border-t border-warmCream-200">
-            <button
-              type="button"
-              onClick={() => {
-                setPublished(!published)
-              }}
-              className={`inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-heading transition-all ${
-                published
-                  ? 'bg-mossGreen/10 text-mossGreen border border-mossGreen/30'
-                  : 'bg-warmCream-100 text-warmCream-600 border border-warmCream-300'
-              }`}
-            >
-              {published ? <Eye size={18} /> : <EyeOff size={18} />}
-              {published ? 'Published' : 'Draft'}
-            </button>
-
-            <div className="flex-1" />
-
+          <div className="flex items-center justify-end gap-4 pt-2">
             <button
               type="button"
               onClick={handleSave}
               disabled={saving}
-              className="inline-flex items-center justify-center gap-2 px-8 py-3 bg-sepiaInk text-white rounded-full font-heading hover:bg-sepiaInk/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="inline-flex items-center justify-center gap-2 px-8 py-3 bg-sepiaInk text-white rounded-full font-heading hover:bg-sepiaInk/90 transition-all shadow-soft disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save size={18} />
-              {saving ? 'Saving…' : mode === 'create' ? 'Create Post' : 'Save Changes'}
+              {saving
+                ? 'Saving…'
+                : publishStatus === 'scheduled'
+                ? 'Schedule Post'
+                : publishStatus === 'published'
+                ? 'Publish Post'
+                : 'Save Draft'}
             </button>
           </div>
         </div>

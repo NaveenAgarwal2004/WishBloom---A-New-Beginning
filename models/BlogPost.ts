@@ -7,6 +7,7 @@ export interface IBlogPost extends Document {
   content: string
   coverImage?: string
   published: boolean
+  publishedAt?: Date | null
   tier: 1 | 2 | 3
   readTime: string
   keywords?: string[]
@@ -27,6 +28,7 @@ const BlogPostSchema = new Schema<IBlogPost>(
     content: { type: String, required: true },
     coverImage: { type: String },
     published: { type: Boolean, default: false },
+    publishedAt: { type: Date, default: null },
     tier: { type: Number, enum: [1, 2, 3], default: 2 },
     readTime: { type: String, default: '3 min read' },
     keywords: [{ type: String }],
@@ -40,8 +42,8 @@ const BlogPostSchema = new Schema<IBlogPost>(
 )
 
 // Note: slug index is already created by unique:true on the field definition above
-// Adding only the compound index needed for blog listing queries
-BlogPostSchema.index({ published: 1, createdAt: -1 })
+// Adding compound index needed for blog listing and scheduled post queries
+BlogPostSchema.index({ published: 1, publishedAt: 1, createdAt: -1 })
 
 export default (mongoose.models.BlogPost as Model<IBlogPost>) ||
   mongoose.model<IBlogPost>('BlogPost', BlogPostSchema)

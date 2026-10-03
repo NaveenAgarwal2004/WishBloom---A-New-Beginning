@@ -69,6 +69,7 @@
     "date-fns": "^4.1.0",
     "dotenv": "^17.2.3",
     "framer-motion": "^12.23.24",
+    "googleapis": "^183.0.0",
     "lucide-react": "^0.548.0",
     "mongodb": "^6.3.0",
     "mongoose": "^8.19.2",

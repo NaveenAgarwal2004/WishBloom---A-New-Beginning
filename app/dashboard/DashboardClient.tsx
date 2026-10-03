@@ -11,6 +11,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { APP_CONFIG } from '@/config/constants'
 import DraftsSection from '@/components/dashboard/DraftsSection'
+import IndexingDashboard from '@/components/dashboard/IndexingDashboard'
 import { pdf } from '@react-pdf/renderer'
 import HeirloomDocument from '@/components/pdf/HeirloomDocument'
 
@@ -170,6 +171,9 @@ export default function DashboardClient({ blooms, userName, userEmail }: Dashboa
 
       {/* Drafts Section */}
       <DraftsSection />
+
+      {/* Admin-only: Google Indexing Status */}
+      {isBlogAdmin && <IndexingDashboard />}
 
       {/* Stats Summary */}
       <motion.div

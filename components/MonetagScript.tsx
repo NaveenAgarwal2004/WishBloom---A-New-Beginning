@@ -26,13 +26,7 @@ import { usePathname } from 'next/navigation'
  */
 
 // ── Monetag Ad Zone Configuration ─────────────────────────────────────────
-// 1. In-Page Push (Banner) — "Dreamy" tag — Zone: 11946408
-const INPAGE_PUSH_ZONE = '11946408'
-const INPAGE_PUSH_SRC  = 'https://nap5k.com/tag.min.js'
-
-// 2. Vignette Banner — Zone: 11946529
-const VIGNETTE_ZONE = '11946529'
-const VIGNETTE_SRC  = 'https://n6wxm.com/vignette.min.js'
+// In-Page Push (Zone 11946408) & Vignette (Zone 11946529)
 // ───────────────────────────────────────────────────────────────────────────
 
 /** Routes where ads are explicitly allowed */
@@ -79,26 +73,28 @@ export default function MonetagScript() {
   const pathname = usePathname()
 
   // Don't render anything if the route is not explicitly allowed
-  if (!isAdAllowed(pathname)) {
+  if (!pathname || !isAdAllowed(pathname)) {
     return null
   }
 
   return (
     <>
-      {/* In-Page Push (Banner) — "Dreamy" tag */}
+      {/* In-Page Push (Banner) — "Dreamy" tag — Zone 11946408 */}
       <Script
-        src={INPAGE_PUSH_SRC}
-        data-zone={INPAGE_PUSH_ZONE}
-        strategy="lazyOnload"
         id="monetag-inpage-push"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `(function(s){s.dataset.zone='11946408',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));`,
+        }}
       />
 
-      {/* Vignette Banner */}
+      {/* Vignette Banner — Zone 11946529 */}
       <Script
-        src={VIGNETTE_SRC}
-        data-zone={VIGNETTE_ZONE}
-        strategy="lazyOnload"
         id="monetag-vignette"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `(function(s){s.dataset.zone='11946529',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));`,
+        }}
       />
     </>
   )

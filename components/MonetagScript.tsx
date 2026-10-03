@@ -25,10 +25,6 @@ import { usePathname } from 'next/navigation'
  *   🚫 /offline       — PWA offline page
  */
 
-// ── Monetag Ad Zone Configuration ─────────────────────────────────────────
-// In-Page Push (Zone 11946408) & Vignette (Zone 11946529)
-// ───────────────────────────────────────────────────────────────────────────
-
 /** Routes where ads are explicitly allowed */
 const AD_ALLOWED_PATHS = [
   '/',
@@ -49,7 +45,10 @@ const AD_BLOCKED_PREFIXES = [
   '/offline',
 ]
 
-function isAdAllowed(pathname: string): boolean {
+function isAdAllowed(pathname: string | null): boolean {
+  // During SSR/initial hydration, if pathname is null, allow by default
+  if (!pathname) return true
+
   // Block if path starts with any protected prefix
   if (AD_BLOCKED_PREFIXES.some((prefix) => pathname.startsWith(prefix))) {
     return false
@@ -72,14 +71,14 @@ function isAdAllowed(pathname: string): boolean {
 export default function MonetagScript() {
   const pathname = usePathname()
 
-  // Don't render anything if the route is not explicitly allowed
-  if (!pathname || !isAdAllowed(pathname)) {
+  // Don't render anything if the route is not allowed
+  if (!isAdAllowed(pathname)) {
     return null
   }
 
   return (
     <>
-      {/* In-Page Push (Banner) — "Dreamy" tag — Zone 11946408 */}
+      {/* In-Page Push (Banner) — Zone 11946408 */}
       <Script
         id="monetag-inpage-push"
         strategy="afterInteractive"

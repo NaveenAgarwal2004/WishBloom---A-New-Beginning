@@ -86,15 +86,6 @@ export default function MonetagScript() {
       document.body.appendChild(s1)
     }
 
-    // 2. Vignette Banner — Zone 11946529
-    if (!document.getElementById('monetag-vignette')) {
-      const s2 = document.createElement('script')
-      s2.id = 'monetag-vignette'
-      s2.dataset.zone = '11946529'
-      s2.src = 'https://n6wxm.com/vignette.min.js'
-      s2.async = true
-      document.body.appendChild(s2)
-    }
   }, [pathname])
 
   return null

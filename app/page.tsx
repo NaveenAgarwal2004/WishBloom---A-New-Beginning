@@ -1,4 +1,5 @@
 
+import type { Metadata } from 'next'
 import Hero from '@/components/Hero'
 import IntroMessage from '@/components/IntroMessage'
 import MemoryGallery from '@/components/MemoryGallery'
@@ -10,6 +11,14 @@ import HomepageHero from '@/components/HomepageHero'
 import HomepageFAQ from '@/components/HomepageFAQ'
 import { sampleWishBloom } from '@/lib/sampleData'
 import { AudioProvider } from '@/context/AudioContext'
+
+export const metadata: Metadata = {
+  title: 'Free Birthday Memory Book Creator Online | WishBloom',
+  description: 'The thoughtful virtual birthday gift for long-distance friends and loved ones. Create a collaborative birthday memory book with photos, heartfelt letters, and interactive microphone candle blowing. 100% free.',
+  alternates: {
+    canonical: 'https://wishblooms.in',
+  },
+}
 
 /**
  * Main WishBloom View Page
@@ -50,7 +59,7 @@ export default function App() {
       'price': '0',
       'priceCurrency': 'INR',
     },
-    'description': 'Create a free collaborative birthday memory book online. Friends add their favorite memories and photos, you press publish, and the birthday person receives a living scrapbook via a single link.',
+    'description': 'The thoughtful virtual birthday gift for long-distance friends and loved ones. Create a collaborative birthday memory book with photos, letters, and interactive microphone candle blowing. Free, private, and no app required.',
     'featureList': [
       'collaborative memory books',
       'photo uploads',

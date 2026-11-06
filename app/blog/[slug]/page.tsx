@@ -9,61 +9,112 @@ import BlogPost from '@/models/BlogPost'
 // Revalidate every 60 seconds so edits to posts show up relatively quickly
 export const revalidate = 60
 
+interface BlogPostSlug {
+  slug: string
+}
+
+interface FAQItem {
+  name: string
+  acceptedAnswer: {
+    text: string
+  }
+}
+
+interface BlogPostDetail {
+  title: string
+  slug: string
+  description: string
+  content: string
+  coverImage?: string
+  published: boolean
+  publishedAt?: string | Date | null
+  tier?: number
+  readTime: string
+  keywords?: string[]
+  faqSchema?: {
+    mainEntity?: FAQItem[]
+  }
+  author?: {
+    name: string
+    email?: string
+  }
+  createdAt: string | Date
+  updatedAt?: string | Date
+}
+
 export async function generateStaticParams() {
-  await dbConnect()
-  const posts = await BlogPost.find({ published: true }).select('slug').lean().exec()
-  
-  return posts.map((post: any) => ({
-    slug: post.slug,
-  }))
+  try {
+    await dbConnect()
+    const posts = await BlogPost.find({ published: true }).select('slug').lean().exec() as unknown as BlogPostSlug[]
+    
+    return posts.map((post) => ({
+      slug: post.slug,
+    }))
+  } catch (error) {
+    console.warn('⚠️ generateStaticParams DB connection skipped during build:', error instanceof Error ? error.message : error)
+    return []
+  }
 }
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  await dbConnect()
-  const post = await BlogPost.findOne({ slug: params.slug, published: true }).lean().exec() as any
-  
-  if (!post) {
-    return {
-      title: 'Post Not Found | WishBloom Blog',
+  try {
+    await dbConnect()
+    const post = await BlogPost.findOne({ slug: params.slug, published: true }).lean().exec() as unknown as BlogPostDetail | null
+    
+    if (!post) {
+      return {
+        title: 'Post Not Found | WishBloom Blog',
+      }
     }
-  }
 
-  return {
-    title: `${post.title} | WishBloom`,
-    description: post.description,
-    keywords: post.keywords || [],
-    robots: { index: true, follow: true },
-    openGraph: {
-      title: post.title,
+    return {
+      title: `${post.title} | WishBloom`,
       description: post.description,
-      url: `https://wishblooms.in/blog/${post.slug}`,
-      siteName: 'WishBloom',
-      type: 'article',
-      publishedTime: new Date(post.createdAt).toISOString(),
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: post.title,
-      description: post.description,
-    },
-    alternates: {
-      canonical: `https://wishblooms.in/blog/${post.slug}`,
-    },
+      keywords: post.keywords || [],
+      robots: { index: true, follow: true },
+      openGraph: {
+        title: post.title,
+        description: post.description,
+        url: `https://wishblooms.in/blog/${post.slug}`,
+        siteName: 'WishBloom',
+        type: 'article',
+        publishedTime: new Date(post.createdAt).toISOString(),
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: post.title,
+        description: post.description,
+      },
+      alternates: {
+        canonical: `https://wishblooms.in/blog/${post.slug}`,
+      },
+    }
+  } catch {
+    return {
+      title: 'WishBloom Blog',
+      description: 'Explore creative birthday gift ideas and guides on making digital memory books.',
+    }
   }
 }
 
 export default async function BlogPostPage({ params }: { params: { slug: string } }) {
-  await dbConnect()
-  const now = new Date()
-  const post = await BlogPost.findOne({
-    slug: params.slug,
-    published: true,
-    $or: [
-      { publishedAt: { $exists: false } },
-      { publishedAt: null },
-      { publishedAt: { $lte: now } },
-    ],
-  }).lean().exec() as any
+  let post: BlogPostDetail | null = null
+
+  try {
+    await dbConnect()
+    const now = new Date()
+    post = await BlogPost.findOne({
+      slug: params.slug,
+      published: true,
+      $or: [
+        { publishedAt: { $exists: false } },
+        { publishedAt: null },
+        { publishedAt: { $lte: now } },
+      ],
+    }).lean().exec() as unknown as BlogPostDetail | null
+  } catch (error) {
+    console.error('Failed to load blog post from database:', error)
+  }
 
   if (!post) {
     notFound()
@@ -227,7 +278,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                   <div className="relative z-10 mt-16 pt-12 border-t border-warmCream-200">
                     <h2 className="text-h3 font-heading font-bold text-sepiaInk mb-8">Frequently Asked Questions</h2>
                     <div className="space-y-6">
-                      {post.faqSchema.mainEntity.map((faq: any, index: number) => (
+                      {post.faqSchema.mainEntity.map((faq: FAQItem, index: number) => (
                         <div key={index} className="bg-warmCream-50/50 rounded-xl p-6 border border-warmCream-200">
                           <h3 className="text-lg font-heading font-bold text-sepiaInk mb-3">{faq.name}</h3>
                           <p className="text-body font-body text-warmCream-700 leading-relaxed">

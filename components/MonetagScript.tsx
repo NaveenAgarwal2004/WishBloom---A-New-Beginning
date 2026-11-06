@@ -4,66 +4,44 @@ import { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 
 /**
- * Monetag Ad Script — Route-Guarded DOM Injector
+ * Monetag Ad Script — Blog-Only DOM Injector
  *
- * Ads ONLY show on public informational pages:
- *   ✅ /              — homepage
+ * This component is mounted exclusively via app/blog/layout.tsx.
+ * It should NEVER be imported into app/layout.tsx (root) or any
+ * non-blog segment layout.
+ *
+ * The pathname guard below is a defence-in-depth fallback only —
+ * structural isolation via Next.js segment layouts is the primary control.
+ *
+ * Ads are ALLOWED on:
  *   ✅ /blog          — blog index
  *   ✅ /blog/*        — individual blog posts
- *   ✅ /about
- *   ✅ /how-it-works
- *   ✅ /contact
- *   ✅ /privacy
- *   ✅ /terms
  *
- * Ads are BLOCKED on:
- *   🚫 /[id]/*        — personal WishBloom memory books (most critical)
+ * Ads are BLOCKED on (fallback guard):
+ *   🚫 /              — homepage (trust-critical: "100% free of ads" promise)
+ *   🚫 /[id]/*        — personal WishBloom memory books
  *   🚫 /create/*      — creation flow
  *   🚫 /dashboard/*   — admin dashboard
- *   🚫 /auth/*        — sign in / sign up
+ *   🚫 /auth/*        — authentication
  *   🚫 /api/*         — API routes
- *   🚫 /offline       — PWA offline page
+ *   🚫 Everything else not explicitly in the blog allow-list
  */
 
-/** Routes where ads are explicitly allowed */
+/** ONLY blog routes are permitted — this is intentionally narrow */
 const AD_ALLOWED_PATHS = [
-  '/',
   '/blog',
-  '/about',
-  '/how-it-works',
-  '/contact',
-  '/privacy',
-  '/terms',
-]
-
-/** Route prefixes that are always blocked, regardless of what follows */
-const AD_BLOCKED_PREFIXES = [
-  '/dashboard',
-  '/create',
-  '/auth',
-  '/api',
-  '/offline',
 ]
 
 function isAdAllowed(pathname: string | null): boolean {
   if (!pathname) return false
 
-  // Block if path starts with any protected prefix
-  if (AD_BLOCKED_PREFIXES.some((prefix) => pathname.startsWith(prefix))) {
-    return false
-  }
-
-  // Allow exact matches (home, about, etc.)
-  if (AD_ALLOWED_PATHS.includes(pathname)) {
-    return true
-  }
+  // Allow /blog (index)
+  if (AD_ALLOWED_PATHS.includes(pathname)) return true
 
   // Allow /blog/* (individual posts)
-  if (pathname.startsWith('/blog/')) {
-    return true
-  }
+  if (pathname.startsWith('/blog/')) return true
 
-  // Everything else (e.g. /[id] — the WishBloom viewer) is blocked by default
+  // Block everything else — defence-in-depth fallback
   return false
 }
 

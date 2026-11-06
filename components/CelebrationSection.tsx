@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import Link from 'next/link'
 import CakeComponent from './CakeComponent'
 import Confetti from './Confetti'
 import WishesFloat from './WishesFloat'
@@ -267,6 +268,29 @@ export default function CelebrationSection({
                   })}
                 </motion.svg>
               </article>
+            </motion.div>
+
+            {/* Post-Candle Viral Attribution Loop */}
+            <motion.div
+              className="max-w-xl mx-auto mt-12 mb-8 text-center px-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 2.8 }}
+            >
+              <div className="inline-block bg-white/85 backdrop-blur-sm border border-warmCream-300 rounded-2xl px-8 py-5 shadow-soft hover:shadow-medium transition-shadow">
+                <p className="text-body-sm font-body text-warmCream-800 mb-1.5">
+                  🌸 <span className="font-heading font-semibold text-sepiaInk">Made with love on WishBloom</span>
+                </p>
+                <p className="text-caption font-body text-warmCream-600 mb-3">
+                  Create a free interactive memory book for someone you love.
+                </p>
+                <Link
+                  href="/create"
+                  className="inline-flex items-center gap-1.5 text-xs md:text-sm font-heading font-semibold text-burntSienna hover:text-burntSienna/80 transition-colors underline decoration-fadedGold/50 underline-offset-4"
+                >
+                  Create a free WishBloom →
+                </Link>
+              </div>
             </motion.div>
           </motion.div>
         )}

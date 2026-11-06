@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { ChevronDown } from 'lucide-react'
+import Link from 'next/link'
 
 const faqs = [
   {
@@ -59,6 +60,21 @@ export default function HomepageFAQ() {
           <svg className="mx-auto mt-4" width="120" height="8" viewBox="0 0 120 8" aria-hidden="true">
             <path d="M 5 5 Q 30 2, 60 4 T 115 5" stroke="#D4A373" strokeWidth="3" fill="none" strokeLinecap="round" />
           </svg>
+        </div>
+
+        {/* Quick summary card with crawlable internal links */}
+        <div
+          className="mb-10 bg-white/70 backdrop-blur-sm border border-warmCream-200 rounded-2xl p-7 text-left shadow-soft"
+        >
+          <p className="text-body font-body text-sepiaInk leading-relaxed">
+            <strong>WishBloom</strong> is a free online birthday memory book creator.
+            Share one link — friends add photos, messages, and memories —
+            and the birthday person receives a beautiful interactive scrapbook they can open on any device.
+            No app, no signup, no cost.{' '}
+            <Link href="/how-it-works" className="text-burntSienna hover:underline font-medium">See how it works</Link>
+            {' '}or{' '}
+            <Link href="/create" className="text-mossGreen hover:underline font-medium">create a free birthday memory book</Link> now.
+          </p>
         </div>
 
         <div className="space-y-3" role="list">

@@ -48,6 +48,9 @@ export const APP_CONFIG = {
     INSTAGRAM: 'https://www.instagram.com/wishblooms.in',
     FACEBOOK: 'https://www.facebook.com/profile.php?id=61592338235105',
   },
+  COMMUNITY_STATS: {
+    MEMORIES_COUNT: '2,150+',
+  },
 } as const
 
 // ========================================

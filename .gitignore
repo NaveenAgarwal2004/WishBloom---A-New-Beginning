@@ -98,5 +98,8 @@ testsprite_tests/
 test-results/
 playwright-report/
 
-# One-off dev scripts and scratch files
+# One-off dev scripts, scratch files, and ad-hoc admin tools
 scratch/
+scripts/*.mjs
+scripts/temp-*
+scripts/*user-data*

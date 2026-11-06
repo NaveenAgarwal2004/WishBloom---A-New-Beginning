@@ -9,7 +9,6 @@ import { Toaster } from '@/components/ui/toaster'
 import Providers from '@/components/Providers'
 import Navigation from '@/components/Navigation'
 import { Analytics } from '@vercel/analytics/next'
-import MonetagScript from '@/components/MonetagScript'
 
 // ✅ Self-hosted fonts with Next.js optimization
 const cormorantGaramond = localFont({
@@ -193,8 +192,6 @@ export default function RootLayout({
         <WebVitals />
         {/* ✅ Only load Vercel Analytics in production */}
         {process.env.NODE_ENV === 'production' && <Analytics />}
-        {/* ✅ Monetag ads — route-guarded inside component */}
-        <MonetagScript />
       </body>
     </html>
   )

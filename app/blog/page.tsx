@@ -32,28 +32,43 @@ export const metadata: Metadata = {
   },
 }
 
+interface BlogPostSummary {
+  title: string
+  slug: string
+  description: string
+  createdAt: string | Date
+  publishedAt?: string | Date | null
+  readTime: string
+}
+
 // Ensure the blog index updates dynamically but can be cached
 export const revalidate = 60 
 
 export default async function BlogPage() {
-  await dbConnect()
-  
-  // Only fetch published posts whose scheduled time has arrived for the public blog
-  const now = new Date()
-  const postsData = await BlogPost.find({
-    published: true,
-    $or: [
-      { publishedAt: { $exists: false } },
-      { publishedAt: null },
-      { publishedAt: { $lte: now } },
-    ],
-  })
-    .sort({ publishedAt: -1, createdAt: -1 })
-    .select('title slug description createdAt publishedAt readTime')
-    .lean()
-    .exec()
+  let posts: BlogPostSummary[] = []
 
-  const posts = JSON.parse(JSON.stringify(postsData))
+  try {
+    await dbConnect()
+    
+    // Only fetch published posts whose scheduled time has arrived for the public blog
+    const now = new Date()
+    const postsData = await BlogPost.find({
+      published: true,
+      $or: [
+        { publishedAt: { $exists: false } },
+        { publishedAt: null },
+        { publishedAt: { $lte: now } },
+      ],
+    })
+      .sort({ publishedAt: -1, createdAt: -1 })
+      .select('title slug description createdAt publishedAt readTime')
+      .lean()
+      .exec()
+
+    posts = JSON.parse(JSON.stringify(postsData))
+  } catch (error) {
+    console.error('Failed to fetch blog posts from database:', error)
+  }
 
   return (
     <main className="min-h-screen bg-warmCream-50 pt-20 pb-12 pb-bottom-nav md:pb-12 px-4 sm:px-6 lg:px-8">
@@ -76,7 +91,7 @@ export default async function BlogPage() {
         </header>
 
         <div className="grid gap-8">
-          {posts.map((post: any) => (
+          {posts.map((post: BlogPostSummary) => (
             <Link key={post.slug} href={`/blog/${post.slug}`} className="group block">
               <article className="bg-white/60 backdrop-blur-sm rounded-2xl p-8 border border-warmCream-200 shadow-soft hover:shadow-medium hover:border-fadedGold/40 transition-all duration-300">
                 <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-4">

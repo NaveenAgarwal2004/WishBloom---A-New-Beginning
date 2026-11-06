@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import Link from 'next/link'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -365,6 +366,19 @@ export default function GuestbookSection({ wishbloomId }: GuestbookSectionProps)
             <SignGuestbookModal wishbloomId={wishbloomId} onSuccess={handleSuccess} />
           </motion.div>
         )}
+
+        {/* Post-Contribution Viral Prompt */}
+        <div className="mt-16 text-center">
+          <p className="text-body-sm font-body text-warmCream-700/80 italic">
+            Want to celebrate someone special?{' '}
+            <Link
+              href="/create"
+              className="text-burntSienna hover:underline font-medium not-italic"
+            >
+              Create a free WishBloom for them 🌸
+            </Link>
+          </p>
+        </div>
       </div>
     </section>
   )

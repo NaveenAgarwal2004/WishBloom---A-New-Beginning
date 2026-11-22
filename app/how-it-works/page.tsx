@@ -149,7 +149,7 @@ export default function HowItWorksPage() {
             <div className="text-center p-10 bg-gradient-to-r from-warmCream-100 to-rosePetal/10 rounded-2xl border border-warmCream-200">
               <h2 className="text-h3 font-heading text-sepiaInk mb-4">Ready to start creating?</h2>
               <p className="text-body font-body text-warmCream-700 mb-8 max-w-xl mx-auto">
-                Join others who have created beautiful digital scrapbooks. It's 100% free and requires no registration.
+                Join others who have created beautiful digital scrapbooks. It&apos;s 100% free and requires no registration.
               </p>
               <Link 
                 href="/create"

@@ -25,6 +25,33 @@ interface BlogEditorProps {
   onChange: (html: string) => void
 }
 
+interface ToolbarButtonProps {
+  onClick: () => void
+  isActive?: boolean
+  children: React.ReactNode
+  title: string
+}
+
+const ToolbarButton = ({
+  onClick,
+  isActive,
+  children,
+  title,
+}: ToolbarButtonProps) => (
+  <button
+    type="button"
+    onClick={onClick}
+    title={title}
+    className={`p-2 rounded-lg transition-colors ${
+      isActive
+        ? 'bg-sepiaInk text-white'
+        : 'text-warmCream-600 hover:bg-warmCream-100 hover:text-sepiaInk'
+    }`}
+  >
+    {children}
+  </button>
+)
+
 export default function BlogEditor({ content, onChange }: BlogEditorProps) {
   const [isHtmlMode, setIsHtmlMode] = useState(false)
   const [htmlValue, setHtmlValue] = useState(content)
@@ -95,31 +122,6 @@ export default function BlogEditor({ content, onChange }: BlogEditorProps) {
 
     editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run()
   }
-
-  const ToolbarButton = ({
-    onClick,
-    isActive,
-    children,
-    title,
-  }: {
-    onClick: () => void
-    isActive?: boolean
-    children: React.ReactNode
-    title: string
-  }) => (
-    <button
-      type="button"
-      onClick={onClick}
-      title={title}
-      className={`p-2 rounded-lg transition-colors ${
-        isActive
-          ? 'bg-sepiaInk text-white'
-          : 'text-warmCream-600 hover:bg-warmCream-100 hover:text-sepiaInk'
-      }`}
-    >
-      {children}
-    </button>
-  )
 
   return (
     <div className="bg-white/60 backdrop-blur-sm rounded-2xl border border-warmCream-200 shadow-soft overflow-hidden">

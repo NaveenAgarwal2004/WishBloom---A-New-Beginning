@@ -44,14 +44,14 @@ export default function Step6Publish() {
         }),
       })
 
-      let data: any = null
+      let data: (Record<string, unknown> & { success?: boolean; wishbloom?: { uniqueUrl?: string }; error?: string; message?: string; details?: unknown }) | null = null
       try {
         data = await response.json()
       } catch {
         // In case response is not JSON
       }
 
-      if (response.ok && data?.success) {
+      if (response.ok && data?.success && data.wishbloom?.uniqueUrl) {
         const fullUrl = `${window.location.origin}/${data.wishbloom.uniqueUrl}`
         // Clear the session flag now that publish is done.
         // If the user navigates back to /create later, Step6 will show the
@@ -64,8 +64,8 @@ export default function Step6Publish() {
         const details = data?.details
           ? Array.isArray(data.details)
             ? data.details  // moderation returns [{ field, message }]
-            : Object.entries(data.details).flatMap(([field, msgs]) =>
-                (Array.isArray(msgs) ? msgs : [msgs]).map((msg: any) => ({ field, message: String(msg) }))
+            : Object.entries(data.details as Record<string, unknown>).flatMap(([field, msgs]) =>
+                (Array.isArray(msgs) ? msgs : [msgs]).map((msg: unknown) => ({ field, message: String(msg) }))
               )  // Zod flatten returns { field: string[] }
           : undefined
         setPublishError({ message: errorMsg, details })

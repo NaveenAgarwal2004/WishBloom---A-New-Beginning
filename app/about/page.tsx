@@ -69,13 +69,13 @@ export default function AboutPage() {
             <h2 className="text-h3 font-heading text-sepiaInk mb-5">What is WishBloom?</h2>
             <div className="space-y-4 text-body font-body text-warmCream-800 leading-relaxed">
               <p>
-                WishBloom is a free online birthday memory book creator. You fill a short five-step wizard — the recipient's name and intro, a collection of memory cards with photos and stories, personal letters from friends, a wishes section for poems and quotes, and a final preview — and WishBloom stitches everything together into one beautiful, shareable scrapbook.
+                WishBloom is a free online birthday memory book creator. You fill a short five-step wizard — the recipient&apos;s name and intro, a collection of memory cards with photos and stories, personal letters from friends, a wishes section for poems and quotes, and a final preview — and WishBloom stitches everything together into one beautiful, shareable scrapbook.
               </p>
               <p>
-                The person receiving it doesn't need an account, doesn't need to download an app, and doesn't need to do anything except open the link. When they do, they're greeted by their memories, their people's words, and — my favourite part — a set of birthday candles they can actually blow out using their device's microphone. Or tap a button if they'd rather not. Either way, it's their moment.
+                The person receiving it doesn&apos;t need an account, doesn&apos;t need to download an app, and doesn&apos;t need to do anything except open the link. When they do, they&apos;re greeted by their memories, their people&apos;s words, and — my favourite part — a set of birthday candles they can actually blow out using their device&apos;s microphone. Or tap a button if they&apos;d rather not. Either way, it&apos;s their moment.
               </p>
               <p>
-                The whole aesthetic is built around pressed and preserved botanical flowers — warm cream paper, sepia ink, faded gold accents. It's deliberately different from the glossy, generic look of most digital card tools. I wanted it to feel like something you found tucked inside an old book, not something that came out of a Canva template.
+                The whole aesthetic is built around pressed and preserved botanical flowers — warm cream paper, sepia ink, faded gold accents. It&apos;s deliberately different from the glossy, generic look of most digital card tools. I wanted it to feel like something you found tucked inside an old book, not something that came out of a Canva template.
               </p>
             </div>
           </section>
@@ -85,10 +85,10 @@ export default function AboutPage() {
             <h2 className="text-h3 font-heading text-sepiaInk mb-5">Who built this?</h2>
             <div className="space-y-4 text-body font-body text-warmCream-800 leading-relaxed">
               <p>
-                I'm Naveen Agarwal — a BCA graduate from Jaipur, Rajasthan. I built WishBloom because a close friend's birthday was coming up and I wanted to do something more meaningful than texting a GIF. I looked for a free, collaborative tool that could gather messages from a small group and present them nicely. Everything I found was either too expensive for what it did, too limited in the free tier, or just not very thoughtful in its design.
+                I&apos;m Naveen Agarwal — a BCA graduate from Jaipur, Rajasthan. I built WishBloom because a close friend&apos;s birthday was coming up and I wanted to do something more meaningful than texting a GIF. I looked for a free, collaborative tool that could gather messages from a small group and present them nicely. Everything I found was either too expensive for what it did, too limited in the free tier, or just not very thoughtful in its design.
               </p>
               <p>
-                So I built it myself. What started as a weekend project kept growing — the candle feature, the photo memory cards, the full publishing pipeline. It's been a learning experience in Next.js, MongoDB, Cloudinary, and honestly, in what people actually want when they sit down to celebrate someone they care about.
+                So I built it myself. What started as a weekend project kept growing — the candle feature, the photo memory cards, the full publishing pipeline. It&apos;s been a learning experience in Next.js, MongoDB, Cloudinary, and honestly, in what people actually want when they sit down to celebrate someone they care about.
               </p>
               <p>
                 WishBloom runs on Next.js with the App Router, stores memory books in MongoDB, handles photo uploads through Cloudinary, and is deployed on Vercel. The whole codebase is open source.
@@ -113,12 +113,12 @@ export default function AboutPage() {
             <h2 className="text-h3 font-heading text-sepiaInk mb-5">What makes WishBloom different?</h2>
             <div className="space-y-5 text-body font-body text-warmCream-800 leading-relaxed">
               <p>
-                A few things matter to me that I don't see elsewhere.
+                A few things matter to me that I don&apos;t see elsewhere.
               </p>
               <div className="space-y-4 pl-4 border-l-2 border-warmCream-300">
                 <div>
                   <p className="font-heading text-sepiaInk mb-1">Free, actually.</p>
-                  <p>Not "free for three contributors and then pay." Not "free to create but paid to download." WishBloom has no paid plans, no upgrade prompts, and no feature gates. I'm a student who built this because the problem was worth solving, not because I needed a subscription business.</p>
+                  <p>Not &ldquo;free for three contributors and then pay.&rdquo; Not &ldquo;free to create but paid to download.&rdquo; WishBloom has no paid plans, no upgrade prompts, and no feature gates. I&apos;m a student who built this because the problem was worth solving, not because I needed a subscription business.</p>
                 </div>
                 <div>
                   <p className="font-heading text-sepiaInk mb-1">Genuinely collaborative.</p>
@@ -126,11 +126,11 @@ export default function AboutPage() {
                 </div>
                 <div>
                   <p className="font-heading text-sepiaInk mb-1">The candle moment.</p>
-                  <p>Most digital birthday experiences are passive — you look at something, you close the tab. WishBloom has one interactive moment: the birthday person can blow out their candles using their microphone. It's a small thing, but it makes the experience feel like an actual celebration rather than a slide deck.</p>
+                  <p>Most digital birthday experiences are passive — you look at something, you close the tab. WishBloom has one interactive moment: the birthday person can blow out their candles using their microphone. It&apos;s a small thing, but it makes the experience feel like an actual celebration rather than a slide deck.</p>
                 </div>
                 <div>
                   <p className="font-heading text-sepiaInk mb-1">A visual identity that feels considered.</p>
-                  <p>Pressed flowers, botanical textures, cream and sepia. It's not for everyone, but if you want a birthday gift that doesn't look like it came out of the same template as everyone else's, WishBloom has a real point of view.</p>
+                  <p>Pressed flowers, botanical textures, cream and sepia. It&apos;s not for everyone, but if you want a birthday gift that doesn&apos;t look like it came out of the same template as everyone else&apos;s, WishBloom has a real point of view.</p>
                 </div>
               </div>
             </div>
@@ -141,7 +141,7 @@ export default function AboutPage() {
             <h2 className="text-h3 font-heading text-sepiaInk mb-4">Get in touch</h2>
             <div className="space-y-4 text-body font-body text-warmCream-800 leading-relaxed">
               <p>
-                If you used WishBloom and something didn't work, I want to know. If you have an idea for a feature, I'm genuinely interested. If you just want to say it was nice — that means a lot too.
+                If you used WishBloom and something didn&apos;t work, I want to know. If you have an idea for a feature, I&apos;m genuinely interested. If you just want to say it was nice — that means a lot too.
               </p>
               <p>
                 The best way to reach me is by email. No support ticket system, no chatbot — just a direct message.

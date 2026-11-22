@@ -93,7 +93,7 @@ export default function BlogPostList({ posts: initialPosts }: BlogPostListProps)
             <FileText className="mx-auto mb-4 text-warmCream-400" size={48} />
             <p className="text-body-lg font-body text-warmCream-600 mb-2">No blog posts yet</p>
             <p className="text-body-sm font-body text-warmCream-500">
-              Click "New Post" to write your first article.
+              Click &ldquo;New Post&rdquo; to write your first article.
             </p>
           </div>
         ) : (

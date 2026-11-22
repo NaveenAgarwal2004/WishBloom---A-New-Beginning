@@ -34,7 +34,7 @@ async function getBlogPosts(): Promise<{ slug: string; updatedAt?: Date }[]> {
       .maxTimeMS(4000)
       .exec()
 
-    return posts.map((p: any) => ({ slug: p.slug, updatedAt: p.publishedAt || p.updatedAt }))
+    return posts.map((p: { slug: string; publishedAt?: Date | null; updatedAt?: Date }) => ({ slug: p.slug, updatedAt: p.publishedAt || p.updatedAt }))
   } catch (error) {
     console.error('Error fetching blog posts for sitemap:', error)
     return []

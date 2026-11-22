@@ -84,7 +84,7 @@ export default function BlogEditorForm({ initialData, mode }: BlogEditorFormProp
   const [faqItems, setFaqItems] = useState<FaqItem[]>(() => {
     const entities = initialData?.faqSchema?.mainEntity
     if (!entities || !Array.isArray(entities)) return []
-    return entities.map((e: any) => ({
+    return (entities as Array<{ question?: string; name?: string; answer?: string; acceptedAnswer?: { text?: string } }>).map((e) => ({
       question: e.question || e.name || '',
       answer: e.answer || e.acceptedAnswer?.text || '',
     }))

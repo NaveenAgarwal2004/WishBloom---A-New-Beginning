@@ -53,7 +53,7 @@ export default function App() {
     'applicationCategory': 'LifestyleApplication',
     'operatingSystem': 'Web',
     'datePublished': '2025-08-01',
-    'dateModified': '2025-08-01',
+    'dateModified': '2026-11-22',
     'offers': {
       '@type': 'Offer',
       'price': '0',

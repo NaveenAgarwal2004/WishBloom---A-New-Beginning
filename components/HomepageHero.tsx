@@ -27,7 +27,7 @@ export default function HomepageHero() {
           transition={{ duration: 0.5, delay: 0.4 }}
         >
           <Link href="/create">
-            <Button size="lg" className="bg-mossGreen hover:bg-mossGreen/90 text-white rounded-full px-8 py-6 text-lg font-heading shadow-soft hover:shadow-lg transition-all duration-300">
+            <Button size="lg" data-testid="cta-create-button" className="bg-mossGreen hover:bg-mossGreen/90 text-white rounded-full px-8 py-6 text-lg font-heading shadow-soft hover:shadow-lg transition-all duration-300">
               Create a WishBloom Now
             </Button>
           </Link>

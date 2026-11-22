@@ -113,9 +113,16 @@ export default function Hero({ recipientName, creativeAgeDescription }: HeroProp
             boxShadow: '0px 8px 24px rgba(212, 163, 115, 0.3)'
           }}
           whileTap={shouldReduceMotion ? {} : { scale: 0.95 }}
-          data-testid="cta-create-button"
-          onClick={() => router.push('/create')}
-          aria-label="Explore your memories and start creating"
+          data-testid="explore-memories-button"
+          onClick={() => {
+            const target = document.getElementById('intro-message') || document.getElementById('memories')
+            if (target) {
+              target.scrollIntoView({ behavior: 'smooth' })
+            } else {
+              router.push('/create')
+            }
+          }}
+          aria-label="Explore your memories"
         >
           Explore Your Memories ✨
         </motion.button>

@@ -28,7 +28,7 @@ export default function MemoryGallery({ memories }: MemoryGalleryProps) {
   }
 
   return (
-    <section className="relative py-16 md:py-32 bg-gradient-to-b from-warmCream-100 via-driedSage/5 to-warmCream-100 px-4 md:px-8">
+    <section id="memories" className="relative py-16 md:py-32 bg-gradient-to-b from-warmCream-100 via-driedSage/5 to-warmCream-100 px-4 md:px-8">
       {/* Background decorative florals */}
       <FloralDecoration 
         className="absolute top-20 left-0 opacity-10 animate-gentle-sway"

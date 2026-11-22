@@ -10,7 +10,7 @@ jobs:
   # ---------------- Lint & Type Check ----------------
   lint:
     name: Lint & Type Check
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
       
@@ -32,7 +32,7 @@ jobs:
   # ---------------- Unit Tests ----------------
   test:
     name: Unit Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
       
@@ -88,7 +88,7 @@ jobs:
   # ---------------- Build ----------------
   build:
     name: Build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [lint, test]
     steps:
       - uses: actions/checkout@v4
@@ -128,7 +128,7 @@ jobs:
   # ---------------- E2E Tests ----------------
   e2e:
     name: E2E Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [lint, test]
     if: github.ref == 'refs/heads/main'
     steps:
@@ -173,7 +173,7 @@ jobs:
   # ---------------- Accessibility Tests ----------------
   accessibility:
     name: Accessibility Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [build]
     if: github.ref == 'refs/heads/main'
     steps:
@@ -187,6 +187,9 @@ jobs:
       
       - name: Install dependencies
         run: npm ci
+      
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
       
       - name: Run accessibility tests
         run: npm run test:a11y || echo "⚠️ No accessibility tests found — skipping."
@@ -207,7 +210,7 @@ jobs:
   # ---------------- Lighthouse Tests ----------------
   lighthouse:
     name: Lighthouse Performance
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [build]
     if: github.ref == 'refs/heads/main'
     steps:

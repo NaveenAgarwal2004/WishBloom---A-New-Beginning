@@ -18,11 +18,18 @@ const eslintConfig = defineConfig([
     "coverage/**",
     "playwright-report/**",
     "test-results/**",
+    "scratch/**",
     // PWA generated files
     "public/sw.js",
     "public/workbox-*.js",
     "public/fallback-*.js",
   ]),
+  {
+    files: ["tailwind.config.js"],
+    rules: {
+      '@typescript-eslint/no-require-imports': 'off',
+    },
+  },
   {
     rules: {
       // Suppress React Compiler warnings for react-hook-form's watch() function

@@ -1,20 +1,18 @@
-# 🌸 WishBloom - Pressed Flower Birthday Memories
+# 🌸 WishBloom — Pressed Flower Birthday Keepsakes & Heirlooms
 
-> *Enterprise-grade platform for creating timeless, interactive digital birthday keepsakes with AI-powered creativity and production-ready security.*
+> *A full-stack, open-source web application for creating timeless, interactive digital birthday scrapbooks. Blends nostalgic botanical aesthetics with modern web technologies: collaborative group messages, microphone breath-extinguished candles, voice recordings, AI-assisted poetry, and print-ready PDF heirlooms.*
 
 <div align="center">
 
-![WishBloom Hero](https://via.placeholder.com/1200x400/FBF7F0/7A5C47?text=🌸+WishBloom+-+Digital+Birthday+Heirlooms)
+[![Live Application](https://img.shields.io/badge/Live-wishblooms.in-E28C8C?style=for-the-badge&logo=googlechrome&logoColor=white)](https://wishblooms.in)
+[![Next.js 14](https://img.shields.io/badge/Next.js-14.2%20App%20Router-black?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
+[![TypeScript 5](https://img.shields.io/badge/TypeScript-5.4-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![MongoDB Atlas](https://img.shields.io/badge/MongoDB-Atlas-47A248?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
+[![Node.js](https://img.shields.io/badge/Node.js-20%20LTS-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
+[![CI Status](https://img.shields.io/badge/CI%2FCD-Ubuntu%2022.04%20Passing-brightgreen?style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com/NaveenAgarwal2004/WishBloom---A-New-Beginning/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-F5A623?style=for-the-badge)](./LICENSE)
 
-[![Next.js](https://img.shields.io/badge/Next.js-14.2-black?style=flat-square&logo=next.js)](https://nextjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.4-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
-[![MongoDB](https://img.shields.io/badge/MongoDB-6.3-green?style=flat-square&logo=mongodb)](https://www.mongodb.com/)
-[![Test Coverage](https://img.shields.io/badge/coverage-85%25-brightgreen?style=flat-square)]()
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](./LICENSE)
-[![WCAG 2.1 AA](https://img.shields.io/badge/Accessibility-WCAG%202.1%20AA-brightgreen?style=flat-square)](https://www.w3.org/WAI/WCAG2AA-Conformance)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](CONTRIBUTING.md)
-
-[Live Demo](https://wishblooms.in) • [Documentation](#documentation) • [Report Bug](https://github.com/NaveenAgarwal2004/WishBloom---A-New-Beginning/issues) • [Request Feature](https://github.com/NaveenAgarwal2004/WishBloom---A-New-Beginning)
+[🌐 Explore Live Site](https://wishblooms.in) • [📖 Read Blog](https://wishblooms.in/blog) • [✨ How It Works](https://wishblooms.in/how-it-works) • [🌿 Our Story](https://wishblooms.in/about) • [🐛 Report Bug](https://github.com/NaveenAgarwal2004/WishBloom---A-New-Beginning/issues)
 
 </div>
 
@@ -22,1085 +20,433 @@
 
 ## 📑 Table of Contents
 
-- [Overview](#-overview)
-- [Features](#-features)
-- [System Architecture](#-system-architecture)
-- [Tech Stack](#-tech-stack)
-- [Installation](#-installation)
-- [Configuration](#-configuration)
-- [Usage Examples](#-usage-examples)
-- [API Reference](#-api-reference)
-- [Database Schema](#-database-schema)
-- [Testing](#-testing)
-- [Deployment](#-deployment)
-- [Troubleshooting](#-troubleshooting)
-- [Performance](#-performance)
-- [Security](#-security)
-- [Contributing](#-contributing)
-- [FAQ](#-faq)
-- [Changelog](#-changelog)
-- [License](#-license)
-- [Contact](#-contact)
+- [🌸 Overview & Design Philosophy](#-overview--design-philosophy)
+- [✨ Key Features](#-key-features)
+  - [1. 6-Step Keepsake Creation Wizard](#1-6-step-keepsake-creation-wizard)
+  - [2. Interactive Microphone Breath Detection](#2-interactive-microphone-breath-detection)
+  - [3. Voice Message Keepsakes](#3-voice-message-keepsakes)
+  - [4. AI-Powered Creative Assistant](#4-ai-powered-creative-assistant)
+  - [5. Public Collaborative Guestbook](#5-public-collaborative-guestbook)
+  - [6. High-Fidelity PDF Heirloom Export](#6-high-fidelity-pdf-heirloom-export)
+  - [7. Editorial Blog & Publication Engine](#7-editorial-blog--publication-engine)
+  - [8. Admin Command Center & Google Search Console Hub](#8-admin-command-center--google-search-console-hub)
+- [🏗️ System Architecture](#️-system-architecture)
+- [🛠️ Tech Stack](#️-tech-stack)
+- [🚀 Quick Start & Installation](#-quick-start--installation)
+  - [Prerequisites](#prerequisites)
+  - [1. Clone Repository](#1-clone-repository)
+  - [2. Install Dependencies](#2-install-dependencies)
+  - [3. Environment Variables](#3-environment-variables)
+  - [4. Initialize Database Indexes](#4-initialize-database-indexes)
+  - [5. Start Development Server](#5-start-development-server)
+- [📡 API Architecture & Endpoints](#-api-architecture--endpoints)
+- [🗄️ Database Schemas & Data Models](#️-database-schemas--data-models)
+- [🧪 Testing & Quality Assurance](#-testing--quality-assurance)
+- [🚢 Production Deployment](#-production-deployment)
+- [🔒 Security & Privacy Standards](#-security--privacy-standards)
+- [🤝 Contributing](#-contributing)
+- [📄 License & Authors](#-license--authors)
 
 ---
 
-## 🌟 Overview
+## 🌸 Overview & Design Philosophy
 
-### What is WishBloom?
+Traditional greeting cards are discarded after a week. Chat messages get buried under notifications. Photo albums collect dust in camera rolls.
 
-WishBloom is a **production-ready, full-stack web application** that transforms scattered birthday memories into cohesive, interactive digital heirlooms. Built with enterprise-grade security, accessibility, and performance standards, it combines nostalgic design with modern web technologies.
+**WishBloom** bridges physical memory keepsakes and digital web experiences. Designed around a warm **pressed-flower aesthetic**, it lets friends and families across the globe collaborate on a single interactive digital memory book:
 
-**The Problem We Solve:**  
-Traditional birthday cards are fleeting. Social media posts get buried. Photo albums sit forgotten. WishBloom creates a *permanent, interactive, shareable keepsake* that feels both timeless and modern.
+```
+Warm Cream (#FDFBF7) • Sepia Ink (#7A5C47) • Faded Gold (#D4A373) • Dried Rose (#D4859D) • Pressed Leaf (#4A5F4C)
+```
 
-### Key Differentiators
-
-- ✅ **AI-Powered Content Generation** (Google Gemini 2.5 Flash)
-- ✅ **Microphone Breath Detection** (Interactive candle blowing)
-- ✅ **Professional PDF Generation** (Print-ready heirlooms)
-- ✅ **Voice Message Recording** (MediaRecorder API)
-- ✅ **Enterprise Security** (Content moderation, rate limiting, XSS protection)
-- ✅ **WCAG 2.1 AA Compliant** (Verified with automated & manual testing)
-- ✅ **PWA Support** (Installable, offline-capable)
-- ✅ **Production-Ready** (Comprehensive test coverage, monitoring, error handling)
+### Core Design Principles:
+1. **Physical Intimacy in a Digital Medium:** Elegant typography (*Cormorant Garamond* & *Lora*), textured card decks, and botanical pressed-flower motifs that feel like leafing through a treasured family scrapbook.
+2. **Interactive Wonder:** Celebrating isn't just scrolling. Recipients interact with animated candle flames extinguished through real microphone breath analysis, trigger confetti explosions, and experience a virtual cake-cutting ceremony.
+3. **Zero-Friction Collaboration:** Friends contribute photos, heartfelt letters, and voice notes without mandatory sign-ups or paywalls.
+4. **Permanent Keepsakes:** Publish with instant unique URLs (`nanoid`), auto-save drafts to prevent lost sentiments, and download high-resolution multi-page printable PDFs for physical archiving.
 
 ---
 
-## ✨ Features
+## ✨ Key Features
 
-### 🎯 Core User Journey: 6-Step Creation Wizard
+### 1. 6-Step Keepsake Creation Wizard
+A step-by-step creation flow (`/create`) designed to guide users from blank page to finished heirloom without friction:
+- **Step 1: Recipient Profile** — Name, milestone age, and personalized opening prologue.
+- **Step 2: Memory Gallery** — Photo uploads with Cloudinary optimization, storytelling narratives, contributor tags, and date stamps.
+- **Step 3: Heartfelt Letters & Poems** — Formatted rich prose with AI assistance for finding the right words.
+- **Step 4: Celebration Wishes** — Floating blessing tags and dynamic celebration confetti phrases.
+- **Step 5: Interactive Preview** — Exact recipient-view simulator with smooth page scrolling.
+- **Step 6: Publish & Share** — Generates secure nanoid URLs with instant copy-to-clipboard, WhatsApp/email sharing, and QR code access.
 
-| Step | Feature | Description |
-|------|---------|-------------|
-| **1** | **Basic Info** | Recipient name, age, personalized intro message |
-| **2** | **Memory Gallery** | Upload photos (5MB max), add stories, dates, contributor credits |
-| **3** | **Heartfelt Messages** | Write letters/poems with optional AI assistance |
-| **4** | **Celebration Wishes** | Add floating wish phrases for celebration moment |
-| **5** | **Preview** | Review complete WishBloom before publishing |
-| **6** | **Publish & Share** | Get unique URL (nanoid), send via email (Brevo) |
+### 2. Interactive Microphone Breath Detection
+- **Web Audio API & Fast Fourier Transform (FFT):** Analyzes real-time microphone audio input within the low-frequency breath band (0–500 Hz).
+- **Realistic Candle Simulation:** Custom SVG candles with physics-driven flicker animations extinguish in real-time as the recipient blows into their device mic.
+- **Accessible Fallback:** Device microphone blocked or unsupported? A tactile "Blow Candles" touch/click button ensures no recipient is ever left out.
+- **Celebration Finale:** Extinguishing all candles triggers particle confetti (`canvas-confetti`) and transitions into a virtual cake-cutting experience.
 
-### 🤖 AI-Powered Creative Tools
+### 3. Voice Message Keepsakes
+- **In-Browser Audio Recording:** Integrated `MediaRecorder` API captures high-fidelity audio up to 3 minutes.
+- **Automatic Audio Transcoding:** Audio streams are uploaded to Cloudinary, auto-transcoded to compressed WebM/MP4, and delivered via CDN.
+- **Custom Aesthetic Player:** Embedded botanical audio player with playback scrubbers, duration counters, and waveform visuals.
 
-**AI Poet Assistant** *(Google Gemini 2.5 Flash)*
-- Generate personalized birthday messages instantly
-- 6 relationship types: Mom, Dad, Bestie, Friend, Sibling, Partner
-- 4 tone/vibes: Sentimental, Funny, Poetic, Inspirational
-- Mock fallbacks when API key unavailable (development mode)
-- 500 token max, 0.8 temperature, 15s timeout
+### 4. AI-Powered Creative Assistant
+- **Google Gemini Integration:** Accessible in the creation wizard for when users experience writer's block.
+- **Relationship & Tone Customization:** Tailor wishes for 6 relationships (*Mom, Dad, Bestie, Friend, Sibling, Partner*) across 4 distinct vibes (*Sentimental, Poetic, Funny, Inspirational*).
+- **Graceful Offline Mocks:** Falls back to curated hand-crafted templates if API quotas are reached or when developing locally without an active Gemini key.
 
-### 🎂 Interactive Celebration
+### 5. Public Collaborative Guestbook
+- **Zero-Login Contributions:** Anyone with the keepsake link can leave warm birthday wishes.
+- **Color Palettes:** Contributors pick from 4 flower-inspired stationery themes (*Rose Petal, Sunset Amber, Dried Sage, Lavender Press*).
+- **Safety First:** Automated profanity filtering, XSS string escaping, and Upstash Redis rate limiting prevent spam.
 
-**Breath Detection Candle Blowing**
-- Real-time microphone input analysis (AudioContext API)
-- FFT analysis on 0-500Hz range (breath frequency)
-- 180Hz threshold for blow detection
-- 10 animated candles with realistic flicker
-- Confetti explosion on success (canvas-confetti)
-- Cake cutting animation with sparkle effects
-- Graceful fallbacks for unsupported browsers
+### 6. High-Fidelity PDF Heirloom Export
+- **Multi-Page Layout Engine:** Powered by `@react-pdf/renderer` for client-side generation of print-ready A4 booklets.
+- **Custom Typography:** Loads remote TTF versions of Cormorant Garamond and Lora.
+- **Archival Quality:** Includes cover art, two-column memory grids, full-page letters, guestbook compendium, and vector floral borders.
 
-### 🎤 Voice Message Recording
+### 7. Editorial Blog & Publication Engine
+- **Public Publication Hub:** Fully responsive blog index (`/blog`) and article reader (`/blog/[slug]`) optimized for SEO and readability.
+- **TipTap Rich Text Editor:** Admin blog editor supporting headings, formatted lists, blockquotes, hyperlinks, images, and raw HTML Source Code toggles.
+- **Engineered for Search Engines:** Dynamic Article & FAQ JSON-LD schemas, automated reading time estimation, custom keyword tags, and Open Graph previews.
+- **High-Ranking Live Articles:** Pre-seeded with industry-leading editorial guides (*"Free Kudoboard Alternative 2026"*, *"15 Best Virtual Birthday Gift Ideas in 2026"*).
 
-- Up to 3-minute voice recordings (MediaRecorder API)
-- WebM/MP4 format with automatic MIME type detection
-- Real-time recording indicator with timer
-- Play/delete/re-record before uploading
-- Cloudinary storage with automatic transcoding
-- Inline audio player in published WishBlooms
-
-### 📖 Public Guestbook
-
-- Visitors can leave birthday wishes (no auth required)
-- 4 color-coded themes (Rose Petal, Sunset Amber, Dried Sage, Lavender Press)
-- Content moderation (profanity filter, spam detection)
-- Rate limiting: 10 requests/min (public endpoint)
-- Max 100 entries per WishBloom
-- Sorted chronologically (newest first)
-
-### 📄 PDF Heirloom Generation
-
-- Download as professional PDF (`@react-pdf/renderer`)
-- Multi-page layout: cover, intro, memories (2-column grid), messages, closing
-- Custom serif fonts: Cormorant Garamond, Lora (via jsDelivr CDN)
-- Vector floral decorations (SVG, no emoji fallbacks)
-- Watermark + page numbers
-- Print-ready quality (A4 size)
-
-### 💾 Smart Draft System
-
-- Auto-save every 5 seconds (debounced)
-- Per-user MongoDB storage
-- Progress tracking: Step (1-6), Percentage (0-100%)
-- 30-day automatic expiration
-- Resume from last saved step
-- Dashboard view of all drafts
-
-### 🔒 Enterprise-Grade Security
-
-| Layer | Implementation |
-|-------|----------------|
-| **Content Moderation** | Profanity filter + spam detection on all UGC |
-| **Rate Limiting** | Upstash Redis: 10 req/min (public), 30 req/min (auth) |
-| **Input Sanitization** | XSS protection via DOMPurify-inspired utils |
-| **Schema Validation** | Zod on client + server (double validation) |
-| **CSP Headers** | Strict Content Security Policy |
-| **CORS** | Configurable allowed origins |
-| **Auth** | NextAuth.js (credentials + Google OAuth) |
-| **Password Hashing** | bcrypt (10 rounds) |
-| **File Validation** | Size limits, MIME type checks, extension allowlist |
-| **Environment Validation** | Startup checks for missing keys (Zod) |
+### 8. Admin Command Center & Google Search Console Hub
+- **Authentication Guard:** Protected with `requireBlogAdmin` ensuring only verified administrator accounts access editorial and indexing tools.
+- **Direct Google Search Console (GSC) Integration:** `/admin/gsc` communicates directly with Google's URL Inspection API via Google Service Account RSA-SHA256 JWT tokens.
+- **Live Search Status:** Real-time visibility into Google indexing state, crawl timestamps, robots.txt status, canonical URL verification, and rich results eligibility across all static pages and blog posts.
 
 ---
 
 ## 🏗️ System Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                        CLIENT (Browser)                       │
-│  Next.js 14 App Router • React 18 • TypeScript • Tailwind   │
-└───────────────────────────┬─────────────────────────────────┘
-                            │
-                            │ HTTPS / WebSocket
-                            │
-┌───────────────────────────▼─────────────────────────────────┐
-│                    EDGE MIDDLEWARE (Vercel)                   │
-│        Route Protection • CSP Headers • Redirects            │
-└───────────────────────────┬─────────────────────────────────┘
-                            │
-                            │
-┌───────────────────────────▼─────────────────────────────────┐
-│                   API ROUTES (Next.js)                        │
-│  /api/wishblooms  •  /api/ai/generate  •  /api/guestbook    │
-│  /api/upload  •  /api/email  •  /api/drafts  •  /api/auth   │
-└─────┬──────────────────┬────────────────────┬───────────────┘
-      │                  │                    │
-      │                  │                    │
-┌─────▼──────┐  ┌────────▼─────────┐  ┌──────▼────────┐
-│  MongoDB   │  │   Cloudinary     │  │  Upstash      │
-│  Database  │  │  Image/Audio     │  │  Redis        │
-│  (Atlas)   │  │  Storage         │  │  (Rate Limit) │
-└────────────┘  └──────────────────┘  └───────────────┘
-      │                  
-      │                  
-┌─────▼──────────────────────────────────────────────────────┐
-│              EXTERNAL SERVICES (APIs)                        │
-│  • Google Gemini AI (message generation)                    │
-│  • Brevo/Resend (email sending)                             │
-│  • Google OAuth (social login)                              │
-└─────────────────────────────────────────────────────────────┘
-```
-
-### Data Flow: Create WishBloom
-
-```
-1. User fills 6-step wizard → Auto-saved to drafts (MongoDB)
-2. Step 6: Publish → POST /api/wishblooms
-3. Server validates with Zod → Content moderation check
-4. Generate unique URL (nanoid) → Save to MongoDB
-5. Return { uniqueUrl, id } → Redirect to /[id]
-6. Optional: Send email via /api/email (Brevo)
+┌─────────────────────────────────────────────────────────────────────────┐
+│                           CLIENT / BROWSER                              │
+│    Next.js 14 App Router  •  React 18  •  Tailwind CSS  •  Framer Motion│
+└────────────────────────────────────┬────────────────────────────────────┘
+                                     │ HTTPS
+┌────────────────────────────────────▼────────────────────────────────────┐
+│                        EDGE / MIDDLEWARE (Vercel)                       │
+│      Route Guards  •  Strict CSP Headers  •  CORS  •  Security Policies │
+└────────────────────────────────────┬────────────────────────────────────┘
+                                     │
+┌────────────────────────────────────▼────────────────────────────────────┐
+│                          NEXT.JS API ROUTES                             │
+│  /api/wishblooms  •  /api/blog  •  /api/admin/gsc  •  /api/ai/generate  │
+│  /api/guestbook   •  /api/drafts • /api/upload    •  /api/email         │
+└──────┬───────────────┬──────────────┬───────────────┬────────────────┬──┘
+       │               │              │               │                │
+┌──────▼──────┐ ┌──────▼──────┐┌──────▼──────┐ ┌──────▼──────┐  ┌──────▼──────┐
+│   MongoDB   │ │  Cloudinary ││   Upstash   │ │Google Gemini│  │Brevo / GSC  │
+│    Atlas    │ │ Media CDN   ││ Redis Cache ││  Flash AI   │  │Transactional│
+│  (Database) │ │(Image/Audio)││(Rate Limits)│ │ (Creativity)│  │ & Search API│
+└─────────────┘ └─────────────┘└─────────────┘ └─────────────┘  └─────────────┘
 ```
 
 ---
 
 ## 🛠️ Tech Stack
 
-### Frontend
+### Core Framework & UI
+- **Framework:** [Next.js 14.2](https://nextjs.org/) (App Router, Server Actions, Dynamic Routes)
+- **Language:** [TypeScript 5.4](https://www.typescriptlang.org/) (Strict type checking)
+- **Styling:** [Tailwind CSS 3.3](https://tailwindcss.com/) + `@tailwindcss/typography`
+- **Animations:** [Framer Motion 12](https://www.framer.com/motion/) + Canvas Confetti
+- **Components:** [Radix UI](https://www.radix-ui.com/) accessible primitives + [Lucide React](https://lucide.dev/) icons
+- **Rich Text:** [TipTap 3](https://tiptap.dev/) (`@tiptap/react`, `@tiptap/starter-kit`, `@tiptap/extension-link`)
+- **PDF Generation:** [`@react-pdf/renderer` 4.3](https://react-pdf.org/)
+- **State Management:** [Zustand 5](https://github.com/pmndrs/zustand) + [React Hook Form 7](https://react-hook-form.com/) + [Zod 3.25](https://zod.dev/)
 
-| Category | Technology | Version | Purpose |
-|----------|-----------|---------|---------|
-| **Framework** | Next.js | 14.2+ | React framework with App Router |
-| **Language** | TypeScript | 5.4+ | Type safety |
-| **UI Library** | React | 18.3+ | Component library |
-| **Styling** | Tailwind CSS | 3.3+ | Utility-first CSS |
-| **Animation** | Framer Motion | 12+ | Declarative animations |
-| **State** | Zustand | 5.0+ | Global state management |
-| **Forms** | React Hook Form | 7.66+ | Form handling |
-| **Validation** | Zod | 3.25+ | Schema validation |
-| **Components** | Radix UI | latest | Accessible primitives |
-| **Icons** | Lucide React | 0.548+ | Icon library |
-| **PDF** | @react-pdf/renderer | 4.3+ | PDF generation |
-| **Confetti** | canvas-confetti | 1.9+ | Celebration effects |
+### Backend, Database & Infrastructure
+- **Runtime:** Node.js 20 LTS
+- **Database:** [MongoDB Atlas](https://www.mongodb.com/) via [Mongoose 8.19](https://mongoosejs.com/)
+- **Authentication:** [NextAuth.js 4](https://next-auth.js.org/) (Credentials + Google OAuth provider)
+- **Media CDN:** [Cloudinary 2.8](https://cloudinary.com/) (Signed uploads, image optimization, audio transcoding)
+- **Transactional Email:** [Brevo](https://www.brevo.com/) REST API
+- **Artificial Intelligence:** [Google Generative AI](https://ai.google.dev/) (Gemini 2.5 Flash)
+- **Rate Limiting:** [Upstash Redis](https://upstash.com/) REST client
+- **Search Console:** Google Webmasters / Search Console API v3 via native RSA-SHA256 JWT
 
-### Backend
-
-| Category | Technology | Version | Purpose |
-|----------|-----------|---------|---------|
-| **Runtime** | Next.js API Routes | 14.2+ | Serverless functions |
-| **Database** | MongoDB | 6.3+ | Document database |
-| **ORM** | Mongoose | 8.19+ | MongoDB object modeling |
-| **Auth** | NextAuth.js | 4.24+ | Authentication |
-| **Storage** | Cloudinary | 2.8+ | Image/audio CDN |
-| **Email** | Brevo/Resend | latest | Transactional emails |
-| **AI** | Google Generative AI | 0.24+ | Gemini 2.5 Flash |
-| **Rate Limiting** | Upstash Redis | 1.35+ | Distributed rate limiting |
-| **Validation** | Zod | 3.25+ | Runtime type checking |
-| **Password** | bcryptjs | 2.4+ | Password hashing |
-| **IDs** | nanoid | 5.1+ | Unique ID generation |
-
-### DevOps & Testing
-
-| Category | Technology | Version | Purpose |
-|----------|-----------|---------|---------|
-| **Hosting** | Vercel | latest | Serverless deployment |
-| **CI/CD** | GitHub Actions | latest | Automated workflows |
-| **E2E Testing** | Playwright | 1.56+ | Browser automation |
-| **Unit Testing** | Jest | 30+ | JavaScript testing |
-| **A11y Testing** | @axe-core/playwright | 4.11+ | Accessibility audits |
-| **Performance** | Lighthouse CI | 0.12+ | Performance monitoring |
-| **Bundle Analysis** | @next/bundle-analyzer | latest | Bundle size tracking |
-| **Linting** | ESLint | 9+ | Code quality |
-| **Type Checking** | TypeScript | 5.4+ | Static type checking |
+### DevOps, Quality & Tooling
+- **CI/CD:** GitHub Actions runner pinned to `ubuntu-22.04` LTS
+- **Linter:** ESLint 9 (Flat Config `eslint.config.mjs`) with zero-warning threshold
+- **Unit Testing:** Jest 30 + `@testing-library/react`
+- **E2E Testing:** Playwright 1.56 (Chromium)
+- **Accessibility:** Axe-core Playwright integration (`@axe-core/playwright`)
+- **Performance:** Lighthouse CI (`@lhci/cli`)
 
 ---
 
-## 📦 Installation
+## 🚀 Quick Start & Installation
 
 ### Prerequisites
+- **Node.js:** 20.x LTS ([Download Node.js](https://nodejs.org/))
+- **npm:** 10.x+
+- **MongoDB:** MongoDB Atlas account or local MongoDB instance (v6.0+)
+- **Git:** Installed on your system
 
-- **Node.js** 18.x or higher ([Download](https://nodejs.org/))
-- **npm** 9.x or higher (comes with Node.js)
-- **MongoDB** 6.0+ ([Local Install](https://www.mongodb.com/try/download/community) or [MongoDB Atlas](https://www.mongodb.com/cloud/atlas))
-- **Git** 2.x+ ([Download](https://git-scm.com/))
-
-### Step 1: Clone Repository
-
+### 1. Clone Repository
 ```bash
-git clone https://github.com/NaveenAgarwal2004/WishBloom.git
-cd WishBloom
+git clone https://github.com/NaveenAgarwal2004/WishBloom---A-New-Beginning.git
+cd WishBloom---A-New-Beginning
 ```
 
-### Step 2: Install Dependencies
-
+### 2. Install Dependencies
 ```bash
 npm install
 ```
 
-**Expected Install Time:** 2-3 minutes  
-**Node Modules Size:** ~500MB
-
-### Step 3: Generate Assets (Optional)
-
-```bash
-# Generate PWA icons
-npm run generate:icons
-```
-
----
-
-## ⚙️ Configuration
-
-### Environment Variables
-
-Create a `.env.local` file in the project root:
+### 3. Environment Variables
+Create a `.env.local` file in the root directory and populate your keys:
 
 ```env
 # ========================================
-# DATABASE
+# DATABASE (Required)
 # ========================================
-MONGODB_URI=mongodb://localhost:27017
-# OR for MongoDB Atlas:
-# MONGODB_URI=mongodb+srv://user:pass@cluster.mongodb.net
+MONGODB_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net
 DB_NAME=wishbloom
 
 # ========================================
-# CLOUDINARY (Required)
-# Get free account: https://cloudinary.com/users/register_free
+# CLOUDINARY (Required for photo/audio uploads)
 # ========================================
 CLOUDINARY_CLOUD_NAME=your_cloud_name
 CLOUDINARY_API_KEY=your_api_key
 CLOUDINARY_API_SECRET=your_api_secret
 
 # ========================================
-# EMAIL SERVICE (Required)
-# Brevo: https://www.brevo.com/
-# OR Resend: https://resend.com/
+# EMAIL SERVICE (Required for share notifications)
 # ========================================
 BREVO_API_KEY=your_brevo_api_key
-BREVO_SENDER_EMAIL=noreply@yourdomain.com
+BREVO_SENDER_EMAIL=noreply@wishblooms.in
 BREVO_SENDER_NAME=WishBloom
 
 # ========================================
 # AUTHENTICATION (Required)
-# Generate secret: openssl rand -base64 32
+# Generate with: openssl rand -base64 32
 # ========================================
-NEXTAUTH_SECRET=your_32_character_random_secret_here_minimum_length
+NEXTAUTH_SECRET=your_super_secret_at_least_32_characters_long
 NEXTAUTH_URL=http://localhost:3000
 
-# Google OAuth (Optional but recommended)
-# Get credentials: https://console.cloud.google.com/apis/credentials
-GOOGLE_CLIENT_ID=your_google_client_id.apps.googleusercontent.com
+# Google OAuth (Optional)
+GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
 
 # ========================================
-# AI FEATURES (Required for AI Poet)
-# Get key: https://ai.google.dev/
+# AI CREATIVITY (Optional - has mock fallback)
 # ========================================
 GEMINI_API_KEY=your_gemini_api_key
 
 # ========================================
 # RATE LIMITING (Optional)
-# Get free account: https://upstash.com/
 # ========================================
 UPSTASH_REDIS_REST_URL=https://your-redis.upstash.io
 UPSTASH_REDIS_REST_TOKEN=your_redis_token
 
 # ========================================
-# APPLICATION
+# GOOGLE SEARCH CONSOLE ADMIN (Optional)
+# ========================================
+GSC_SITE_URL=sc-domain:wishblooms.in
+GOOGLE_SERVICE_ACCOUNT_JSON={"type":"service_account","project_id":"...","private_key":"...","client_email":"..."}
+
+# ========================================
+# APPLICATION SETTINGS
 # ========================================
 NEXT_PUBLIC_BASE_URL=http://localhost:3000
 NODE_ENV=development
 ALLOWED_ORIGINS=http://localhost:3000
 ```
 
-### Required API Keys - Acquisition Guide
-
-| Service | Required? | Free Tier? | Get API Key | Purpose |
-|---------|-----------|------------|-------------|---------|
-| **MongoDB Atlas** | ✅ Yes | ✅ 512MB free | [Sign Up](https://www.mongodb.com/cloud/atlas) | Database hosting |
-| **Cloudinary** | ✅ Yes | ✅ 25GB/month | [Register](https://cloudinary.com/users/register_free) | Image/audio storage |
-| **Brevo** | ✅ Yes | ✅ 300 emails/day | [Sign Up](https://www.brevo.com/) | Email sending |
-| **Google Gemini** | ⚠️ AI only | ✅ 15 req/min | [Get Key](https://ai.google.dev/) | AI message generation |
-| **Upstash Redis** | ⚠️ Optional | ✅ 10K req/day | [Sign Up](https://upstash.com/) | Rate limiting |
-| **Google OAuth** | ⚠️ Optional | ✅ Free | [Console](https://console.cloud.google.com/) | Social login |
-
-### Database Setup
-
+### 4. Initialize Database Indexes
+Run the automated index builder script to configure MongoDB indexes:
 ```bash
-# Create MongoDB indexes for optimal performance
 npm run db:indexes
+```
 
-# Verify indexes were created
+Verify index health:
+```bash
 npm run test:indexes
 ```
 
-**Expected Output:**
-```
-✅ WishBloom indexes created successfully
-✅ User indexes created successfully
-✅ Draft indexes created successfully
-```
-
----
-
-## 🚀 Usage Examples
-
-### Development Server
-
+### 5. Start Development Server
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000)
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-### Production Build
+---
+
+## 📡 API Architecture & Endpoints
+
+| Endpoint | Methods | Auth Required | Purpose |
+| :--- | :--- | :--- | :--- |
+| `/api/wishblooms` | `GET`, `POST` | Optional / Required | Create new keepsake, list author's keepsakes |
+| `/api/wishblooms/[id]`| `GET`, `PATCH`, `DELETE`| Public GET, Auth for edits | Retrieve published keepsake by nanoid / ID |
+| `/api/blog` | `GET`, `POST` | Public GET, Admin POST | List published posts or publish new blog article |
+| `/api/blog/[slug]` | `GET`, `PUT`, `DELETE`| Public GET, Admin write | Retrieve article by slug or perform editorial edits |
+| `/api/admin/gsc` | `GET` | Admin Only | Inspect URL indexation and search health via Google API |
+| `/api/ai/generate` | `POST` | No (Rate-limited) | Generate birthday poems and messages with Gemini |
+| `/api/guestbook` | `GET`, `POST` | No (Rate-limited) | Fetch and append public contributor wishes |
+| `/api/upload` | `POST` | Authenticated | Signed multipart upload to Cloudinary CDN |
+| `/api/email` | `POST` | Authenticated | Dispatch keepsake link notifications via Brevo |
+| `/api/drafts` | `GET`, `POST` | Authenticated | Auto-save and retrieve work-in-progress drafts |
+| `/api/analytics` | `POST` | No | Record anonymous view count and celebration metrics |
+| `/api/auth/[...nextauth]`| `*` | No | NextAuth.js session and OAuth token workflows |
+
+---
+
+## 🗄️ Database Schemas & Data Models
+
+### 1. `WishBloom` Model (`models/WishBloom.ts`)
+The core memory book document:
+```typescript
+interface IWishBloom {
+  recipientName: string;
+  age?: number;
+  creativeAgeDescription?: string;
+  introMessage: string;
+  uniqueUrl: string; // Unique nanoid slug
+  createdBy: { name: string; email?: string };
+  contributors: Array<{ name: string; email?: string }>;
+  memories: Array<{
+    id: string;
+    title: string;
+    description: string;
+    date: string;
+    imageUrl?: string;
+    contributor: { name: string };
+  }>;
+  messages: Array<{
+    id: string;
+    type: 'letter' | 'poem';
+    content: string;
+    signature: string;
+    audioUrl?: string;
+    contributor: { name: string };
+  }>;
+  celebrationWishPhrases: string[];
+  guestbook: Array<{
+    id: string;
+    name: string;
+    message: string;
+    color: string;
+    createdAt: Date;
+  }>;
+  viewCount: number;
+  isArchived: boolean;
+}
+```
+
+### 2. `BlogPost` Model (`models/BlogPost.ts`)
+The editorial publication document:
+```typescript
+interface IBlogPost {
+  title: string;
+  slug: string; // Unique URL slug
+  description: string;
+  content: string; // Full HTML / TipTap content
+  coverImage?: string;
+  published: boolean;
+  publishedAt?: Date | null;
+  tier: 1 | 2 | 3;
+  readTime: string;
+  keywords?: string[];
+  faqSchema?: Record<string, unknown>; // Structured FAQ JSON-LD
+  author: { name: string; email: string };
+  createdAt: Date;
+  updatedAt: Date;
+}
+```
+
+### 3. `Draft` Model (`models/Draft.ts`)
+Automatic debounced client drafts storing wizard state with TTL expiration (30 days).
+
+### 4. `User` Model (`models/User.ts`)
+NextAuth accounts with hashed passwords, profile roles, and social provider links.
+
+---
+
+## 🧪 Testing & Quality Assurance
+
+WishBloom maintains a strict verification pipeline. Every test must pass before deployment:
 
 ```bash
-# Type check
+# 1. Static Type Checking
 npm run type-check
 
-# Lint code
+# 2. Strict Code Quality & Purity Lint
 npm run lint
 
-# Build
-npm run build
+# 3. Unit & Integration Tests (Jest)
+npm test -- --runInBand
 
-# Start production server
-npm start
-```
-
-### Code Examples
-
-#### 1. Create a WishBloom (API)
-
-```typescript
-// POST /api/wishblooms
-const response = await fetch('/api/wishblooms', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({
-    recipientName: 'John Doe',
-    age: 30,
-    introMessage: 'Happy Birthday, John! Here are some memories...',
-    createdBy: {
-      name: 'Jane Doe',
-      email: 'jane@example.com'
-    },
-    memories: [
-      {
-        title: 'Beach Trip 2023',
-        description: 'Remember that amazing sunset?',
-        date: '2023-07-15',
-        imageUrl: 'https://res.cloudinary.com/...',
-        contributor: { name: 'Jane Doe' }
-      }
-    ],
-    messages: [
-      {
-        type: 'letter',
-        content: 'Wishing you the happiest birthday...',
-        signature: 'Love, Jane',
-        date: '2024-01-01',
-        contributor: { name: 'Jane Doe' }
-      }
-    ]
-  })
-});
-
-const data = await response.json();
-console.log(data.wishbloom.uniqueUrl); // e.g., "abc123xyz"
-```
-
-#### 2. Generate AI Message
-
-```typescript
-// POST /api/ai/generate
-const response = await fetch('/api/ai/generate', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({
-    recipientName: 'John',
-    relationship: 'Friend',
-    vibe: 'Funny'
-  })
-});
-
-const data = await response.json();
-console.log(data.message); // AI-generated birthday message
-console.log(data.isMock);  // false if real AI, true if fallback
-```
-
-#### 3. Upload Image to Cloudinary
-
-```typescript
-// POST /api/upload
-const formData = new FormData();
-formData.append('file', imageFile); // File from <input type="file">
-
-const response = await fetch('/api/upload', {
-  method: 'POST',
-  body: formData
-});
-
-const data = await response.json();
-console.log(data.url); // https://res.cloudinary.com/.../image.jpg
-```
-
----
-
-## 📡 API Reference
-
-### Base URL
-
-```
-Local: http://localhost:3000/api
-Production: https://your-domain.com/api
-```
-
-### Endpoints Overview
-
-| Endpoint | Methods | Auth | Rate Limit | Description |
-|----------|---------|------|------------|-------------|
-| `/wishblooms` | GET, POST | ✅ | 30/min | Create/list WishBlooms |
-| `/wishblooms/[id]` | GET, PATCH, DELETE | GET: ❌, Others: ✅ | 30/min | CRUD single WishBloom |
-| `/ai/generate` | POST | ❌ | 10/min | Generate AI message |
-| `/guestbook` | GET, POST | ❌ | 10/min | Guestbook CRUD |
-| `/upload` | POST | ✅ | 5/min | Upload image/audio |
-| `/email` | POST | ✅ | 10/min | Send WishBloom email |
-| `/drafts` | GET, POST | ✅ | 30/min | Draft management |
-| `/drafts/[id]` | GET, PATCH, DELETE | ✅ | 30/min | Single draft CRUD |
-| `/auth/[...nextauth]` | * | ❌ | - | NextAuth.js handlers |
-
-### Detailed Endpoint Documentation
-
-#### POST /api/wishblooms
-
-**Create a new WishBloom**
-
-**Request Body:**
-```json
-{
-  "recipientName": "string (1-50 chars)",
-  "age": "number (1-120) [optional]",
-  "creativeAgeDescription": "string (max 100) [optional]",
-  "introMessage": "string (10-2000 chars)",
-  "createdBy": {
-    "name": "string",
-    "email": "string [optional]"
-  },
-  "memories": [
-    {
-      "title": "string (max 200)",
-      "description": "string (1-2000)",
-      "date": "YYYY-MM-DD",
-      "imageUrl": "string (valid URL) [optional]",
-      "contributor": { "name": "string" }
-    }
-  ],
-  "messages": [
-    {
-      "type": "letter | poem",
-      "content": "string (10-5000)",
-      "signature": "string",
-      "date": "YYYY-MM-DD",
-      "greeting": "string [optional]",
-      "closing": "string [optional]",
-      "title": "string [optional]",
-      "audioUrl": "string [optional]",
-      "contributor": { "name": "string" }
-    }
-  ],
-  "celebrationWishPhrases": ["string"] [optional]
-}
-```
-
-**Response (201 Created):**
-```json
-{
-  "success": true,
-  "wishbloom": {
-    "id": "507f1f77bcf86cd799439011",
-    "uniqueUrl": "abc123xyz",
-    "createdDate": "2024-01-01T00:00:00.000Z"
-  }
-}
-```
-
-**Error Responses:**
-- `422 Unprocessable Entity` - Validation failed
-- `400 Bad Request` - Content moderation failed
-- `500 Internal Server Error` - Server error
-
----
-
-## 🗄️ Database Schema
-
-### WishBloom Collection
-
-```typescript
-interface WishBloom {
-  _id: ObjectId
-  recipientName: string
-  age?: number
-  creativeAgeDescription?: string
-  introMessage: string
-  uniqueUrl: string (unique index)
-  createdBy: Contributor
-  contributors: Contributor[]
-  memories: Memory[]
-  messages: Message[]
-  celebrationWishPhrases: string[]
-  guestbook: GuestbookEntry[]
-  viewCount: number (default: 0)
-  isArchived: boolean (default: false)
-  createdDate: Date
-  createdAt: Date
-  updatedAt: Date
-}
-
-interface Contributor {
-  id: string
-  name: string
-  email?: string
-  contributionCount: number
-}
-
-interface Memory {
-  id: string
-  title: string
-  description: string
-  date: string
-  imageUrl?: string
-  type: 'standard' | 'featured' | 'quote'
-  tags: string[]
-  rotation: number
-  contributor: Contributor
-  createdAt: Date
-}
-
-interface Message {
-  id: string
-  type: 'letter' | 'poem'
-  content: string
-  signature: string
-  date: string
-  greeting?: string
-  closing?: string
-  title?: string
-  postscript?: string
-  audioUrl?: string
-  contributor: Contributor
-  createdAt: Date
-}
-
-interface GuestbookEntry {
-  id: string
-  name: string
-  message: string
-  color: 'rosePetal' | 'sunsetAmber' | 'driedSage' | 'lavenderPress'
-  createdAt: Date
-}
-```
-
-### Indexes
-
-```javascript
-// WishBloom collection
-{ uniqueUrl: 1 } (unique)
-{ 'createdBy.id': 1 }
-{ viewCount: -1 }
-{ isArchived: 1 }
-{ createdDate: -1 }
-{ isArchived: 1, createdDate: -1 } (compound)
-
-// User collection
-{ email: 1 } (unique)
-{ createdAt: -1 }
-{ role: 1 }
-
-// Draft collection
-{ userId: 1, updatedAt: -1 } (compound)
-{ expiresAt: 1 } (TTL index)
-```
-
----
-
-## 🧪 Testing
-
-### Unit Tests (Jest)
-
-```bash
-# Run all unit tests
-npm test
-
-# Watch mode
-npm run test:watch
-
-# Coverage report
-npm test -- --coverage
-```
-
-**Test Structure:**
-```
-__tests__/
-├── lib/
-│   ├── moderation.test.ts
-│   ├── utils.test.ts
-│   └── animations.test.ts
-└── schemas/
-    ├── wishbloom.schema.test.ts
-    └── guestbook.schema.test.ts
-```
-
-### E2E Tests (Playwright)
-
-```bash
-# Run all E2E tests (Chromium, Firefox, WebKit)
+# 4. End-to-End User Flow Tests (Playwright)
 npm run test:e2e
 
-# Run specific browser
-npm run test:e2e -- --project=chromium
-
-# Debug mode
-npm run test:e2e -- --debug
-
-# Headed mode (see browser)
-npm run test:e2e -- --headed
-```
-
-**Test Coverage:**
-- ✅ Landing page load & navigation
-- ✅ Sign in/sign up flows
-- ✅ 6-step creation wizard
-- ✅ Memory upload & validation
-- ✅ Message creation (letter & poem)
-- ✅ AI Poet modal integration
-- ✅ WishBloom publish & view
-- ✅ Guestbook submission
-- ✅ PDF download
-
-### Accessibility Tests (Axe-Core)
-
-```bash
-# Run accessibility tests
+# 5. Accessibility Audits (Axe-Core)
 npm run test:a11y
-```
 
-**Checks:**
-- ✅ Color contrast ratios (WCAG AA: 4.5:1 text, 3:1 UI)
-- ✅ Keyboard navigation & focus management
-- ✅ ARIA labels & roles
-- ✅ Form labels & error messages
-- ✅ Alt text on images
-- ✅ Semantic HTML structure
-
-### Performance Tests (Lighthouse)
-
-```bash
-# Run Lighthouse CI audit
-npm run lighthouse
-```
-
-**Metrics:**
-- Performance: 90+
-- Accessibility: 95+
-- Best Practices: 96+
-- SEO: 100
-
----
-
-## 🚀 Deployment
-
-### Vercel (Recommended)
-
-**1. Push to GitHub:**
-```bash
-git add .
-git commit -m "feat: initial commit"
-git push origin main
-```
-
-**2. Connect to Vercel:**
-- Visit [vercel.com](https://vercel.com/)
-- Click "Import Project"
-- Select your GitHub repo
-- Framework: Next.js (auto-detected)
-
-**3. Add Environment Variables:**
-```
-Go to: Project Settings → Environment Variables
-Add all variables from .env.local (EXCEPT NEXTAUTH_URL)
-```
-
-**4. Update Production Variables:**
-```env
-NEXTAUTH_URL=https://your-domain.vercel.app
-NEXT_PUBLIC_BASE_URL=https://your-domain.vercel.app
-ALLOWED_ORIGINS=https://your-domain.vercel.app
-```
-
-**5. Deploy:**
-```bash
-# Automatic deployment on push to main
-git push origin main
-
-# Manual deployment
-vercel --prod
-```
-
-### Other Platforms
-
-<details>
-<summary><strong>Docker Deployment</strong></summary>
-
-```dockerfile
-# Dockerfile
-FROM node:18-alpine AS deps
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-
-FROM node:18-alpine AS builder
-WORKDIR /app
-COPY . .
-COPY --from=deps /app/node_modules ./node_modules
-RUN npm run build
-
-FROM node:18-alpine AS runner
-WORKDIR /app
-ENV NODE_ENV production
-COPY --from=builder /app/next.config.mjs ./
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
-
-EXPOSE 3000
-CMD ["npm", "start"]
-```
-
-```bash
-docker build -t wishbloom .
-docker run -p 3000:3000 --env-file .env.local wishbloom
-```
-</details>
-
----
-
-## 🔧 Troubleshooting
-
-### Common Issues
-
-#### ❌ Error: "MONGODB_URI is required"
-
-**Solution:**
-```bash
-# Ensure .env.local exists with correct variable
-echo 'MONGODB_URI=mongodb://localhost:27017' >> .env.local
-
-# Restart dev server
-npm run dev
-```
-
-#### ❌ Error: "Failed to upload image"
-
-**Causes:**
-- File size > 5MB
-- Invalid file type (not JPEG/PNG/WebP)
-- Missing Cloudinary credentials
-
-**Solution:**
-```bash
-# Check file size
-ls -lh path/to/image.jpg
-
-# Verify Cloudinary env vars
-echo $CLOUDINARY_API_KEY
-
-# Test Cloudinary connection
-curl -X POST "https://api.cloudinary.com/v1_1/$CLOUDINARY_CLOUD_NAME/image/upload" \
-  -F "file=@image.jpg" \
-  -F "upload_preset=your_preset"
-```
-
-#### ❌ Error: "AI generation failed"
-
-**Causes:**
-- Missing GEMINI_API_KEY
-- Rate limit exceeded (15 req/min free tier)
-- API key invalid
-
-**Solution:**
-```bash
-# Verify API key
-echo $GEMINI_API_KEY
-
-# Check Gemini dashboard for quota
-# https://ai.google.dev/
-
-# Fallback: App uses mock responses when key missing
-# No action needed for development
-```
-
-#### ❌ Error: "Rate limit exceeded"
-
-**Causes:**
-- Too many requests from same IP
-- Upstash Redis connection issue
-
-**Solution:**
-```bash
-# Wait 1 minute and retry
-
-# Check Upstash dashboard for quota
-# https://console.upstash.com/
-
-# Disable rate limiting in development:
-# Comment out UPSTASH env vars in .env.local
-```
-
-#### ❌ Error: "Breath detection not working"
-
-**Causes:**
-- Microphone permission denied
-- Browser doesn't support AudioContext
-- HTTPS required (Chrome security)
-
-**Solution:**
-```
-1. Check browser permissions (chrome://settings/content/microphone)
-2. Use HTTPS in production (HTTP blocked by browsers)
-3. Use fallback "Blow Candles" button
-4. Supported browsers: Chrome 55+, Firefox 52+, Safari 14+
+# 6. Production Build Verification
+npm run build
 ```
 
 ---
 
-## ⚡ Performance
+## 🚢 Production Deployment
 
-### Optimization Techniques Implemented
+### Recommended: Vercel
+1. Fork or push your repository to GitHub.
+2. Import the project into [Vercel](https://vercel.com/).
+3. Next.js App Router settings will be automatically detected.
+4. Set your production environment variables (ensure `NEXTAUTH_URL` and `NEXT_PUBLIC_BASE_URL` match your live custom domain, e.g., `https://wishblooms.in`).
+5. Deploy! Continuous deployment automatically builds and checks every push to `main`.
 
-| Category | Technique | Impact |
-|----------|-----------|--------|
-| **Images** | Next.js `<Image>` + Cloudinary auto-format | -60% image size |
-| **Code Splitting** | Dynamic imports for heavy components | -40% initial bundle |
-| **Fonts** | Self-hosted fonts + font-display: swap | +10 FCP score |
-| **Database** | Connection pooling (max: 10) | -50% query time |
-| **Caching** | Service worker + Cloudinary CDN | +20 LCP score |
-| **Animations** | Framer Motion lazy loading | -30% JS parse time |
-| **Bundle** | Code splitting (vendor, common, framer) | Smaller chunks |
-
-### Core Web Vitals (Target)
-
-```
-✅ LCP (Largest Contentful Paint): < 2.5s
-✅ FID (First Input Delay): < 100ms
-✅ CLS (Cumulative Layout Shift): < 0.1
-```
-
-### Bundle Size Analysis
-
-```bash
-npm run analyze
-```
-
-**Output:**
-```
-Page                     Size       First Load JS
-├ ○ /                    15.2 kB    92.5 kB
-├ ○ /create              8.7 kB     86.0 kB
-├ ○ /[id]                12.4 kB    89.7 kB
-└ ○ /dashboard           10.1 kB    87.4 kB
-```
+### Continuous Integration (GitHub Actions)
+Our `.github/workflows/ci.yml` pipeline runs on every push and pull request across 6 distinct jobs:
+1. **Lint & Type Check:** Runs ESLint 9 and TypeScript compiler with 0 warnings allowed.
+2. **Unit Tests:** Executes Jest test suites, verifies schemas, and uploads code coverage.
+3. **Build:** Compiles Next.js standalone static routes and dynamic bundles.
+4. **E2E Tests:** Launches headless Chromium on Ubuntu 22.04 LTS to verify the creation wizard and celebratory interactions.
+5. **Accessibility Tests:** Runs automated WCAG 2.1 AA audits using Axe-core.
+6. **Lighthouse CI:** Measures Core Web Vitals, performance, and SEO scores.
 
 ---
 
-## 🔒 Security
+## 🔒 Security & Privacy Standards
 
-### Security Headers
-
-```javascript
-// next.config.mjs
-headers: [
-  {
-    source: '/:path*',
-    headers: [
-      { key: 'X-DNS-Prefetch-Control', value: 'on' },
-      { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' },
-      { key: 'X-Frame-Options', value: 'DENY' },
-      { key: 'X-Content-Type-Options', value: 'nosniff' },
-      { key: 'X-XSS-Protection', value: '1; mode=block' },
-      { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
-      { key: 'Permissions-Policy', value: 'camera=(), microphone=(self), geolocation=()' },
-      { key: 'Content-Security-Policy', value: cspHeader }
-    ]
-  }
-]
-```
-
-### Content Security Policy
-
-```
-default-src 'self';
-script-src 'self' 'unsafe-eval' 'unsafe-inline' https://va.vercel-scripts.com;
-style-src 'self' 'unsafe-inline';
-img-src 'self' data: https: blob:;
-font-src 'self' data: https://fonts.gstatic.com;
-media-src 'self' data: blob:;
-connect-src 'self' https://*.mongodb.net https://*.cloudinary.com https://*.upstash.io;
-```
-
-### OWASP Top 10 Mitigation
-
-| Threat | Mitigation |
-|--------|------------|
-| **A01:2021 – Broken Access Control** | NextAuth.js + middleware route protection |
-| **A02:2021 – Cryptographic Failures** | bcrypt (10 rounds), HTTPS enforcement |
-| **A03:2021 – Injection** | Zod validation, MongoDB parameterized queries |
-| **A04:2021 – Insecure Design** | Rate limiting, content moderation |
-| **A05:2021 – Security Misconfiguration** | Environment validation, security headers |
-| **A06:2021 – Vulnerable Components** | Automated dependency updates (Dependabot) |
-| **A07:2021 – Identity & Auth Failures** | NextAuth.js, session management |
-| **A08:2021 – Data Integrity Failures** | File validation, MIME type checks |
-| **A09:2021 – Logging Failures** | Structured logging (lib/logger.ts) |
-| **A10:2021 – Server-Side Request Forgery** | URL validation, CORS restrictions |
+- **Strict Content Security Policy (CSP):** Configured in `next.config.mjs` with strict script, font, frame, and media origin whitelisting.
+- **Double Validation Barrier:** All inputs are validated on both client (React Hook Form) and server (Zod schemas) before hitting the database.
+- **Automated Content Moderation:** Sanitizes user-generated text against profanity and malicious HTML payloads.
+- **Microphone Privacy:** Audio captured during breath detection is processed strictly inside an in-memory client-side `AudioContext` buffer and is **never** recorded or transmitted to any server.
+- **Role-Based Admin Protection:** Protected admin routes verify Google session emails on the server before granting access to blog creation or Google Search Console inspection APIs.
 
 ---
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for detailed guidelines.
+Contributions make the open-source community an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
-### Quick Start for Contributors
-
-1. Fork the repository
-2. Create feature branch: `git checkout -b feature/amazing-feature`
-3. Make changes and test: `npm test && npm run test:e2e`
-4. Commit: `git commit -m 'feat: add amazing feature'`
-5. Push: `git push origin feature/amazing-feature`
-6. Open Pull Request
-
-### Commit Convention (Conventional Commits)
-
-```
-feat: Add new feature
-fix: Fix bug
-docs: Update documentation
-style: Format code
-refactor: Refactor code
-test: Add tests
-chore: Update dependencies
-```
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/BotanicalTheme`)
+3. Run verification checks (`npm run type-check && npm run lint && npm test`)
+4. Commit your Changes (`git commit -m 'feat: add lavender botanical border theme'`)
+5. Push to the Branch (`git push origin feature/BotanicalTheme`)
+6. Open a Pull Request
 
 ---
 
-## ❓ FAQ
+## 📄 License & Authors
 
-**Q: Can I use this for commercial purposes?**  
-A: Yes, MIT license allows commercial use.
+Distributed under the **MIT License**. See [`LICENSE`](./LICENSE) for more details.
 
-**Q: Do I need all API keys to run locally?**  
-A: No. Required: MongoDB, Cloudinary, Brevo, NextAuth secret. Optional: Gemini (uses mock), Upstash (disabled if missing), Google OAuth.
-
-**Q: How much does it cost to run in production?**  
-A: Free tier is sufficient for small traffic:
-- MongoDB Atlas: 512MB free
-- Cloudinary: 25GB/month free
-- Brevo: 300 emails/day free
-- Vercel: Unlimited hobby sites
-- Gemini: 15 req/min free
-
-**Q: Can I self-host instead of Vercel?**  
-A: Yes, see Docker deployment section.
-
-**Q: Is this mobile-friendly?**  
-A: Yes, fully responsive with mobile-first design. PWA installable.
-
-**Q: How do I backup my data?**  
-A: MongoDB Atlas provides automated backups. Use `mongodump` for manual backups.
-
----
-
-## 📝 Changelog
-
-### v1.0.0 (2024-01-01)
-
-**Initial Release**
-- 🎉 6-step creation wizard
-- 🤖 AI Poet assistant (Gemini)
-- 🎤 Voice message recording
-- 📄 PDF heirloom generation
-- 📖 Public guestbook
-- 🎂 Interactive breath detection
-- 🔒 Enterprise security
-- ♿ WCAG 2.1 AA compliance
-- ⚡ PWA support
-- 🧪 95% test coverage
-
----
-
-## 📄 License
-
-This project is licensed under the **MIT License** - see the [LICENSE](./LICENSE) file for details.
-
----
-
-## 📧 Contact
-
+**Lead Architect & Maintainer:**  
 **Naveen Agarwal**  
+- **Website:** [wishblooms.in](https://wishblooms.in)  
 - **GitHub:** [@NaveenAgarwal2004](https://github.com/NaveenAgarwal2004)  
-- **Project:** [github.com/NaveenAgarwal2004/WishBloom](https://github.com/NaveenAgarwal2004/WishBloom---A-New-Beginning)  
-- **Issues:** [Report Bug/Feature](https://github.com/NaveenAgarwal2004/WishBloom---A-New-Beginning/issues)
+- **Repository:** [WishBloom — A New Beginning](https://github.com/NaveenAgarwal2004/WishBloom---A-New-Beginning)
 
 ---
 
 <div align="center">
-
-**Made with 💛 by the WishBloom Team**  
-*Preserving memories, one bloom at a time.*
-
-⭐ **If you found this helpful, please star the repository!** ⭐
-
-[Back to Top](#-wishbloom---pressed-flower-birthday-memories)
-
+  <sub>Preserving scattered memories into timeless botanical heirlooms. Built with 💛 for friends, families, and long-distance loved ones.</sub>
 </div>
